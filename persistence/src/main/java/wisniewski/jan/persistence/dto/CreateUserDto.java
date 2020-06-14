@@ -5,8 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.management.relation.Role;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -16,5 +14,4 @@ public class CreateUserDto {
     private String surname;
     private String email;
     private String password;
-    private Role role;
 }

@@ -5,13 +5,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Data
 public class Ticket {
     private Integer id;
-    private Integer row;
-    private Integer place;
-    private Integer cinemaRoomId;
+    private Integer seanceId;
+    private Integer seatId;
+    private BigDecimal price;
+    private BigDecimal discount;
+    private Integer userId;
 }

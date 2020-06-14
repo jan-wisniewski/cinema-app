@@ -1,0 +1,55 @@
+2020-06-07 22:37:55 INFO  CreateUserTests:59 - USER CREATED SUCCESSFULLY
+2020-06-07 22:39:54 INFO  CreateUserTests:53 - Failed to create user: lowercase exception
+2020-06-07 22:39:54 INFO  CreateUserTests:83 - USER CREATED SUCCESSFULLY
+2020-06-07 22:39:54 INFO  CreateUserTests:98 - Failed to create user: lowercase exception
+2020-06-07 22:39:54 INFO  CreateUserTests:112 - Failed to create user: email exception
+2020-06-07 22:39:54 INFO  CreateUserTests:119 - Failed to create user: null dto exception
+2020-06-07 22:44:41 INFO  BuyTicketTests:49 - Failed to create ticket: ticketDto is null
+2020-06-07 22:44:41 INFO  BuyTicketTests:76 - Failed to create ticket: seat id is negative
+2020-06-07 22:44:41 INFO  BuyTicketTests:103 - Failed to create ticket: user id is negative
+2020-06-07 22:44:41 INFO  BuyTicketTests:130 - Failed to create ticket: seanceid is negative
+2020-06-07 22:44:41 INFO  BuyTicketTests:157 - Failed to create ticket: discount is negative
+2020-06-07 22:44:41 INFO  BuyTicketTests:184 - Failed to create ticket: price is negative
+2020-06-07 22:44:41 INFO  BuyTicketTests:212 - Ticket created successfully 
+2020-06-07 22:46:04 INFO  AddCinemaTests:46 - Failed to create cinema: dto is null
+2020-06-07 22:46:04 INFO  AddCinemaTests:72 - Cinema created successfully
+2020-06-07 22:46:04 INFO  AddCinemaTests:85 - Failed to create cinema: lowercase name 
+2020-06-07 22:46:04 INFO  AddCinemaTests:109 - Failed to create cinema: city id is negative
+2020-06-08 09:23:45 INFO  CreateUserTests:53 - Failed to create user: lowercase exception
+2020-06-08 09:23:45 INFO  CreateUserTests:83 - USER CREATED SUCCESSFULLY
+2020-06-08 09:23:45 INFO  CreateUserTests:98 - Failed to create user: lowercase exception
+2020-06-08 09:23:45 INFO  CreateUserTests:112 - Failed to create user: email exception
+2020-06-08 09:23:45 INFO  CreateUserTests:119 - Failed to create user: null dto exception
+2020-06-08 10:05:39 INFO  CreateUserTests:84 - USER CREATED SUCCESSFULLY
+2020-06-12 23:49:07 INFO  CreateUserTests:63 - Failed to create user: lowercase exception
+2020-06-12 23:49:53 INFO  CreateUserTests:60 - Failed to create user: lowercase exception
+2020-06-12 23:51:18 INFO  CreateUserTests:111 - Failed to create user: lowercase exception
+2020-06-12 23:52:17 INFO  CreateUserTests:131 - Failed to create user: email exception
+2020-06-12 23:53:25 INFO  CreateUserTests:145 - Failed to create user: null dto exception
+2020-06-12 23:53:52 INFO  CreateUserTests:58 - Failed to create user: lowercase exception
+2020-06-12 23:53:52 INFO  CreateUserTests:88 - USER CREATED SUCCESSFULLY
+2020-06-12 23:53:52 INFO  CreateUserTests:109 - Failed to create user: lowercase exception
+2020-06-12 23:53:52 INFO  CreateUserTests:130 - Failed to create user: email exception
+2020-06-12 23:53:52 INFO  CreateUserTests:144 - Failed to create user: null dto exception
+2020-06-13 00:13:30 INFO  AddCinemaTests:47 - Failed to create cinema: dto is null
+2020-06-13 00:13:30 INFO  AddCinemaTests:73 - Cinema created successfully
+2020-06-13 00:13:30 INFO  AddCinemaTests:86 - Failed to create cinema: lowercase name 
+2020-06-13 01:21:18 INFO  AddCinemaTests:47 - Failed to create cinema: dto is null
+2020-06-13 01:21:18 INFO  AddCinemaTests:73 - Cinema created successfully
+2020-06-13 01:21:18 INFO  AddCinemaTests:86 - Failed to create cinema: lowercase name 
+2020-06-13 01:21:18 INFO  AddCinemaTests:115 - Failed to create cinema: cinema already on db
+2020-06-13 12:28:55 INFO  AddCinemaTests:47 - Failed to create cinema: dto is null
+2020-06-13 12:28:55 INFO  AddCinemaTests:73 - Cinema created successfully
+2020-06-13 12:28:55 INFO  AddCinemaTests:86 - Failed to create cinema: lowercase name 
+2020-06-13 12:28:55 INFO  AddCinemaTests:115 - Failed to create cinema: cinema already on db
+2020-06-13 20:58:05 INFO  BuyTicketTests:48 - Failed to create ticket: ticketDto is null
+2020-06-13 20:58:05 INFO  BuyTicketTests:75 - Failed to create ticket: discount is negative
+2020-06-13 20:58:05 INFO  BuyTicketTests:102 - Failed to create ticket: price is negative
+2020-06-13 20:59:11 INFO  BuyTicketTests:48 - Failed to create ticket: ticketDto is null
+2020-06-13 20:59:11 INFO  BuyTicketTests:75 - Failed to create ticket: discount is negative
+2020-06-13 20:59:11 INFO  BuyTicketTests:102 - Failed to create ticket: price is negative
+2020-06-13 20:59:11 INFO  BuyTicketTests:135 - Ticket created successfully 
+2020-06-13 21:40:19 INFO  AddCinemaTests:47 - Failed to create cinema: dto is null
+2020-06-13 21:40:19 INFO  AddCinemaTests:73 - Cinema created successfully
+2020-06-13 21:40:19 INFO  AddCinemaTests:86 - Failed to create cinema: lowercase name 
+2020-06-13 21:40:19 INFO  AddCinemaTests:115 - Failed to create cinema: cinema already on db

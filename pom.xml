@@ -32,6 +32,8 @@
         <mockito.core.version>3.3.3</mockito.core.version>
         <mockito.junit.jupiter.version>3.3.3</mockito.junit.jupiter.version>
         <lombok.version>1.18.12</lombok.version>
+        <guava.version>28.1-jre</guava.version>
+        <evo-inflector.version>1.2.2</evo-inflector.version>
 
         <jdbi3.core.version>3.12.2</jdbi3.core.version>
         <slf4j.api.version>1.7.30</slf4j.api.version>
@@ -41,6 +43,16 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.atteo</groupId>
+                <artifactId>evo-inflector</artifactId>
+                <version>${evo-inflector.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
