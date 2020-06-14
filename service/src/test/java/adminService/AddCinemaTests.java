@@ -60,11 +60,13 @@ public class AddCinemaTests {
                 .builder()
                 .cityId(2)
                 .name("KINO A")
-                .id(null)
+                .id(1)
                 .build();
 
         var cinemaToAdd = Mapper.fromCinemaDtoToCinema(cinemaDto);
 
+        //syluje dzialanie metody dodajacej do bazy
+        //jezeli dodalbym dto to udaje sobie ze mi zwroci cinema z id nr 1
         Mockito
                 .when(cinemaRepository.add(cinemaToAdd))
                 .thenReturn(Optional.of(expected));

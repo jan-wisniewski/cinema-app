@@ -53,3 +53,5 @@
 2020-06-13 21:40:19 INFO  AddCinemaTests:73 - Cinema created successfully
 2020-06-13 21:40:19 INFO  AddCinemaTests:86 - Failed to create cinema: lowercase name 
 2020-06-13 21:40:19 INFO  AddCinemaTests:115 - Failed to create cinema: cinema already on db
+2020-06-14 13:54:31 INFO  AddCinemaTests:47 - Failed to create cinema: dto is null
+2020-06-14 14:21:40 INFO  AddCinemaTests:73 - Cinema created successfully

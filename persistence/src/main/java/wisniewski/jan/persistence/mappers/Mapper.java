@@ -1,9 +1,11 @@
 package wisniewski.jan.persistence.mappers;
 
 import wisniewski.jan.persistence.dto.CreateCinemaDto;
+import wisniewski.jan.persistence.dto.CreateCinemaRoomDto;
 import wisniewski.jan.persistence.dto.CreateTicketDto;
 import wisniewski.jan.persistence.dto.CreateUserDto;
 import wisniewski.jan.persistence.model.Cinema;
+import wisniewski.jan.persistence.model.CinemaRoom;
 import wisniewski.jan.persistence.model.Ticket;
 import wisniewski.jan.persistence.model.User;
 
@@ -29,11 +31,21 @@ public interface Mapper {
                 .build();
     }
 
-    static Cinema fromCinemaDtoToCinema (CreateCinemaDto cinemaDto){
+    static Cinema fromCinemaDtoToCinema(CreateCinemaDto cinemaDto) {
         return Cinema
                 .builder()
                 .cityId(cinemaDto.getCityId())
                 .name(cinemaDto.getName())
+                .build();
+    }
+
+    static CinemaRoom fromCinemaRoomDtoToCinemaRoom(CreateCinemaRoomDto cinemaRoomDto) {
+        return CinemaRoom
+                .builder()
+                .cinemaId(cinemaRoomDto.getCinemaId())
+                .name(cinemaRoomDto.getName())
+                .places(cinemaRoomDto.getPlaces())
+                .rows(cinemaRoomDto.getRows())
                 .build();
     }
 
