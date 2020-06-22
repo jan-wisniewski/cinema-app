@@ -13,6 +13,6 @@ public class CinemaRoom {
     private Integer id;
     private String name;
     private Integer cinemaId;
-    private Integer rows;
+    private Integer rowsNumber;
     private Integer places;
 }

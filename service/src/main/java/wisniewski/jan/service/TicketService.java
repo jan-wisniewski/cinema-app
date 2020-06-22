@@ -34,15 +34,19 @@ public class TicketService {
             throw new TicketServiceException("Create ticket validation errors: " + messageErrors);
         }
 
+        var ticket = Mapper.fromCreateTicketDtoToTicket(ticketDto);
+
         //czy dane miejsce jest wolne?
-        if (!ticketRepository.isPlaceAvailable(ticketDto)) {
+        if (!ticketRepository.isPlaceAvailable(ticket)) {
             throw new TicketServiceException("This place is not available");
         }
 
-        var ticket = Mapper.fromCreateTicketDtoToTicket(ticketDto);
         var createdTicket = ticketRepository
                 .add(ticket)
                 .orElseThrow(() -> new UserServiceException("cannot insert user to db"));
         return createdTicket.getId();
     }
+
+
+
 }

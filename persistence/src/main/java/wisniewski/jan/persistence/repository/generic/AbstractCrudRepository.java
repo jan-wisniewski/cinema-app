@@ -41,6 +41,8 @@ public abstract class AbstractCrudRepository<T, ID> implements CrudRepository<T,
                 .append(";")
                 .toString();
 
+        System.out.println(SQL);
+
         var insertedRows = jdbi.withHandle(handle -> handle.execute(SQL));
         if (insertedRows > 0) {
             return findLast();

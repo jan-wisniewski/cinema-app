@@ -128,10 +128,10 @@ public class BuyTicketTests {
                 .thenReturn(Optional.of(expected));
 
         Mockito
-                .when(ticketRepository.isPlaceAvailable(ticketDto))
+                .when(ticketRepository.isPlaceAvailable(ticket))
                 .thenReturn(true);
 
-        assertEquals(1, ticketService.buyTicket(ticketDto));
+        assertEquals(expected.getId(), ticketService.buyTicket(ticketDto));
         logger.info("Ticket created successfully ");
     }
 
@@ -146,8 +146,11 @@ public class BuyTicketTests {
                 .userId(2)
                 .seatId(2)
                 .build();
+
+        var ticket = Mapper.fromCreateTicketDtoToTicket(ticketDto);
+
         Mockito
-                .when(ticketRepository.isPlaceAvailable(ticketDto))
+                .when(ticketRepository.isPlaceAvailable(ticket))
                 .thenReturn(false);
 
         String exceptionMessage = "";

@@ -1,5 +1,6 @@
 package adminService;
 
+import extensions.LoggerExtension;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -7,21 +8,28 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
+import org.apache.log4j.Logger;
 import wisniewski.jan.persistence.dto.CreateCinemaRoomDto;
 import wisniewski.jan.persistence.mappers.Mapper;
 import wisniewski.jan.persistence.model.CinemaRoom;
+import wisniewski.jan.persistence.model.Seat;
 import wisniewski.jan.persistence.repository.CinemaRoomRepository;
+import wisniewski.jan.persistence.repository.SeatRepository;
 import wisniewski.jan.service.AdminService;
-import wisniewski.jan.service.exception.AdminServiceException;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith({MockitoExtension.class, LoggerExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class AddCinemaRoomTests {
+
+    private Logger logger;
+    private String exceptionMessage;
 
     @InjectMocks
     AdminService adminService;
@@ -29,10 +37,24 @@ public class AddCinemaRoomTests {
     @Mock
     CinemaRoomRepository cinemaRoomRepository;
 
+    @Mock
+    SeatRepository seatRepository;
+
+    public void setLogger(Logger logger) {
+        this.logger = logger;
+    }
+
     @Test
     @DisplayName("when cinemaRoomDto is null exception has been thrown")
     public void test1() {
-        assertThrows(AdminServiceException.class, () -> adminService.addCinemaRoom(null));
+        exceptionMessage = "";
+        try {
+            adminService.addCinema(null);
+        } catch (Exception e) {
+            exceptionMessage = e.getMessage();
+        }
+        assertEquals("Cinema dto is null", exceptionMessage);
+        logger.info("Failed to create cinema room: dto is null");
     }
 
     @Test
@@ -48,7 +70,7 @@ public class AddCinemaRoomTests {
 
         var expectedCinema = CinemaRoom
                 .builder()
-                .rows(5)
+                .rowsNumber(5)
                 .name("Room")
                 .places(8)
                 .cinemaId(5)
@@ -63,8 +85,19 @@ public class AddCinemaRoomTests {
                 .when(cinemaRoomRepository.add(cinemaToAdd))
                 .thenReturn(Optional.of(expectedCinema));
 
-        assertEquals(expectedCinema.getId(), adminService.addCinemaRoom(cinemaRoomDto));
+        var seatToAdd = Seat
+                .builder()
+                .rowsNumber(1)
+                .place(1)
+                .cinemaRoomId(5)
+                .build();
 
+        Mockito
+                .when(seatRepository.addAll(List.of(seatToAdd)))
+                .thenReturn(1);
+
+        assertEquals(expectedCinema.getId(), adminService.addCinemaRoom(cinemaRoomDto));
+        logger.info("Cinema room created successfully");
     }
 
     @Test
@@ -77,13 +110,14 @@ public class AddCinemaRoomTests {
                 .places(8)
                 .cinemaId(5)
                 .build();
-        String exceptionMessage = "";
+        exceptionMessage = "";
         try {
             adminService.addCinemaRoom(cinemaRoomDto);
         } catch (Exception e) {
             exceptionMessage = e.getMessage();
         }
         assertEquals("Add cinema room errors: Rows : Should be greater than 0", exceptionMessage);
+        logger.info("Failed to create cinema room: rows number is not correct");
     }
 
     @Test
@@ -96,13 +130,14 @@ public class AddCinemaRoomTests {
                 .places(-1)
                 .cinemaId(5)
                 .build();
-        String exceptionMessage = "";
+        exceptionMessage = "";
         try {
             adminService.addCinemaRoom(cinemaRoomDto);
         } catch (Exception e) {
             exceptionMessage = e.getMessage();
         }
         assertEquals("Add cinema room errors: Places : Should be greater than 0", exceptionMessage);
+        logger.info("Failed to create cinema room: place number is not correct");
     }
 
     @Test
@@ -115,13 +150,14 @@ public class AddCinemaRoomTests {
                 .places(3)
                 .cinemaId(5)
                 .build();
-        String exceptionMessage = "";
+        exceptionMessage = "";
         try {
             adminService.addCinemaRoom(cinemaRoomDto);
         } catch (Exception e) {
             exceptionMessage = e.getMessage();
         }
         assertEquals("Add cinema room errors: Name : Should starts with uppercase", exceptionMessage);
+        logger.info("Failed to create cinema room: name starts with lowercase");
     }
 
     @Test
@@ -134,13 +170,14 @@ public class AddCinemaRoomTests {
                 .places(3)
                 .cinemaId(5)
                 .build();
-        String exceptionMessage = "";
+        exceptionMessage = "";
         try {
             adminService.addCinemaRoom(cinemaRoomDto);
         } catch (Exception e) {
             exceptionMessage = e.getMessage();
         }
         assertEquals("Add cinema room errors: Name : Should be longer than one char", exceptionMessage);
+        logger.info("Failed to create cinema room: name length is 1 or 0");
     }
 
     //when is already on db
@@ -156,22 +193,21 @@ public class AddCinemaRoomTests {
                 .build();
 
         List<CinemaRoom> cinemasRoomListFromDB = List.of(
-                CinemaRoom.builder().rows(5).places(2).name("Room1").cinemaId(5).build(),
-                CinemaRoom.builder().rows(6).places(6).name("Room2").cinemaId(2).build()
+                CinemaRoom.builder().rowsNumber(5).places(2).name("Room1").cinemaId(5).build(),
+                CinemaRoom.builder().rowsNumber(6).places(6).name("Room2").cinemaId(2).build()
         );
 
         Mockito
                 .when(cinemaRoomRepository.findByNameAndCinemaId("Room1", 5))
                 .thenReturn(Optional.of(cinemasRoomListFromDB.get(0)));
 
-        String exceptionMessage = "";
+        exceptionMessage = "";
         try {
             adminService.addCinemaRoom(cinemaRoomDto);
         } catch (Exception e) {
             exceptionMessage = e.getMessage();
         }
         assertEquals("Cinema room with this name is already on this cinema id", exceptionMessage);
-
+        logger.info("Failed to create cinema room: cinema room already exists on db");
     }
-
 }

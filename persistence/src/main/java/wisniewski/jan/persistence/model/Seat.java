@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class Seat {
     private Integer id;
-    private Integer row;
+    private Integer rowsNumber;
     private Integer place;
     private Integer cinemaRoomId;
 }

@@ -55,3 +55,118 @@
 2020-06-13 21:40:19 INFO  AddCinemaTests:115 - Failed to create cinema: cinema already on db
 2020-06-14 13:54:31 INFO  AddCinemaTests:47 - Failed to create cinema: dto is null
 2020-06-14 14:21:40 INFO  AddCinemaTests:73 - Cinema created successfully
+2020-06-14 23:06:12 INFO  AddCinemaTests:54 - Failed to create cinema: dto is null
+2020-06-14 23:45:58 INFO  BuyTicketTests:48 - Failed to create ticket: ticketDto is null
+2020-06-14 23:45:58 INFO  BuyTicketTests:75 - Failed to create ticket: discount is negative
+2020-06-14 23:45:58 INFO  BuyTicketTests:102 - Failed to create ticket: price is negative
+2020-06-14 23:48:46 INFO  BuyTicketTests:48 - Failed to create ticket: ticketDto is null
+2020-06-14 23:48:46 INFO  BuyTicketTests:75 - Failed to create ticket: discount is negative
+2020-06-14 23:48:46 INFO  BuyTicketTests:102 - Failed to create ticket: price is negative
+2020-06-15 00:05:32 INFO  BuyTicketTests:135 - Ticket created successfully 
+2020-06-15 00:05:47 INFO  BuyTicketTests:48 - Failed to create ticket: ticketDto is null
+2020-06-15 00:05:47 INFO  BuyTicketTests:75 - Failed to create ticket: discount is negative
+2020-06-15 00:05:47 INFO  BuyTicketTests:102 - Failed to create ticket: price is negative
+2020-06-15 00:05:47 INFO  BuyTicketTests:135 - Ticket created successfully 
+2020-06-15 17:09:53 INFO  AddCinemaTests:53 - Failed to create cinema: dto is null
+2020-06-15 17:09:53 INFO  AddCinemaTests:81 - Cinema created successfully
+2020-06-15 17:09:53 INFO  AddCinemaTests:94 - Failed to create cinema: lowercase name 
+2020-06-15 17:09:53 INFO  AddCinemaTests:123 - Failed to create cinema: cinema already on db
+2020-06-15 17:10:37 INFO  AddCinemaTests:53 - Failed to create cinema: dto is null
+2020-06-15 17:10:37 INFO  AddCinemaTests:81 - Cinema created successfully
+2020-06-15 17:10:37 INFO  AddCinemaTests:94 - Failed to create cinema: lowercase name 
+2020-06-15 17:10:37 INFO  AddCinemaTests:123 - Failed to create cinema: cinema already on db
+2020-06-15 17:19:34 INFO  AddSeanceTests:54 - Failed to create seance: dto is null
+2020-06-15 17:19:34 INFO  AddSeanceTests:73 - Failed to create seance: localdate is not correct
+2020-06-15 17:19:34 INFO  AddSeanceTests:100 - Create seance successfully
+2020-06-15 17:19:34 INFO  AddSeanceTests:137 - Failed to create seance: seance already exists on db
+2020-06-15 17:20:53 INFO  AddMovieTests:48 - Failed to create movie: movie dto is null
+2020-06-15 17:33:56 INFO  AddMovieTests:75 - Failed to create movie: title starts with lowercase
+2020-06-15 17:40:14 INFO  AddMovieTests:52 - Failed to create movie: movie dto is null
+2020-06-15 17:40:14 INFO  AddMovieTests:72 - Failed to create movie: title starts with lowercase
+2020-06-15 17:40:14 INFO  AddMovieTests:92 - Failed to create movie: title is empty
+2020-06-15 18:17:27 INFO  AddMovieTests:54 - Failed to create movie: movie dto is null
+2020-06-15 18:17:27 INFO  AddMovieTests:74 - Failed to create movie: title starts with lowercase
+2020-06-15 18:17:27 INFO  AddMovieTests:94 - Failed to create movie: title is empty
+2020-06-15 18:19:11 INFO  AddMovieTests:54 - Failed to create movie: movie dto is null
+2020-06-15 18:19:11 INFO  AddMovieTests:74 - Failed to create movie: title starts with lowercase
+2020-06-15 18:19:11 INFO  AddMovieTests:94 - Failed to create movie: title is empty
+2020-06-15 18:20:15 INFO  AddMovieTests:54 - Failed to create movie: movie dto is null
+2020-06-15 18:20:15 INFO  AddMovieTests:74 - Failed to create movie: title starts with lowercase
+2020-06-15 18:20:15 INFO  AddMovieTests:94 - Failed to create movie: title is empty
+2020-06-15 18:20:15 INFO  AddMovieTests:114 - Failed to create movie: date to is before date from
+2020-06-15 18:20:15 INFO  AddMovieTests:147 - Failed to create movie: movie is already on db
+2020-06-15 18:20:15 INFO  AddMovieTests:174 - Adding movie successfully
+2020-06-16 12:41:46 INFO  AddMovieTests:54 - Failed to create movie: movie dto is null
+2020-06-16 12:41:46 INFO  AddMovieTests:74 - Failed to create movie: title starts with lowercase
+2020-06-16 12:41:47 INFO  AddMovieTests:94 - Failed to create movie: title is empty
+2020-06-16 12:41:47 INFO  AddMovieTests:114 - Failed to create movie: date to is before date from
+2020-06-16 12:41:47 INFO  AddMovieTests:147 - Failed to create movie: movie is already on db
+2020-06-16 12:41:47 INFO  AddMovieTests:174 - Adding movie successfully
+2020-06-16 14:17:21 INFO  AddCinemaTests:54 - Failed to create cinema: dto is null
+2020-06-16 14:17:21 INFO  AddCinemaTests:82 - Cinema created successfully
+2020-06-16 14:17:21 INFO  AddCinemaTests:95 - Failed to create cinema: lowercase name 
+2020-06-16 14:17:21 INFO  AddCinemaTests:124 - Failed to create cinema: cinema already on db
+2020-06-16 14:17:54 INFO  AddCinemaRoomTests:54 - Failed to create cinema room: dto is null
+2020-06-16 14:17:54 INFO  AddCinemaRoomTests:86 - Cinema room created successfully
+2020-06-16 14:17:54 INFO  AddCinemaRoomTests:106 - Failed to create cinema room: rows number is not correct
+2020-06-16 14:17:54 INFO  AddCinemaRoomTests:126 - Failed to create cinema room: place number is not correct
+2020-06-16 14:17:54 INFO  AddCinemaRoomTests:146 - Failed to create cinema room: name starts with lowercase
+2020-06-16 14:17:54 INFO  AddCinemaRoomTests:166 - Failed to create cinema room: name length is 1 or 0
+2020-06-16 14:17:54 INFO  AddCinemaRoomTests:197 - Failed to create cinema room: cinema room already exists on db
+2020-06-16 14:38:45 INFO  AddCinemaRoomTests:53 - Failed to create cinema room: dto is null
+2020-06-16 14:38:45 INFO  AddCinemaRoomTests:105 - Failed to create cinema room: rows number is not correct
+2020-06-16 14:38:45 INFO  AddCinemaRoomTests:125 - Failed to create cinema room: place number is not correct
+2020-06-16 14:38:45 INFO  AddCinemaRoomTests:145 - Failed to create cinema room: name starts with lowercase
+2020-06-16 14:38:45 INFO  AddCinemaRoomTests:165 - Failed to create cinema room: name length is 1 or 0
+2020-06-16 14:38:45 INFO  AddCinemaRoomTests:196 - Failed to create cinema room: cinema room already exists on db
+2020-06-16 14:40:45 INFO  AddCinemaRoomTests:57 - Failed to create cinema room: dto is null
+2020-06-16 14:40:45 INFO  AddCinemaRoomTests:89 - Cinema room created successfully
+2020-06-16 14:40:45 INFO  AddCinemaRoomTests:109 - Failed to create cinema room: rows number is not correct
+2020-06-16 14:40:45 INFO  AddCinemaRoomTests:129 - Failed to create cinema room: place number is not correct
+2020-06-16 14:40:45 INFO  AddCinemaRoomTests:149 - Failed to create cinema room: name starts with lowercase
+2020-06-16 14:40:45 INFO  AddCinemaRoomTests:169 - Failed to create cinema room: name length is 1 or 0
+2020-06-16 14:40:45 INFO  AddCinemaRoomTests:200 - Failed to create cinema room: cinema room already exists on db
+2020-06-16 14:47:23 INFO  AddCinemaRoomTests:57 - Failed to create cinema room: dto is null
+2020-06-16 14:47:23 INFO  AddCinemaRoomTests:109 - Failed to create cinema room: rows number is not correct
+2020-06-16 14:47:23 INFO  AddCinemaRoomTests:129 - Failed to create cinema room: place number is not correct
+2020-06-16 14:47:23 INFO  AddCinemaRoomTests:149 - Failed to create cinema room: name starts with lowercase
+2020-06-16 14:47:23 INFO  AddCinemaRoomTests:169 - Failed to create cinema room: name length is 1 or 0
+2020-06-16 14:47:23 INFO  AddCinemaRoomTests:200 - Failed to create cinema room: cinema room already exists on db
+2020-06-16 15:05:05 INFO  AddCinemaRoomTests:101 - Cinema room created successfully
+2020-06-16 15:44:14 INFO  AddCinemaRoomTests:101 - Cinema room created successfully
+2020-06-16 15:44:49 INFO  AddCinemaRoomTests:103 - Cinema room created successfully
+2020-06-16 15:46:29 INFO  AddCinemaRoomTests:101 - Cinema room created successfully
+2020-06-16 15:46:44 INFO  AddCinemaRoomTests:58 - Failed to create cinema room: dto is null
+2020-06-16 15:46:44 INFO  AddCinemaRoomTests:101 - Cinema room created successfully
+2020-06-16 15:46:44 INFO  AddCinemaRoomTests:121 - Failed to create cinema room: rows number is not correct
+2020-06-16 15:46:44 INFO  AddCinemaRoomTests:141 - Failed to create cinema room: place number is not correct
+2020-06-16 15:46:44 INFO  AddCinemaRoomTests:161 - Failed to create cinema room: name starts with lowercase
+2020-06-16 15:46:44 INFO  AddCinemaRoomTests:181 - Failed to create cinema room: name length is 1 or 0
+2020-06-16 15:46:44 INFO  AddCinemaRoomTests:212 - Failed to create cinema room: cinema room already exists on db
+2020-06-16 15:47:17 INFO  AddCinemaRoomTests:58 - Failed to create cinema room: dto is null
+2020-06-16 15:47:17 INFO  AddCinemaRoomTests:101 - Cinema room created successfully
+2020-06-16 15:47:17 INFO  AddCinemaRoomTests:121 - Failed to create cinema room: rows number is not correct
+2020-06-16 15:47:17 INFO  AddCinemaRoomTests:141 - Failed to create cinema room: place number is not correct
+2020-06-16 15:47:17 INFO  AddCinemaRoomTests:161 - Failed to create cinema room: name starts with lowercase
+2020-06-16 15:47:17 INFO  AddCinemaRoomTests:181 - Failed to create cinema room: name length is 1 or 0
+2020-06-16 15:47:17 INFO  AddCinemaRoomTests:212 - Failed to create cinema room: cinema room already exists on db
+2020-06-16 16:12:28 INFO  BuyTicketTests:48 - Failed to create ticket: ticketDto is null
+2020-06-16 16:12:28 INFO  BuyTicketTests:75 - Failed to create ticket: discount is negative
+2020-06-16 16:12:28 INFO  BuyTicketTests:102 - Failed to create ticket: price is negative
+2020-06-16 16:12:28 INFO  BuyTicketTests:135 - Ticket created successfully 
+2020-06-16 21:11:06 INFO  BuyTicketTests:48 - Failed to create ticket: ticketDto is null
+2020-06-16 21:11:06 INFO  BuyTicketTests:75 - Failed to create ticket: discount is negative
+2020-06-16 21:11:06 INFO  BuyTicketTests:102 - Failed to create ticket: price is negative
+2020-06-16 21:11:06 INFO  BuyTicketTests:135 - Ticket created successfully 
+2020-06-19 00:36:09 INFO  AddMovieTests:54 - Failed to create movie: movie dto is null
+2020-06-19 00:36:09 INFO  AddMovieTests:74 - Failed to create movie: title starts with lowercase
+2020-06-19 00:36:09 INFO  AddMovieTests:94 - Failed to create movie: title is empty
+2020-06-19 00:36:09 INFO  AddMovieTests:114 - Failed to create movie: date to is before date from
+2020-06-19 00:36:10 INFO  AddMovieTests:147 - Failed to create movie: movie is already on db
+2020-06-19 00:36:10 INFO  AddMovieTests:174 - Adding movie successfully
+2020-06-19 00:36:36 INFO  AddMovieTests:54 - Failed to create movie: movie dto is null
+2020-06-19 00:36:36 INFO  AddMovieTests:74 - Failed to create movie: title starts with lowercase
+2020-06-19 00:36:36 INFO  AddMovieTests:94 - Failed to create movie: title is empty
+2020-06-19 00:36:36 INFO  AddMovieTests:114 - Failed to create movie: date to is before date from
+2020-06-19 00:36:36 INFO  AddMovieTests:147 - Failed to create movie: movie is already on db
+2020-06-19 00:36:36 INFO  AddMovieTests:174 - Adding movie successfully

@@ -4,8 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.management.relation.Role;
+import wisniewski.jan.persistence.enums.Role;
 
 @AllArgsConstructor
 @NoArgsConstructor

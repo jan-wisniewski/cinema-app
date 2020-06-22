@@ -1,13 +1,7 @@
 package wisniewski.jan.persistence.mappers;
 
-import wisniewski.jan.persistence.dto.CreateCinemaDto;
-import wisniewski.jan.persistence.dto.CreateCinemaRoomDto;
-import wisniewski.jan.persistence.dto.CreateTicketDto;
-import wisniewski.jan.persistence.dto.CreateUserDto;
-import wisniewski.jan.persistence.model.Cinema;
-import wisniewski.jan.persistence.model.CinemaRoom;
-import wisniewski.jan.persistence.model.Ticket;
-import wisniewski.jan.persistence.model.User;
+import wisniewski.jan.persistence.dto.*;
+import wisniewski.jan.persistence.model.*;
 
 public interface Mapper {
     static User fromCreateUserDtoToUser(CreateUserDto userDto) {
@@ -45,8 +39,26 @@ public interface Mapper {
                 .cinemaId(cinemaRoomDto.getCinemaId())
                 .name(cinemaRoomDto.getName())
                 .places(cinemaRoomDto.getPlaces())
-                .rows(cinemaRoomDto.getRows())
+                .rowsNumber(cinemaRoomDto.getRows())
                 .build();
     }
 
+    static Seance fromSeanceDtoToSeance(CreateSeanceDto seanceDto) {
+        return Seance
+                .builder()
+                .dateTime(seanceDto.getDateTime())
+                .movieId(seanceDto.getMovieId())
+                .cinemaRoomId(seanceDto.getCinemaRoomId())
+                .build();
+    }
+
+    static Movie fromMovieDtoToMovie(CreateMovieDto movieDto) {
+        return Movie
+                .builder()
+                .genre(movieDto.getGenre())
+                .dateFrom(movieDto.getDateFrom())
+                .dateTo(movieDto.getDateTo())
+                .title(movieDto.getTitle())
+                .build();
+    }
 }

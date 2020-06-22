@@ -17,13 +17,13 @@ public class TicketRepositoryImpl extends AbstractCrudRepository<Ticket, Integer
     }
 
     @Override
-    public boolean isPlaceAvailable(CreateTicketDto ticketDto) {
+    public boolean isPlaceAvailable(Ticket ticket) {
         var seatSeance = dbConnection
                 .getJdbi()
                 .withHandle(handle -> handle
-                        .createQuery("select * from seats_seances where seat_id = :seatId && seance_id = :seanceId && seat_state = 'FREE'")
-                        .bind("seatId", ticketDto.getSeatId())
-                        .bind("seanceId", ticketDto.getSeanceId())
+                        .createQuery("select * from seats_seances where seat_id = :seatId AND seance_id = :seanceId AND seat_state = 'FREE'")
+                        .bind("seatId", ticket.getSeatId())
+                        .bind("seanceId", ticket.getSeanceId())
                         .mapToBean(SeatsSeance.class)
                         .findFirst()
                 );

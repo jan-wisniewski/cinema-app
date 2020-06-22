@@ -29,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class AddCinemaTests {
 
     private Logger logger;
+    private String exceptionMessage;
 
     @InjectMocks
     AdminService adminService;
@@ -43,7 +44,13 @@ public class AddCinemaTests {
     @Test
     @DisplayName("when create cinema dto is null exception has been thrown")
     public void test1() {
-        assertThrows(AdminServiceException.class, () -> adminService.addCinema(null));
+        exceptionMessage = "";
+        try {
+            adminService.addCinema(null);
+        } catch (Exception e){
+            exceptionMessage = e.getMessage();
+        }
+        assertEquals("Cinema dto is null", exceptionMessage);
         logger.info("Failed to create cinema: dto is null");
     }
 
@@ -107,7 +114,7 @@ public class AddCinemaTests {
         Mockito
                 .when(cinemaRepository.findByName("Abc"))
                 .thenReturn(Optional.of(cinemas.get(0)));
-        String exceptionMessage = "";
+        exceptionMessage = "";
         try {
             adminService.addCinema(cinema);
         } catch (Exception e) {

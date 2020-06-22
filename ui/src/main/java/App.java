@@ -1,4 +1,15 @@
 import wisniewski.jan.persistence.connection.DbConnection;
+import wisniewski.jan.persistence.dto.CreateCinemaRoomDto;
+import wisniewski.jan.persistence.dto.CreateMovieDto;
+import wisniewski.jan.persistence.dto.CreateSeanceDto;
+import wisniewski.jan.persistence.enums.Genre;
+import wisniewski.jan.persistence.repository.*;
+import wisniewski.jan.persistence.repository.impl.*;
+import wisniewski.jan.service.AdminService;
+import wisniewski.jan.ui.MenuService;
+
+import java.time.LocalDateTime;
+
 
 public class App {
     public static void main(String[] args) {
@@ -7,9 +18,27 @@ public class App {
         final String PASSWORD = "root";
 
         var dbConnection = new DbConnection(USERNAME, PASSWORD, URL);
-       // dbConnection.setUpTables();
+        dbConnection.setUpTables();
 
-       /* CinemaRepository cinemaRepository = new CinemaRepositoryImpl(dbConnection);
-        AdminService adminService = new AdminService(cinemaRepository);*/
+        CinemaRepository cinemaRepository = new CinemaRepositoryImpl(dbConnection);
+        CinemaRoomRepository cinemaRoomRepository = new CinemaRoomRepositoryImpl(dbConnection);
+        SeanceRepository seanceRepository = new SeanceRepositoryImpl(dbConnection);
+        MovieRepository movieRepository = new MovieRepositoryImpl(dbConnection);
+        SeatRepository seatRepository = new SeatRepositoryImpl(dbConnection);
+
+        AdminService adminService = new AdminService(cinemaRepository,cinemaRoomRepository,seanceRepository,movieRepository,seatRepository);
+
+        var cinemaRoomToAdd = CreateCinemaRoomDto
+                .builder()
+                .rows(5)
+                .name("SalaE")
+                .places(5)
+                .cinemaId(1)
+                .build();
+        adminService.addCinemaRoom(cinemaRoomToAdd);
+
+        MenuService menuService = new MenuService(cinemaRepository, cinemaRoomRepository, seanceRepository, movieRepository);
+        menuService.mainMenu();
+
     }
 }
