@@ -13,8 +13,8 @@ public class CreateTicketDtoValidator extends AbstractValidator<CreateTicketDto>
         if (!isPricePositive(item)) {
             errors.put("Price", "Price should be positive");
         }
-        if (!isDiscountPositive(item)) {
-            errors.put("Discount", "Discount be positive");
+        if (isDiscountNegative(item)) {
+            errors.put("Discount", "Discount can't be negative");
         }
         return errors;
     }
@@ -23,8 +23,8 @@ public class CreateTicketDtoValidator extends AbstractValidator<CreateTicketDto>
         return ticketDto.getPrice().compareTo(BigDecimal.ZERO) > 0;
     }
 
-    private boolean isDiscountPositive(CreateTicketDto ticketDto) {
-        return ticketDto.getDiscount().compareTo(BigDecimal.ZERO) > 0;
+    private boolean isDiscountNegative(CreateTicketDto ticketDto) {
+        return ticketDto.getDiscount().compareTo(BigDecimal.ZERO) < 0;
     }
 
 }

@@ -35,12 +35,6 @@ public class TicketService {
         }
 
         var ticket = Mapper.fromCreateTicketDtoToTicket(ticketDto);
-
-        //czy dane miejsce jest wolne?
-        if (!ticketRepository.isPlaceAvailable(ticket)) {
-            throw new TicketServiceException("This place is not available");
-        }
-
         var createdTicket = ticketRepository
                 .add(ticket)
                 .orElseThrow(() -> new UserServiceException("cannot insert user to db"));

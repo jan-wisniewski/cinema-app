@@ -4,11 +4,13 @@ import com.google.common.base.CaseFormat;
 import org.atteo.evo.inflector.English;
 import org.jdbi.v3.core.Jdbi;
 import wisniewski.jan.persistence.connection.DbConnection;
+import wisniewski.jan.persistence.enums.SeatState;
 import wisniewski.jan.persistence.exception.AbstractCrudRepositoryException;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -41,8 +43,6 @@ public abstract class AbstractCrudRepository<T, ID> implements CrudRepository<T,
                 .append(";")
                 .toString();
 
-        System.out.println(SQL);
-
         var insertedRows = jdbi.withHandle(handle -> handle.execute(SQL));
         if (insertedRows > 0) {
             return findLast();
@@ -65,7 +65,8 @@ public abstract class AbstractCrudRepository<T, ID> implements CrudRepository<T,
                 .map(field -> {
                     try {
                         field.setAccessible(true);
-                        if (field.getType().equals(String.class) || field.getType().equals(LocalDate.class)) {
+                        if (field.getType().equals(String.class) || field.getType().equals(LocalDate.class)
+                                || field.getType().equals(LocalDateTime.class)) {
                             return "'" + field.get(item) + "'";
                         }
                         return field.get(item).toString();
@@ -98,10 +99,10 @@ public abstract class AbstractCrudRepository<T, ID> implements CrudRepository<T,
                     .append(idToUpdate)
                     .toString();
 
-//            var updatedRows = jdbi.withHandle(handle -> handle.execute(SQL));
-//            if (updatedRows > 0 ){
-//                System.out.println("updated rows: " +updatedRows);
-//            }
+            var updatedRows = jdbi.withHandle(handle -> handle.execute(SQL));
+            if (updatedRows > 0) {
+                System.out.println("updated rows: " + updatedRows);
+            }
         } catch (Exception e) {
             throw new AbstractCrudRepositoryException(e.getMessage());
         }
@@ -116,7 +117,12 @@ public abstract class AbstractCrudRepository<T, ID> implements CrudRepository<T,
                 .forEach(f -> {
                     f.setAccessible(true);
                     try {
-                        update.put(f.getName(), f.get(item).toString());
+                        String fieldName = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, f.getName());
+                        if (f.getType().equals(String.class) || f.getType().equals(SeatState.class) || f.getType().equals(LocalDateTime.class)) {
+                            update.put(fieldName, "'"+f.get(item).toString()+"'");
+                        } else {
+                            update.put(fieldName, f.get(item).toString());
+                        }
                     } catch (Exception e) {
                         throw new AbstractCrudRepositoryException(e.getMessage());
                     }

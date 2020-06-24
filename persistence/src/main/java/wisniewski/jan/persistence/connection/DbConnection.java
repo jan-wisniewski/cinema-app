@@ -1,6 +1,7 @@
 package wisniewski.jan.persistence.connection;
 
 import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.core.statement.PreparedBatch;
 
 public class DbConnection {
     private final String username;
@@ -19,14 +20,33 @@ public class DbConnection {
         return jdbi;
     }
 
+    public void createData() {
+        var insertCity = "insert into cities values (null,'Warszawa')";
+        var insertCinema = "insert into cinemas values (null,'Kinoteka',3)";
+        var insertCinemaRoom = "insert into cinema_rooms values (null,'Sala A',5,5,5)";
+        var insertMovie = "insert into movies values (null, 'Joker','Thriller','2020-06-23 10:00:00','2020-07-31 22:00:00')";
+        var insertSeance = "insert into seances values (null,2,3,'2020-06-23 19:45:00')";
+
+/*        getJdbi()
+                .useTransaction(handle -> {
+                            handle.execute(insertCity);
+                            handle.execute(insertCinema);
+                            handle.execute(insertCinemaRoom);
+                            handle.execute(insertMovie);
+                            handle.execute(insertSeance);
+                        }
+                );*/
+
+    }
+
     public void setUpTables() {
         var MOVIES = """
                 create table if not exists movies (
                 id integer primary key auto_increment,
                 title varchar(50) not null,
                 genre varchar(50) not null,
-                date_from date not null,
-                date_to date not null
+                date_from timestamp not null,
+                date_to timestamp not null
                 );
                 """;
 
@@ -61,7 +81,7 @@ public class DbConnection {
                 id integer primary key auto_increment,
                 movie_id integer not null,
                 cinema_room_id integer not null,
-                date_time date,
+                date_time timestamp,
                 foreign key (movie_id) references movies (id) on delete cascade on update cascade,
                 foreign key (cinema_room_id) references cinema_rooms (id) on delete cascade on update cascade
                 );

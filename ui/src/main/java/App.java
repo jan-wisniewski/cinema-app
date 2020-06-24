@@ -3,9 +3,11 @@ import wisniewski.jan.persistence.dto.CreateCinemaRoomDto;
 import wisniewski.jan.persistence.dto.CreateMovieDto;
 import wisniewski.jan.persistence.dto.CreateSeanceDto;
 import wisniewski.jan.persistence.enums.Genre;
+import wisniewski.jan.persistence.mappers.Mapper;
 import wisniewski.jan.persistence.repository.*;
 import wisniewski.jan.persistence.repository.impl.*;
 import wisniewski.jan.service.AdminService;
+import wisniewski.jan.service.TicketService;
 import wisniewski.jan.ui.MenuService;
 
 import java.time.LocalDateTime;
@@ -19,25 +21,32 @@ public class App {
 
         var dbConnection = new DbConnection(USERNAME, PASSWORD, URL);
         dbConnection.setUpTables();
+        dbConnection.createData();
 
         CinemaRepository cinemaRepository = new CinemaRepositoryImpl(dbConnection);
         CinemaRoomRepository cinemaRoomRepository = new CinemaRoomRepositoryImpl(dbConnection);
         SeanceRepository seanceRepository = new SeanceRepositoryImpl(dbConnection);
         MovieRepository movieRepository = new MovieRepositoryImpl(dbConnection);
         SeatRepository seatRepository = new SeatRepositoryImpl(dbConnection);
+        SeatsSeancesRepository seatsSeancesRepository = new SeatsSeancesRepositoryImpl(dbConnection);
+        TicketRepository ticketRepository = new TicketRepositoryImpl(dbConnection);
+        TicketService ticketService = new TicketService(ticketRepository);
 
-        AdminService adminService = new AdminService(cinemaRepository,cinemaRoomRepository,seanceRepository,movieRepository,seatRepository);
+        AdminService adminService = new AdminService(cinemaRepository, cinemaRoomRepository, seanceRepository, movieRepository, seatRepository, seatsSeancesRepository);
 
-        var cinemaRoomToAdd = CreateCinemaRoomDto
+/*
+        var seanceToAdd = CreateSeanceDto
                 .builder()
-                .rows(5)
-                .name("SalaE")
-                .places(5)
-                .cinemaId(1)
+                .dateTime(LocalDateTime.now().plusDays(5))
+                .movieId(2)
+                .cinemaRoomId(5)
                 .build();
-        adminService.addCinemaRoom(cinemaRoomToAdd);
 
-        MenuService menuService = new MenuService(cinemaRepository, cinemaRoomRepository, seanceRepository, movieRepository);
+        adminService
+                .addSeance(seanceToAdd);
+*/
+
+        MenuService menuService = new MenuService(cinemaRepository, cinemaRoomRepository, seanceRepository, movieRepository, seatsSeancesRepository, seatRepository,ticketService);
         menuService.mainMenu();
 
     }

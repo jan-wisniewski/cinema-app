@@ -7,6 +7,9 @@ import wisniewski.jan.persistence.model.Seance;
 import wisniewski.jan.persistence.repository.SeanceRepository;
 import wisniewski.jan.persistence.repository.generic.AbstractCrudRepository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -20,6 +23,10 @@ public class SeanceRepositoryImpl extends AbstractCrudRepository<Seance, Integer
         this.dbConnection = dbConnection;
     }
 
+    @Override
+    public Optional<Seance> add(Seance item) {
+        return super.add(item);
+    }
 
     @Override
     public Optional<Seance> isUniqueSeance(CreateSeanceDto seanceDto) {
@@ -29,7 +36,7 @@ public class SeanceRepositoryImpl extends AbstractCrudRepository<Seance, Integer
                 .withHandle(handle -> handle
                         .createQuery(sql)
                         .bind("movie_id", seanceDto.getMovieId())
-                        .bind("cinema_id", seanceDto.getCinemaRoomId())
+                        .bind("cinema_room_id", seanceDto.getCinemaRoomId())
                         .bind("date_time", seanceDto.getDateTime())
                         .mapToBean(Seance.class)
                         .findFirst()

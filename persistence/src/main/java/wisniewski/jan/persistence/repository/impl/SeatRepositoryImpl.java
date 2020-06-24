@@ -7,6 +7,7 @@ import wisniewski.jan.persistence.repository.SeatRepository;
 import wisniewski.jan.persistence.repository.generic.AbstractCrudRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public class SeatRepositoryImpl extends AbstractCrudRepository<Seat, Integer> implements SeatRepository {
     private DbConnection dbConnection;
@@ -50,12 +51,12 @@ public class SeatRepositoryImpl extends AbstractCrudRepository<Seat, Integer> im
 
     @Override
     public List<Seat> findAllByCinemaId(CinemaRoom cinemaRoom) {
-        var SQL = "select * from seats where cinema_id = :cinemaId";
+        var SQL = "select * from seats where cinema_room_id = :cinema_room_id";
         return dbConnection
                 .getJdbi()
                 .withHandle(handle -> handle
                         .createQuery(SQL)
-                        .bind("cinema_id", cinemaRoom.getCinemaId())
+                        .bind("cinema_room_id", cinemaRoom.getId())
                         .mapToBean(Seat.class)
                         .list()
                 );
@@ -70,6 +71,21 @@ public class SeatRepositoryImpl extends AbstractCrudRepository<Seat, Integer> im
                         .createUpdate(SQL)
                         .bind("cinema_id", cinemaRoom.getCinemaId())
                         .execute()
+                );
+    }
+
+    @Override
+    public Optional<Seat> findByRowAndPlaceAtCinemaRoom(Integer row, Integer place, Integer cinemaRoomId) {
+        var sql = "select * from seats where rows_number = :rows_number AND place=:place AND cinema_room_id = :cinema_room_id";
+        return dbConnection
+                .getJdbi()
+                .withHandle(handle -> handle
+                        .createQuery(sql)
+                        .bind("rows_number", row)
+                        .bind("place", place)
+                        .bind("cinema_room_id", cinemaRoomId)
+                        .mapToBean(Seat.class)
+                        .findFirst()
                 );
     }
 }

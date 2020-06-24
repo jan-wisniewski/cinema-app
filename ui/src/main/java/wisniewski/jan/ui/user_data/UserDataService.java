@@ -18,7 +18,7 @@ public class UserDataService {
     public static Integer getInteger (String msg){
         System.out.println(msg);
         String value = sc.nextLine();
-        if (!value.matches("[0-9]")){
+        if (!value.matches("\\d+")){
             throw new MenuServiceException("value is not a number");
         }
         return Integer.parseInt(value);

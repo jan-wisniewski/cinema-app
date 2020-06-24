@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import wisniewski.jan.persistence.dto.*;
 import wisniewski.jan.persistence.mappers.Mapper;
 import wisniewski.jan.persistence.model.CinemaRoom;
+import wisniewski.jan.persistence.model.Seance;
 import wisniewski.jan.persistence.model.Seat;
 import wisniewski.jan.persistence.repository.*;
 import wisniewski.jan.persistence.validator.CreateCinemaDtoValidator;
@@ -26,6 +27,7 @@ public class AdminService {
     private final SeanceRepository seanceRepository;
     private final MovieRepository movieRepository;
     private final SeatRepository seatRepository;
+    private final SeatsSeancesRepository seatsSeancesRepository;
 
     public Integer addCinema(CreateCinemaDto cinemaDto) {
         if (cinemaDto == null) {
@@ -172,7 +174,20 @@ public class AdminService {
         var addedSeance = seanceRepository
                 .add(seance)
                 .orElseThrow(() -> new AdminServiceException("cannot insert to db"));
+
+       getSeatsForCinemaRoomAndAddToSeance(addedSeance);
+
         return addedSeance.getId();
+    }
+
+    private Integer getSeatsForCinemaRoomAndAddToSeance(Seance seance) {
+        int cinemaRoomId = seance.getCinemaRoomId();
+        CinemaRoom cinemaRoom = cinemaRoomRepository
+                .findById(cinemaRoomId)
+                .orElseThrow(() -> new AdminServiceException("Failed"));
+
+        List<Seat> seatsForCinemaRoom = seatRepository.findAllByCinemaId(cinemaRoom);
+        return seatsSeancesRepository.addAll(seatsForCinemaRoom,seance);
     }
 
     public Integer addMovie(CreateMovieDto movieDto) {
