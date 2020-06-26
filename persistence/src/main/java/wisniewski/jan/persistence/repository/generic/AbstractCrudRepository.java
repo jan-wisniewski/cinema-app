@@ -207,8 +207,6 @@ public abstract class AbstractCrudRepository<T, ID> implements CrudRepository<T,
                 .append(id)
                 .append(";")
                 .toString();
-
-        System.out.println("DELETED ITEMS:");
         var deletedRows = jdbi.withHandle(handle -> handle
                 .createUpdate(SQL)
                 .execute());

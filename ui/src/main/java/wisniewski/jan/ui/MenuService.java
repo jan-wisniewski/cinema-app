@@ -7,15 +7,12 @@ import wisniewski.jan.persistence.enums.SeatState;
 import wisniewski.jan.persistence.mappers.Mapper;
 import wisniewski.jan.persistence.model.*;
 import wisniewski.jan.persistence.repository.*;
-import wisniewski.jan.persistence.repository.impl.CityRepositoryImpl;
 import wisniewski.jan.service.AdminService;
 import wisniewski.jan.service.TicketService;
-import wisniewski.jan.service.exception.UserDataServiceException;
 import wisniewski.jan.ui.exceptions.MenuServiceException;
 import wisniewski.jan.ui.user_data.UserDataService;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -105,7 +102,7 @@ public class MenuService {
         }
         System.out.println("___ Reservations for: " + email + " ___");
         AtomicInteger counter = new AtomicInteger();
-        int numberOfReservation = reservationRepository.findByEmail(email).size();
+        List<ReservationWithUser> userReservationList = reservationRepository.findByEmail(email);
         String reservations = reservationRepository
                 .findByEmail(email)
                 .stream()
@@ -133,8 +130,13 @@ public class MenuService {
         int reservation;
         do {
             reservation = UserDataService.getInteger("Choose your reservation");
-        } while (reservation < 1 || reservation > numberOfReservation);
-        System.out.println(reservation);
+        } while (reservation < 1 || reservation > userReservationList.size());
+        Reservation seanceReservation = reservationRepository.findById(
+                userReservationList.get(reservation - 1).getReservationId()
+        ).orElseThrow(() -> new MenuServiceException("Failed2"));
+        SeatsSeance seatsSeance = seatsSeancesRepository.findBySeatId(seanceReservation.getSeatId()).orElseThrow(() -> new MenuServiceException("Failed2"));
+        buyTickets(seanceReservation.getSeanceId(), seatsSeance);
+        reservationRepository.deleteById(seanceReservation.getId());
     }
 
     private void option5() {
@@ -186,7 +188,7 @@ public class MenuService {
         System.out.println("___ Buy / Reserve Ticket ___");
         SearchCriterion searchCriterion = UserDataService.getSearchCriterion("Choose filter");
         int cinemaId;
-        int cityId;
+        List<CinemaRoom> cinemaRooms;
         switch (searchCriterion) {
             case CINEMA -> {
                 do {
@@ -203,25 +205,22 @@ public class MenuService {
                     cinemaId = UserDataService.getInteger("Type cinema id");
                 }
                 while (cinemaRepository.findById(cinemaId).isEmpty());
-                showSeances(cinemaId);
+                cinemaRooms = cinemaRoomRepository.findByCinemaId(cinemaId);
+                showSeances(cinemaRooms);
             }
             case CITY -> {
-
             }
             case SEANCE -> {
-
-
             }
         }
     }
 
-    private void showSeances(Integer cinemaId) {
+    private void showSeances(List<CinemaRoom> cinemaRooms) {
         System.out.println("Available seances at: " + cinemaRepository
-                .findById(cinemaId)
+                .findById(cinemaRooms.get(0).getCinemaId())
                 .orElseThrow(() -> new MenuServiceException("Failed!"))
                 .getName()
         );
-        List<CinemaRoom> cinemaRooms = cinemaRoomRepository.findByCinemaId(cinemaId);
         Integer seanceId;
         do {
             seanceRepository.findSeancesByCinemaRooms(cinemaRooms)
@@ -235,6 +234,10 @@ public class MenuService {
                     .forEach(System.out::println);
             seanceId = UserDataService.getInteger("Type seance id");
         } while (seanceRepository.findById(seanceId).isEmpty());
+        chooseCinemaRoomPlace(seanceId);
+    }
+
+    private void chooseCinemaRoomPlace(Integer seanceId) {
         Optional<Seance> chosenSeance = seanceRepository.findById(seanceId);
         int chosenCinemaRoomId = chosenSeance
                 .orElseThrow(() -> new MenuServiceException("FAILED"))
@@ -266,45 +269,54 @@ public class MenuService {
             decision = UserDataService.getInteger("1 - buy / 2 - reserve");
         } while (decision != 1 && decision != 2);
         if (decision == 1) {
-            System.out.println("Buying tickets");
-            BigDecimal ticketPrice = new BigDecimal(new Random().nextInt(100) + 10);
-            int ticketDecision;
-            var ticket = CreateTicketDto
-                    .builder()
-                    .seanceId(seanceId)
-                    .seatId(chosenSeatSeance.getSeatId())
-                    .price(ticketPrice)
-                    .discount(BigDecimal.ZERO)
-                    .userId(1)
-                    .build();
-            do {
-                System.out.println("Buy ticket for: " + ticketPrice + "?");
-                ticketDecision = UserDataService.getInteger("1 - accept / 2 - denied");
-            } while (ticketDecision != 1 && ticketDecision != 2);
-            switch (ticketDecision) {
-                case 1 -> {
-                    ticketService.buyTicket(ticket);
-                    chosenSeatSeance.setState(SeatState.ORDERED);
-                }
-                case 2 -> {
-                    return;
-                }
-                default -> System.out.println("Wrong option");
-            }
-
+            buyTickets(seanceId, chosenSeatSeance);
         } else {
-            chosenSeatSeance.setState(SeatState.RESERVED);
-            var reservationDto = CreateReservationDto
-                    .builder()
-                    .seanceId(seanceId)
-                    .seatId(chosenSeatSeance.getSeatId())
-                    .userId(1)
-                    .build();
-            var reservation = Mapper.fromCreateReservationDtoToReservation(reservationDto);
-            reservationRepository.add(reservation);
-            System.out.println("Ticket reserved!");
+            reserveTicket(seanceId, chosenSeatSeance);
         }
         seatsSeancesRepository.update(chosenSeatSeance);
+    }
+
+    private void reserveTicket(Integer seanceId, SeatsSeance chosenSeatSeance) {
+        chosenSeatSeance.setState(SeatState.RESERVED);
+        var reservationDto = CreateReservationDto
+                .builder()
+                .seanceId(seanceId)
+                .seatId(chosenSeatSeance.getSeatId())
+                .userId(1)
+                .build();
+        var reservation = Mapper.fromCreateReservationDtoToReservation(reservationDto);
+        reservationRepository.add(reservation);
+        System.out.println("Ticket reserved!");
+    }
+
+    private void buyTickets(Integer seanceId, SeatsSeance chosenSeatSeance) {
+        System.out.println("Buying tickets");
+        BigDecimal ticketPrice = new BigDecimal(new Random().nextInt(100) + 10);
+        int ticketDecision;
+        var ticket = CreateTicketDto
+                .builder()
+                .seanceId(seanceId)
+                .seatId(chosenSeatSeance.getSeatId())
+                .price(ticketPrice)
+                .discount(BigDecimal.ZERO)
+                .userId(1)
+                .build();
+        do {
+            System.out.println("Buy ticket for: " + ticketPrice + "?");
+            ticketDecision = UserDataService.getInteger("1 - accept / 2 - denied");
+        } while (ticketDecision != 1 && ticketDecision != 2);
+        switch (ticketDecision) {
+            case 1 -> {
+                ticketService.buyTicket(ticket);
+                chosenSeatSeance.setState(SeatState.ORDERED);
+                seatsSeancesRepository.update(chosenSeatSeance);
+            }
+            case 2 -> {
+                return;
+            }
+            default -> System.out.println("Wrong option");
+        }
+
     }
 
     private void showCinemaRoomPlaces(Integer seanceId) {

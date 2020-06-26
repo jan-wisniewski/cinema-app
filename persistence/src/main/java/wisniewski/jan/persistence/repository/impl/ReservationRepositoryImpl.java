@@ -35,7 +35,7 @@ public class ReservationRepositoryImpl extends AbstractCrudRepository<Reservatio
     @Override
     public List<ReservationWithUser> findByEmail(String email) {
         var sql = """
-                 select r.seance_id,r.user_id,r.seat_id,u.email
+                 select r.id as reservationId, r.seance_id,r.user_id,r.seat_id,u.email as userEmail
                  from reservations r JOIN users u on r.user_id = u.id where u.email = :email;
                 """;
         return dbConnection
