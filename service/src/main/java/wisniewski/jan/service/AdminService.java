@@ -4,13 +4,11 @@ import lombok.RequiredArgsConstructor;
 import wisniewski.jan.persistence.dto.*;
 import wisniewski.jan.persistence.mappers.Mapper;
 import wisniewski.jan.persistence.model.CinemaRoom;
+import wisniewski.jan.persistence.model.City;
 import wisniewski.jan.persistence.model.Seance;
 import wisniewski.jan.persistence.model.Seat;
 import wisniewski.jan.persistence.repository.*;
-import wisniewski.jan.persistence.validator.CreateCinemaDtoValidator;
-import wisniewski.jan.persistence.validator.CreateCinemaRoomDtoValidator;
-import wisniewski.jan.persistence.validator.CreateMovieDtoValidator;
-import wisniewski.jan.persistence.validator.CreateSeanceDtoValidator;
+import wisniewski.jan.persistence.validator.*;
 import wisniewski.jan.service.exception.AdminServiceException;
 
 import java.util.ArrayList;
@@ -28,6 +26,7 @@ public class AdminService {
     private final MovieRepository movieRepository;
     private final SeatRepository seatRepository;
     private final SeatsSeancesRepository seatsSeancesRepository;
+    private final CityRepository cityRepository;
 
     public Integer addCinema(CreateCinemaDto cinemaDto) {
         if (cinemaDto == null) {
@@ -175,7 +174,7 @@ public class AdminService {
                 .add(seance)
                 .orElseThrow(() -> new AdminServiceException("cannot insert to db"));
 
-       getSeatsForCinemaRoomAndAddToSeance(addedSeance);
+        getSeatsForCinemaRoomAndAddToSeance(addedSeance);
 
         return addedSeance.getId();
     }
@@ -187,7 +186,7 @@ public class AdminService {
                 .orElseThrow(() -> new AdminServiceException("Failed"));
 
         List<Seat> seatsForCinemaRoom = seatRepository.findAllByCinemaId(cinemaRoom);
-        return seatsSeancesRepository.addAll(seatsForCinemaRoom,seance);
+        return seatsSeancesRepository.addAll(seatsForCinemaRoom, seance);
     }
 
     public Integer addMovie(CreateMovieDto movieDto) {
@@ -216,4 +215,28 @@ public class AdminService {
         return addedMovie.getId();
     }
 
+    public Integer addCity(CreateCityDto cityDto) {
+        var validator = new CreateCityDtoValidator();
+        var errors = validator.validate(cityDto);
+        if (validator.hasErrors()) {
+            String errorsMessage = errors
+                    .entrySet()
+                    .stream()
+                    .map(e -> e.getKey() + " : " + e.getValue())
+                    .collect(Collectors.joining("\n"));
+            throw new AdminServiceException("Add city errors: " + errorsMessage);
+        }
+
+        if (cityRepository.findByName(cityDto.getName()).isPresent()) {
+            throw new AdminServiceException("This city already exists in database");
+        }
+
+        City cityToAdd = City
+                .builder()
+                .name(cityDto.getName())
+                .build();
+
+        cityRepository.add(cityToAdd);
+        return cityRepository.findLast().orElseThrow(() -> new AdminServiceException("Failed")).getId();
+    }
 }

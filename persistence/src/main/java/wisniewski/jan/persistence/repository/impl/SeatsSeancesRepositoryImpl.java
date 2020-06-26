@@ -53,4 +53,19 @@ public class SeatsSeancesRepositoryImpl extends AbstractCrudRepository<SeatsSean
                         .findFirst()
                 );
     }
+
+    @Override
+    public List<SeatsSeance> findBySeanceId(Integer seanceId) {
+        var sql = """
+                select * from seats_seances where seance_id = :seance_id;
+                """;
+        return dbConnection
+                .getJdbi()
+                .withHandle(handle -> handle
+                        .createQuery(sql)
+                        .bind("seance_id", seanceId)
+                        .mapToBean(SeatsSeance.class)
+                        .list()
+                );
+    }
 }

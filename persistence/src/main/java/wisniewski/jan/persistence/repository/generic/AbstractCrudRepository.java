@@ -4,6 +4,7 @@ import com.google.common.base.CaseFormat;
 import org.atteo.evo.inflector.English;
 import org.jdbi.v3.core.Jdbi;
 import wisniewski.jan.persistence.connection.DbConnection;
+import wisniewski.jan.persistence.enums.Genre;
 import wisniewski.jan.persistence.enums.SeatState;
 import wisniewski.jan.persistence.exception.AbstractCrudRepositoryException;
 
@@ -66,7 +67,7 @@ public abstract class AbstractCrudRepository<T, ID> implements CrudRepository<T,
                     try {
                         field.setAccessible(true);
                         if (field.getType().equals(String.class) || field.getType().equals(LocalDate.class)
-                                || field.getType().equals(LocalDateTime.class)) {
+                                || field.getType().equals(LocalDateTime.class) || field.getType().equals(Genre.class)) {
                             return "'" + field.get(item) + "'";
                         }
                         return field.get(item).toString();
@@ -77,8 +78,6 @@ public abstract class AbstractCrudRepository<T, ID> implements CrudRepository<T,
                 .collect(Collectors.joining(", ")) + " ) ";
     }
 
-
-    //TODO MOJE DO SPRAWDZENIA NA SPOTKANIU
     @Override
     public Optional<T> update(T item) {
         try {
@@ -98,7 +97,6 @@ public abstract class AbstractCrudRepository<T, ID> implements CrudRepository<T,
                     .append(" where id = ")
                     .append(idToUpdate)
                     .toString();
-
             var updatedRows = jdbi.withHandle(handle -> handle.execute(SQL));
             if (updatedRows > 0) {
                 System.out.println("updated rows: " + updatedRows);
@@ -118,7 +116,10 @@ public abstract class AbstractCrudRepository<T, ID> implements CrudRepository<T,
                     f.setAccessible(true);
                     try {
                         String fieldName = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, f.getName());
-                        if (f.getType().equals(String.class) || f.getType().equals(SeatState.class) || f.getType().equals(LocalDateTime.class)) {
+                        if (f.getType().equals(String.class) ||
+                                f.getType().equals(SeatState.class) ||
+                                f.getType().equals(Genre.class)
+                        ) {
                             update.put(fieldName, "'"+f.get(item).toString()+"'");
                         } else {
                             update.put(fieldName, f.get(item).toString());

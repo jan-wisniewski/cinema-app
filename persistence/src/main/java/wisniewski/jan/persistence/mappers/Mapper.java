@@ -14,6 +14,15 @@ public interface Mapper {
                 .build();
     }
 
+    static Reservation fromCreateReservationDtoToReservation(CreateReservationDto reservationDto) {
+        return Reservation
+                .builder()
+                .seanceId(reservationDto.getSeanceId())
+                .seatId(reservationDto.getSeatId())
+                .userId(reservationDto.getUserId())
+                .build();
+    }
+
     static Ticket fromCreateTicketDtoToTicket(CreateTicketDto ticketDto) {
         return Ticket
                 .builder()

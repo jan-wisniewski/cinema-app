@@ -54,7 +54,10 @@ public class DbConnection {
                 create table if not exists users (
                 id integer primary key auto_increment,
                 name varchar (50) not null,
-                surname varchar(50) not null
+                surname varchar(50) not null,
+                email varchar (50) not null, 
+                password varchar (50) not null,
+                role varchar (50) not null
                 );
                 """;
 
@@ -131,6 +134,20 @@ public class DbConnection {
                 foreign key (city_id) references cities(id) on delete cascade on update cascade
                 );
                 """;
+
+        var RESERVATIONS_TABLE = """
+                create table if not exists reservations (
+                id integer primary key auto_increment not null,
+                user_id integer not null,
+                seance_id integer not null,
+                seat_id integer not null,        
+                foreign key (user_id) references users(id) on delete cascade on update cascade,
+                foreign key (seance_id) references seances(id) on delete cascade on update cascade,
+                foreign key (seat_id) references seats(id) on delete cascade on update cascade
+                );
+                """;
+
+
         jdbi
                 .useTransaction(handle -> {
                     handle.execute(MOVIES);
@@ -142,6 +159,7 @@ public class DbConnection {
                     handle.execute(SEATS_TABLE);
                     handle.execute(SEATS_SEANCES);
                     handle.execute(TICKETS);
+                    handle.execute(RESERVATIONS_TABLE);
                 });
     }
 }

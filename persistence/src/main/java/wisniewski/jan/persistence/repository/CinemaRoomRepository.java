@@ -10,5 +10,7 @@ import java.util.Optional;
 public interface CinemaRoomRepository extends CrudRepository<CinemaRoom, Integer> {
     Optional<CinemaRoom> findByNameAndCinemaId(String name, Integer cinemaId);
 
+    List<CinemaRoom> findByCityId(Integer cityId);
+
     List<CinemaRoom> findByCinemaId(Integer cinemaId);
 }

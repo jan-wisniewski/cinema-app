@@ -30,23 +30,21 @@ public class App {
         SeatRepository seatRepository = new SeatRepositoryImpl(dbConnection);
         SeatsSeancesRepository seatsSeancesRepository = new SeatsSeancesRepositoryImpl(dbConnection);
         TicketRepository ticketRepository = new TicketRepositoryImpl(dbConnection);
+        CityRepository cityRepository = new CityRepositoryImpl(dbConnection);
         TicketService ticketService = new TicketService(ticketRepository);
+        UserRepository userRepository = new UserRepositoryImpl(dbConnection);
+        ReservationRepository reservationRepository = new ReservationRepositoryImpl(dbConnection);
 
-        AdminService adminService = new AdminService(cinemaRepository, cinemaRoomRepository, seanceRepository, movieRepository, seatRepository, seatsSeancesRepository);
+        AdminService adminService = new AdminService(cinemaRepository, cinemaRoomRepository,
+                seanceRepository, movieRepository,
+                seatRepository, seatsSeancesRepository,
+                cityRepository);
 
-/*
-        var seanceToAdd = CreateSeanceDto
-                .builder()
-                .dateTime(LocalDateTime.now().plusDays(5))
-                .movieId(2)
-                .cinemaRoomId(5)
-                .build();
-
-        adminService
-                .addSeance(seanceToAdd);
-*/
-
-        MenuService menuService = new MenuService(cinemaRepository, cinemaRoomRepository, seanceRepository, movieRepository, seatsSeancesRepository, seatRepository,ticketService);
+        MenuService menuService = new MenuService(cinemaRepository, cinemaRoomRepository,
+                seanceRepository, movieRepository,
+                seatsSeancesRepository, seatRepository,
+                ticketService, adminService, cityRepository, reservationRepository, userRepository
+        );
         menuService.mainMenu();
 
     }
