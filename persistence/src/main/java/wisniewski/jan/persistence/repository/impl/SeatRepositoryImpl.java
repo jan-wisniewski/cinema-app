@@ -63,16 +63,21 @@ public class SeatRepositoryImpl extends AbstractCrudRepository<Seat, Integer> im
     }
 
     @Override
-    public Integer removeAll(CinemaRoom cinemaRoom, Integer lastRow) {
-        var SQL = "delete from seats where cinema_id=:cinemaRoomId and rows > lastRow";
-        return dbConnection
-                .getJdbi()
-                .withHandle(handle -> handle
-                        .createUpdate(SQL)
-                        .bind("cinema_id", cinemaRoom.getCinemaId())
-                        .execute()
-                );
+    public Integer removeAll(CinemaRoom cinemaRoom, Integer lastRows) {
+        return null;
     }
+
+//    @Override
+//    public Integer removeAll(CinemaRoom cinemaRoom, Integer lastRow) {
+//        var SQL = "delete from seats where cinema_id=:cinemaRoomId and rows > lastRow";
+//        return dbConnection
+//                .getJdbi()
+//                .withHandle(handle -> handle
+//                        .createUpdate(SQL)
+//                        .bind("cinema_id", cinemaRoom.getCinemaId())
+//                        .execute()
+//                );
+//    }
 
     @Override
     public Optional<Seat> findByRowAndPlaceAtCinemaRoom(Integer row, Integer place, Integer cinemaRoomId) {

@@ -1,17 +1,9 @@
 import wisniewski.jan.persistence.connection.DbConnection;
-import wisniewski.jan.persistence.dto.CreateCinemaRoomDto;
-import wisniewski.jan.persistence.dto.CreateMovieDto;
-import wisniewski.jan.persistence.dto.CreateSeanceDto;
-import wisniewski.jan.persistence.enums.Genre;
-import wisniewski.jan.persistence.mappers.Mapper;
 import wisniewski.jan.persistence.repository.*;
 import wisniewski.jan.persistence.repository.impl.*;
 import wisniewski.jan.service.AdminService;
 import wisniewski.jan.service.TicketService;
 import wisniewski.jan.ui.MenuService;
-
-import java.time.LocalDateTime;
-
 
 public class App {
     public static void main(String[] args) {
@@ -40,10 +32,11 @@ public class App {
                 seatRepository, seatsSeancesRepository,
                 cityRepository);
 
-        MenuService menuService = new MenuService(cinemaRepository, cinemaRoomRepository,
+        MenuService menuService = new MenuService(
+                cinemaRepository, cinemaRoomRepository,
                 seanceRepository, movieRepository,
                 seatsSeancesRepository, seatRepository,
-                ticketService, adminService, cityRepository, reservationRepository, userRepository
+                ticketService, adminService, cityRepository, reservationRepository
         );
         menuService.mainMenu();
 

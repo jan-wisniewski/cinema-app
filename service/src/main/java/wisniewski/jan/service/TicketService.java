@@ -16,9 +16,6 @@ public class TicketService {
 
     private final TicketRepository ticketRepository;
 
-    //buyTicket to metoda z serwisu, ktorej finalnym efektem ma byc metoda add() z repozytorium
-    //w repo sa metody PODSTAWOWE do zarzadzania PODSTAWOWYMI funkcjonalnosci z bazy danych
-
     public Integer buyTicket(CreateTicketDto ticketDto) {
         if (Objects.isNull(ticketDto)) {
             throw new TicketServiceException("Ticket Dto is null");

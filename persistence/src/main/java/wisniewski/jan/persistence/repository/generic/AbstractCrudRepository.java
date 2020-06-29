@@ -118,7 +118,8 @@ public abstract class AbstractCrudRepository<T, ID> implements CrudRepository<T,
                         String fieldName = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, f.getName());
                         if (f.getType().equals(String.class) ||
                                 f.getType().equals(SeatState.class) ||
-                                f.getType().equals(Genre.class)
+                                f.getType().equals(Genre.class) ||
+                                f.getType().equals(LocalDateTime.class)
                         ) {
                             update.put(fieldName, "'"+f.get(item).toString()+"'");
                         } else {

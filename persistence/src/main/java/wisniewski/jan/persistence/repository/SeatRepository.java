@@ -9,10 +9,7 @@ import java.util.Optional;
 
 public interface SeatRepository extends CrudRepository<Seat, Integer> {
     Integer addAll(List<Seat> seatList);
-
     List<Seat> findAllByCinemaId(CinemaRoom cinemaRoom);
-
     Integer removeAll(CinemaRoom cinemaRoom, Integer lastRows);
-
     Optional<Seat> findByRowAndPlaceAtCinemaRoom(Integer row, Integer place, Integer cinemaRoomId);
 }

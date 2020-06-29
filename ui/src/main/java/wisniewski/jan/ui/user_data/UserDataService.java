@@ -154,6 +154,15 @@ public class UserDataService {
                 .orElseThrow(() -> new UserServiceException("Failed"));
     }
 
+    public static boolean getBoolean(String message) {
+        String value;
+        do {
+            value = getString(message + " [y/n]");
+        } while (value.toLowerCase().charAt(0) != 'y' && value.toLowerCase().charAt(0) != 'n');
+        char decision = value.charAt(0);
+        return Character.toLowerCase(decision) == 'y';
+    }
+
     public void close() {
         if (sc != null) {
             sc.close();

@@ -35,7 +35,12 @@ public class CinemaRoomRepositoryImpl extends AbstractCrudRepository<CinemaRoom,
     @Override
     public List<CinemaRoom> findByCityId(Integer cityId) {
         var sql = """
-               select * from cinema_rooms JOIN cinemas ON cinema_rooms.cinema_id = cinemas.id where cinemas.city_id = :city_id;
+               select cinema_rooms.id as id,
+               cinema_rooms.name as name,
+               cinema_rooms.cinema_id as cinema_id,
+               cinema_rooms.rows_nums as rows_number,
+               cinema_rooms.places as places
+               from cinema_rooms JOIN cinemas ON cinema_rooms.cinema_id = cinemas.id where cinemas.city_id = :city_id;
                 """;
         return dbConnection
                 .getJdbi()

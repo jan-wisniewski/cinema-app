@@ -3,10 +3,7 @@ package wisniewski.jan.service;
 import lombok.RequiredArgsConstructor;
 import wisniewski.jan.persistence.dto.*;
 import wisniewski.jan.persistence.mappers.Mapper;
-import wisniewski.jan.persistence.model.CinemaRoom;
-import wisniewski.jan.persistence.model.City;
-import wisniewski.jan.persistence.model.Seance;
-import wisniewski.jan.persistence.model.Seat;
+import wisniewski.jan.persistence.model.*;
 import wisniewski.jan.persistence.repository.*;
 import wisniewski.jan.persistence.validator.*;
 import wisniewski.jan.service.exception.AdminServiceException;
@@ -27,6 +24,10 @@ public class AdminService {
     private final SeatRepository seatRepository;
     private final SeatsSeancesRepository seatsSeancesRepository;
     private final CityRepository cityRepository;
+
+    public Optional<Seance> editSeance(Seance seance) {
+        return seanceRepository.update(seance);
+    }
 
     public Integer addCinema(CreateCinemaDto cinemaDto) {
         if (cinemaDto == null) {
@@ -59,43 +60,21 @@ public class AdminService {
         return createdCinema.getId();
     }
 
-    //------------------------------------------------[WIP]----------------------------------
     public Optional<CinemaRoom> editCinemaRoom(CinemaRoom cinemaRoom) {
-        //List<Seat> cinemaRoomSeats = seatRepository.findAllByCinemaId(cinemaRoom);
-        CinemaRoom cinemaRoomToEdit = cinemaRoomRepository
-                .findById(cinemaRoom.getId())
-                .orElseThrow(() -> new AdminServiceException("No cinema room with this id"));
-        if (cinemaRoom.getRowsNumber() > cinemaRoomToEdit.getRowsNumber()) {
-            //dodajemy rows
-            int rowsToAdd = cinemaRoom.getRowsNumber() - cinemaRoomToEdit.getRowsNumber();
-            generateSeats(rowsToAdd, cinemaRoomToEdit);
-        }
-        if (cinemaRoom.getRowsNumber() < cinemaRoomToEdit.getRowsNumber()) {
-            //usuwamy rows
-            //czy na ta miejsca nie ma rezerwacji? - walidacja
-            int rowsToRemove = cinemaRoomToEdit.getRowsNumber() - cinemaRoom.getRowsNumber();
-            seatRepository.removeAll(cinemaRoomToEdit, rowsToRemove);
-        }
         return cinemaRoomRepository.update(cinemaRoom);
     }
 
-    private List<Seat> generateSeats(int rowsToAdd, CinemaRoom cinemaRoom) {
-        List<Seat> createdSeats = new ArrayList<>();
-        for (int i = cinemaRoom.getRowsNumber() + 1; i < cinemaRoom.getRowsNumber() + rowsToAdd; i++) {
-            for (int j = 1; j <= cinemaRoom.getPlaces(); j++) {
-                createdSeats.add(Seat
-                        .builder()
-                        .cinemaRoomId(cinemaRoom.getId())
-                        .place(j)
-                        .rowsNumber(i)
-                        .build());
-            }
-        }
-        seatRepository.addAll(createdSeats);
-        return createdSeats;
+    public Optional<Movie> editMovie (Movie movie){
+       return movieRepository.update(movie);
     }
 
-    //------------------------------------------------[WIP]----------------------------------
+    public Optional<City> editCity (City city){
+        return cityRepository.update(city);
+    }
+
+    public Optional<Cinema> editCinema (Cinema cinema){
+        return cinemaRepository.update(cinema);
+    }
 
     public Integer addCinemaRoom(CreateCinemaRoomDto cinemaRoomDto) {
         if (Objects.isNull(cinemaRoomDto)) {
@@ -174,7 +153,7 @@ public class AdminService {
                 .add(seance)
                 .orElseThrow(() -> new AdminServiceException("cannot insert to db"));
 
-        getSeatsForCinemaRoomAndAddToSeance(addedSeance);
+        System.out.println(getSeatsForCinemaRoomAndAddToSeance(addedSeance));
 
         return addedSeance.getId();
     }
