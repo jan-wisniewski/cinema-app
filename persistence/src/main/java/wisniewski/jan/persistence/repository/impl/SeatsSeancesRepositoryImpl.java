@@ -68,4 +68,29 @@ public class SeatsSeancesRepositoryImpl extends AbstractCrudRepository<SeatsSean
                         .list()
                 );
     }
+
+    @Override
+    public List<SeatsSeance> addAllBySeanceId(List<Seat> seats, Integer seanceId) {
+        var sql = """
+                insert into seats_seances (seat_id, seance_id,state) values (:seat_id,:seance_id,:state);
+                """;
+        seats.forEach(s -> dbConnection
+                .getJdbi()
+                .withHandle(handle -> handle
+                        .createUpdate(sql)
+                        .bind("seat_id", s.getId())
+                        .bind("seance_id", seanceId)
+                        .bind("state", SeatState.FREE)
+                        .execute()
+                )
+        );
+        return dbConnection
+                .getJdbi()
+                .withHandle(handle -> handle
+                        .createQuery("select * from seats_seances where seance_id = :seance_id")
+                        .bind("seance_id", seanceId)
+                        .mapToBean(SeatsSeance.class)
+                        .list()
+                );
+    }
 }

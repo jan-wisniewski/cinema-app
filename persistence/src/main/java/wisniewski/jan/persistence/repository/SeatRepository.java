@@ -8,8 +8,20 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SeatRepository extends CrudRepository<Seat, Integer> {
-    Integer addAll(List<Seat> seatList);
+    List<Seat> addAll(List<Seat> seatList);
+
     List<Seat> findAllByCinemaId(CinemaRoom cinemaRoom);
-    Integer removeAll(CinemaRoom cinemaRoom, Integer lastRows);
+
+    Integer deleteSeatsByLastRowNumber(CinemaRoom cinemaRoom);
+
+    Integer deleteSeatsByNumberInRow(CinemaRoom cinemaRoom);
+
+//    List<Seat> findSeatsByLastRowNumber(Integer cinemaRoomId, Integer lastRow);
+//
+//    Boolean isOrderedOrReservedForSeance (Integer seatId);
+
     Optional<Seat> findByRowAndPlaceAtCinemaRoom(Integer row, Integer place, Integer cinemaRoomId);
+
+
+
 }

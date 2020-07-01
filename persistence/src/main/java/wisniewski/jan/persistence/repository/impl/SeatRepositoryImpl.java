@@ -19,7 +19,7 @@ public class SeatRepositoryImpl extends AbstractCrudRepository<Seat, Integer> im
 
 
     @Override
-    public Integer addAll(List<Seat> seatList) {
+    public List<Seat> addAll(List<Seat> seatList) {
         var sql = """
                 insert into seats (rows_number, place, cinema_room_id) values (:rows_number,:place,:cinema_room_id)
                 """;
@@ -45,7 +45,6 @@ public class SeatRepositoryImpl extends AbstractCrudRepository<Seat, Integer> im
                         .bind("cinemaRoomId", seatList.get(0).getCinemaRoomId())
                         .mapToBean(Seat.class)
                         .list()
-                        .size()
                 );
     }
 
@@ -63,20 +62,66 @@ public class SeatRepositoryImpl extends AbstractCrudRepository<Seat, Integer> im
     }
 
     @Override
-    public Integer removeAll(CinemaRoom cinemaRoom, Integer lastRows) {
-        return null;
+    public Integer deleteSeatsByLastRowNumber(CinemaRoom cinemaRoom) {
+        var sql = """
+                delete from seats where cinema_room_id = :cinema_room_id and rows_number > :last_row;
+                """;
+
+        return dbConnection
+                .getJdbi()
+                .withHandle(handle -> handle
+                        .createUpdate(sql)
+                        .bind("cinema_room_id", cinemaRoom.getId())
+                        .bind("last_row", cinemaRoom.getRowsNumber())
+                        .execute()
+                );
+    }
+
+    @Override
+    public Integer deleteSeatsByNumberInRow(CinemaRoom cinemaRoom) {
+        var sql = """
+                delete from seats where place > :new_places_number AND cinema_room_id = :cinema_room_id;
+                """;
+
+        return dbConnection
+                .getJdbi()
+                .withHandle(handle -> handle
+                        .createUpdate(sql)
+                        .bind("new_places_number", cinemaRoom.getPlaces())
+                        .bind("cinema_room_id", cinemaRoom.getId())
+                        .execute()
+                );
     }
 
 //    @Override
-//    public Integer removeAll(CinemaRoom cinemaRoom, Integer lastRow) {
-//        var SQL = "delete from seats where cinema_id=:cinemaRoomId and rows > lastRow";
+//    public List<Seat> findSeatsByLastRowNumber(Integer cinemaRoomId, Integer lastRow) {
+//        var sql = """
+//                select * from seats where cinema_room_id = :cinema_room_id and rows_number > :last_row;
+//                """;
 //        return dbConnection
 //                .getJdbi()
 //                .withHandle(handle -> handle
-//                        .createUpdate(SQL)
-//                        .bind("cinema_id", cinemaRoom.getCinemaId())
-//                        .execute()
+//                        .createQuery(sql)
+//                        .bind("cinema_room_id", cinemaRoomId)
+//                        .bind("last_row", lastRow)
+//                        .mapToBean(Seat.class)
+//                        .list()
 //                );
+//    }
+//
+//    @Override
+//    public Boolean isOrderedOrReservedForSeance(Integer seatId) {
+//        var sql = """
+//                select ss.id,ss.seat_id,ss.seance_id from seats_seances ss join seances s on ss.seance_id = s.id where state != 'FREE' and date_time > now() and seat_id = :seat_id;
+//                  """;
+//        Object is = dbConnection
+//                .getJdbi()
+//                .withHandle(handle -> handle
+//                        .createQuery(sql)
+//                        .bind("seat_id", seatId)
+//                );
+//        System.out.println(is);
+//        return false;
 //    }
 
     @Override

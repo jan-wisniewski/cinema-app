@@ -3,7 +3,10 @@ package wisniewski.jan.ui.user_data;
 import wisniewski.jan.persistence.enums.Genre;
 import wisniewski.jan.persistence.enums.SearchCriterion;
 import wisniewski.jan.persistence.model.*;
-import wisniewski.jan.service.*;
+import wisniewski.jan.persistence.repository.*;
+import wisniewski.jan.persistence.repository.impl.CinemaRepositoryImpl;
+import wisniewski.jan.persistence.repository.impl.CityRepositoryImpl;
+import wisniewski.jan.service.exception.UserDataServiceException;
 import wisniewski.jan.service.exception.UserServiceException;
 import wisniewski.jan.ui.exceptions.MenuServiceException;
 
@@ -14,7 +17,7 @@ import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-public class UserDataService {
+public class UserDataService2 {
 
     private final static Scanner sc = new Scanner(System.in);
 
@@ -64,8 +67,7 @@ public class UserDataService {
         return Genre.values()[decision - 1];
     }
 
-    public static LocalDateTime getLocalDateTime(String msg) {
-        System.out.println(msg);
+    public static LocalDateTime getLocalDateTime() {
         String userInput;
         do {
             userInput = getString("Type date in format: yyyy-MM-dd HH:mm:ss");
@@ -73,63 +75,82 @@ public class UserDataService {
         return LocalDateTime.parse(userInput, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
-    public static City getCity(String msg, CityService cityService) {
+    public static City getCity(String msg, CityRepository cityRepository) {
         System.out.println(msg);
-        String cities = cityService.showCities();
+        String cities = cityRepository.findAll()
+                .stream()
+                .map(city -> city.getId() + ". " + city.getName())
+                .collect(Collectors.joining("\n"));
         System.out.println(cities);
         int decision;
         do {
             decision = getInteger("Choose correct city number:");
-        } while (cityService.findCityById(decision).isEmpty());
-        return cityService.findCityById(decision)
+        } while (cityRepository.findById(decision).isEmpty());
+        return cityRepository.findById(decision)
                 .orElseThrow(() -> new UserServiceException("Failed"));
     }
 
-    public static Cinema getCinema(String msg, CinemaService cinemaService) {
+    public static Cinema getCinema(String msg, CinemaRepository cinemaRepository) {
         System.out.println(msg);
-        String cinemas = cinemaService.showAllCinemas();
+        String cinemas = cinemaRepository.findAll()
+                .stream()
+                .map(cinema -> cinema.getId() + ". " + cinema.getName())
+                .collect(Collectors.joining("\n"));
         System.out.println(cinemas);
         int decision;
         do {
             decision = getInteger("Choose correct cinema number:");
-        } while (cinemaService.findCinemaById(decision).isEmpty());
-        return cinemaService.findCinemaById(decision)
+        } while (cinemaRepository.findById(decision).isEmpty());
+        return cinemaRepository.findById(decision)
                 .orElseThrow(() -> new UserServiceException("Failed"));
     }
 
-    public static CinemaRoom getCinemaRoom(String msg, CinemaRoomService cinemaRoomService) {
+    public static CinemaRoom getCinemaRoom(String msg, CinemaRoomRepository cinemaRoomRepository) {
         System.out.println(msg);
-        String cinemasRooms = cinemaRoomService.showAllCinemasRooms();
+        String cinemasRooms = cinemaRoomRepository.findAll()
+                .stream()
+                .map(cinemaRoom -> cinemaRoom.getId() + ". " + cinemaRoom.getName())
+                .collect(Collectors.joining("\n"));
         System.out.println(cinemasRooms);
         int decision;
         do {
             decision = getInteger("Choose correct cinema room number:");
-        } while (cinemaRoomService.findById(decision).isEmpty());
-        return cinemaRoomService.findById(decision)
+        } while (cinemaRoomRepository.findById(decision).isEmpty());
+        return cinemaRoomRepository.findById(decision)
                 .orElseThrow(() -> new UserServiceException("Failed"));
     }
 
-    public static Movie getMovie(String msg, MovieService movieService) {
+    public static Movie getMovie(String msg, MovieRepository movieRepository) {
         System.out.println(msg);
-        String movies = movieService.showAll();
-        System.out.println(movies);
+        String cinemasRooms = movieRepository.findAll()
+                .stream()
+                .map(movie -> movie.getId() + ". " + movie.getTitle())
+                .collect(Collectors.joining("\n"));
+        System.out.println(cinemasRooms);
         int decision;
         do {
             decision = getInteger("Choose correct movie number:");
-        } while (movieService.findById(decision).isEmpty());
-        return movieService.findById(decision)
+        } while (movieRepository.findById(decision).isEmpty());
+        return movieRepository.findById(decision)
                 .orElseThrow(() -> new UserServiceException("Failed"));
     }
 
-    public static Seance getSeance(String msg, SeanceService seanceService) {
+    public static Seance getSeance(String msg, SeanceRepository seanceRepository, MovieRepository movieRepository) {
         System.out.println(msg);
-        String seances = seanceService.showAll();
+        String seances = seanceRepository.findAll()
+                .stream()
+                .map(seance -> seance.getId() + ". " +
+                        movieRepository.findById(seance.getMovieId())
+                                .orElseThrow(() -> new UserDataServiceException("FAILED!"))
+                                .getTitle()
+                )
+                .collect(Collectors.joining("\n"));
         System.out.println(seances);
         int decision;
         do {
             decision = getInteger("Choose correct seance number:");
-        } while (seanceService.getSeanceById(decision).isEmpty());
-        return seanceService.getSeanceById(decision)
+        } while (seanceRepository.findById(decision).isEmpty());
+        return seanceRepository.findById(decision)
                 .orElseThrow(() -> new UserServiceException("Failed"));
     }
 

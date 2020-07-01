@@ -6,16 +6,32 @@ import wisniewski.jan.persistence.repository.MovieRepository;
 import wisniewski.jan.persistence.repository.SeanceRepository;
 import wisniewski.jan.service.exception.MovieServiceException;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 @RequiredArgsConstructor
 public class MovieService {
 
     private final MovieRepository movieRepository;
-    private final SeanceRepository seanceRepository;
 
-    public String showTitle (Integer movieId){
+    public String showTitle(Integer movieId) {
         return movieRepository.findById(movieId).orElseThrow(() -> new MovieServiceException("Failed")).getTitle();
     }
 
+    public String showAll() {
+        return movieRepository.findAll()
+                .stream()
+                .map(movie -> movie.getId() + ". " + movie.getTitle())
+                .collect(Collectors.joining("\n"));
+    }
 
+    public Optional<Movie> findById(Integer movieId) {
+        return movieRepository.findById(movieId);
+    }
+
+    public List<Movie> getAll (){
+        return movieRepository.findAll();
+    }
 
 }

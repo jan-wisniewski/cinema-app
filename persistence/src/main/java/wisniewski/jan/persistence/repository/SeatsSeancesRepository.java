@@ -12,4 +12,5 @@ public interface SeatsSeancesRepository extends CrudRepository<SeatsSeance, Inte
     Integer addAll(List<Seat> seats, Seance seance);
     Optional<SeatsSeance> findBySeatId(Integer seatId);
     List<SeatsSeance> findBySeanceId(Integer seanceId);
+    List<SeatsSeance> addAllBySeanceId (List<Seat> seats, Integer seanceId);
 }

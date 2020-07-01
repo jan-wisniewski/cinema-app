@@ -1,9 +1,10 @@
 import wisniewski.jan.persistence.connection.DbConnection;
 import wisniewski.jan.persistence.repository.*;
 import wisniewski.jan.persistence.repository.impl.*;
-import wisniewski.jan.service.AdminService;
-import wisniewski.jan.service.TicketService;
+import wisniewski.jan.service.*;
 import wisniewski.jan.ui.MenuService;
+
+import java.time.LocalDateTime;
 
 public class App {
     public static void main(String[] args) {
@@ -23,22 +24,33 @@ public class App {
         SeatsSeancesRepository seatsSeancesRepository = new SeatsSeancesRepositoryImpl(dbConnection);
         TicketRepository ticketRepository = new TicketRepositoryImpl(dbConnection);
         CityRepository cityRepository = new CityRepositoryImpl(dbConnection);
-        TicketService ticketService = new TicketService(ticketRepository);
-        UserRepository userRepository = new UserRepositoryImpl(dbConnection);
         ReservationRepository reservationRepository = new ReservationRepositoryImpl(dbConnection);
+
+        TicketService ticketService = new TicketService(ticketRepository);
+        MovieService movieService = new MovieService(movieRepository);
+        CinemaRoomService cinemaRoomService = new CinemaRoomService(cinemaRoomRepository);
+        CityService cityService = new CityService(cityRepository);
+        ReservationService reservationService = new ReservationService(reservationRepository);
+        SeanceService seanceService = new SeanceService(seanceRepository, movieRepository);
+        CinemaService cinemaService = new CinemaService(cinemaRepository);
+        SeatService seatService = new SeatService(seatRepository,cinemaRoomRepository);
+        SeatSeanceService seatSeanceService = new SeatSeanceService(seatsSeancesRepository);
 
         AdminService adminService = new AdminService(cinemaRepository, cinemaRoomRepository,
                 seanceRepository, movieRepository,
                 seatRepository, seatsSeancesRepository,
-                cityRepository);
+                cityRepository, seatService);
 
         MenuService menuService = new MenuService(
-                cinemaRepository, cinemaRoomRepository,
-                seanceRepository, movieRepository,
-                seatsSeancesRepository, seatRepository,
-                ticketService, adminService, cityRepository, reservationRepository
+                ticketService, movieService,
+                adminService, cinemaRoomService, cityService,
+                reservationService, seanceService,
+                cinemaService, seatService, seatSeanceService
         );
         menuService.mainMenu();
+
+
+
 
     }
 }

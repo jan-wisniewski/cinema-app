@@ -94,7 +94,7 @@ public class AddCinemaRoomTests {
 
         Mockito
                 .when(seatRepository.addAll(List.of(seatToAdd)))
-                .thenReturn(1);
+                .thenReturn(List.of(seatToAdd));
 
         assertEquals(expectedCinema.getId(), adminService.addCinemaRoom(cinemaRoomDto));
         logger.info("Cinema room created successfully");

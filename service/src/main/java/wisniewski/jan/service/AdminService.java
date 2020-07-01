@@ -8,7 +8,6 @@ import wisniewski.jan.persistence.repository.*;
 import wisniewski.jan.persistence.validator.*;
 import wisniewski.jan.service.exception.AdminServiceException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -25,8 +24,14 @@ public class AdminService {
     private final SeatsSeancesRepository seatsSeancesRepository;
     private final CityRepository cityRepository;
 
+    private final SeatService seatService;
+
     public Optional<Seance> editSeance(Seance seance) {
         return seanceRepository.update(seance);
+    }
+
+    public Optional<SeatsSeance> editSeatSeance(SeatsSeance seatsSeance) {
+        return seatsSeancesRepository.update(seatsSeance);
     }
 
     public Integer addCinema(CreateCinemaDto cinemaDto) {
@@ -43,12 +48,6 @@ public class AdminService {
                     .collect(Collectors.joining("\n"));
             throw new AdminServiceException("Add cinema errors:  " + errorsMessage);
         }
-
-        //findByCinemaName -> jezeli jest to wyjątek, jezeli nie ma to idziemy dalej
-        //1. createcineamdtonull
-        //2. jak jest kino w db
-        //3. prawidlowe wstawianie kina i sprawdzenie id
-
         if (cinemaRepository.findByName(cinemaDto.getName()).isPresent()) {
             throw new AdminServiceException("Cinema with this name is already on DB");
         }
@@ -64,15 +63,15 @@ public class AdminService {
         return cinemaRoomRepository.update(cinemaRoom);
     }
 
-    public Optional<Movie> editMovie (Movie movie){
-       return movieRepository.update(movie);
+    public Optional<Movie> editMovie(Movie movie) {
+        return movieRepository.update(movie);
     }
 
-    public Optional<City> editCity (City city){
+    public Optional<City> editCity(City city) {
         return cityRepository.update(city);
     }
 
-    public Optional<Cinema> editCinema (Cinema cinema){
+    public Optional<Cinema> editCinema(Cinema cinema) {
         return cinemaRepository.update(cinema);
     }
 
@@ -103,29 +102,11 @@ public class AdminService {
                 .add(cinemaRoomToAdd)
                 .orElseThrow(() -> new AdminServiceException("Cannot insert to db"));
 
-        if (generateCinemaRoomSeats(addedCinemaRoom) == 0) {
+        if (seatService.addPlacesToNewRows(addedCinemaRoom, 1, addedCinemaRoom.getRowsNumber()) == 0) {
             throw new AdminServiceException("Failed to create seats for cinemaRoom!");
         }
 
         return addedCinemaRoom.getId();
-    }
-
-    private Integer generateCinemaRoomSeats(CinemaRoom cinemaRoom) {
-        List<Seat> generatedSeats = new ArrayList<>();
-        for (int i = 1; i <= cinemaRoom.getRowsNumber(); i++) {
-            for (int j = 1; j <= cinemaRoom.getPlaces(); j++) {
-                generatedSeats.add(
-                        Seat
-                                .builder()
-                                .cinemaRoomId(cinemaRoom.getId())
-                                .place(j)
-                                .rowsNumber(i)
-                                .build()
-                );
-            }
-        }
-        return seatRepository
-                .addAll(generatedSeats);
     }
 
     public Integer addSeance(CreateSeanceDto seanceDto) {

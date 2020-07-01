@@ -104,7 +104,7 @@ public abstract class AbstractCrudRepository<T, ID> implements CrudRepository<T,
         } catch (Exception e) {
             throw new AbstractCrudRepositoryException(e.getMessage());
         }
-        return Optional.empty();
+        return Optional.of(item);
     }
 
     private Map<String, String> fieldsUpdator(T item) {
