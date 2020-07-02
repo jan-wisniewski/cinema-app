@@ -5,11 +5,13 @@ import wisniewski.jan.persistence.enums.SeatState;
 import wisniewski.jan.persistence.model.Seance;
 import wisniewski.jan.persistence.model.Seat;
 import wisniewski.jan.persistence.model.SeatsSeance;
+import wisniewski.jan.persistence.model.SeatsSeanceWithSeanceDate;
 import wisniewski.jan.persistence.repository.SeatsSeancesRepository;
 import wisniewski.jan.persistence.repository.generic.AbstractCrudRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class SeatsSeancesRepositoryImpl extends AbstractCrudRepository<SeatsSeance, Integer> implements SeatsSeancesRepository {
 
@@ -38,7 +40,20 @@ public class SeatsSeancesRepositoryImpl extends AbstractCrudRepository<SeatsSean
                             return batch.execute();
                         }
                 );
-        return 1;
+
+        var sqlSelect = """
+                select * from seats_seances where seance_id = :seanceId
+                """;
+
+        return dbConnection
+                .getJdbi()
+                .withHandle(handle -> handle
+                        .createQuery(sqlSelect)
+                        .bind("seanceId", seance.getId())
+                        .mapToBean(SeatsSeance.class)
+                        .list()
+                        .size()
+                );
     }
 
     @Override
@@ -91,6 +106,27 @@ public class SeatsSeancesRepositoryImpl extends AbstractCrudRepository<SeatsSean
                         .bind("seance_id", seanceId)
                         .mapToBean(SeatsSeance.class)
                         .list()
+                );
+    }
+
+    @Override
+    public List<SeatsSeanceWithSeanceDate> isOneOfAPlaceReservedForFutureSeance(List<Seat> seats) {
+        List<Integer> seatsId = seats.stream().map(Seat::getId).collect(Collectors.toList());
+        var sql = """
+                select seat_id, state, ss.state as seatState, s.date_time
+                from seats_seances ss join seances s on ss.seance_id = s.id
+                where seat_id in (<seatsId>)
+                        """;
+        return dbConnection
+                .getJdbi()
+                .withHandle(handle -> handle
+                        .createQuery(sql)
+                        .bindList("seatsId", seatsId)
+                        .mapToBean(SeatsSeanceWithSeanceDate.class)
+                        .list()
+                        .stream()
+                        .filter(s -> !s.getSeatState().equals(SeatState.FREE))
+                        .collect(Collectors.toList())
                 );
     }
 }

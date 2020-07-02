@@ -15,4 +15,6 @@ public interface SeanceRepository extends CrudRepository<Seance, Integer> {
     List<Seance> findSeancesByCinemaRooms(List<CinemaRoom> cinemaRooms);
 
     List<Seance> findFutureSeancesAtCinemaRoom(Integer cinemaRoomId);
+
+    Boolean isMovieDisplayed(CreateSeanceDto seanceDto);
 }

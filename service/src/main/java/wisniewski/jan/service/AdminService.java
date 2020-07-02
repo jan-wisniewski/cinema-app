@@ -125,16 +125,19 @@ public class AdminService {
         }
 
         if (seanceRepository.isUniqueSeance(seanceDto).isPresent()) {
-            throw new AdminServiceException("seance is not unique. The same movieId, cinemaRoomId i LocalDate");
+            throw new AdminServiceException("Seance is not unique. The same movieId, cinemaRoomId i LocalDate");
+        }
+
+        if (!seanceRepository.isMovieDisplayed(seanceDto)) {
+            throw new AdminServiceException("Screening date is not within the time frame of the movie");
         }
 
         var seance = Mapper.fromSeanceDtoToSeance(seanceDto);
-
         var addedSeance = seanceRepository
                 .add(seance)
                 .orElseThrow(() -> new AdminServiceException("cannot insert to db"));
 
-        System.out.println(getSeatsForCinemaRoomAndAddToSeance(addedSeance));
+        System.out.println("Seats added to this seances: "+getSeatsForCinemaRoomAndAddToSeance(addedSeance));
 
         return addedSeance.getId();
     }
@@ -144,7 +147,6 @@ public class AdminService {
         CinemaRoom cinemaRoom = cinemaRoomRepository
                 .findById(cinemaRoomId)
                 .orElseThrow(() -> new AdminServiceException("Failed"));
-
         List<Seat> seatsForCinemaRoom = seatRepository.findAllByCinemaId(cinemaRoom);
         return seatsSeancesRepository.addAll(seatsForCinemaRoom, seance);
     }

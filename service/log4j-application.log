@@ -170,3 +170,41 @@
 2020-06-19 00:36:36 INFO  AddMovieTests:114 - Failed to create movie: date to is before date from
 2020-06-19 00:36:36 INFO  AddMovieTests:147 - Failed to create movie: movie is already on db
 2020-06-19 00:36:36 INFO  AddMovieTests:174 - Adding movie successfully
+2020-07-02 10:04:48 INFO  AddSeanceTests:166 - Failed to create seance: movie date to is before seance date
+2020-07-02 10:16:01 INFO  AddSeanceTests:61 - Failed to create seance: dto is null
+2020-07-02 10:16:01 INFO  AddSeanceTests:144 - Failed to create seance: seance already exists on db
+2020-07-02 10:16:02 INFO  AddSeanceTests:168 - Failed to create seance: movie date to is before seance date
+2020-07-02 10:16:45 INFO  AddSeanceTests:85 - Failed to create seance: localdate is not correct
+2020-07-02 10:16:54 INFO  AddSeanceTests:61 - Failed to create seance: dto is null
+2020-07-02 10:16:54 INFO  AddSeanceTests:85 - Failed to create seance: localdate is not correct
+2020-07-02 10:16:54 INFO  AddSeanceTests:149 - Failed to create seance: seance already exists on db
+2020-07-02 10:16:54 INFO  AddSeanceTests:173 - Failed to create seance: movie date to is before seance date
+2020-07-02 10:36:58 INFO  AddSeanceTests:118 - Create seance successfully
+2020-07-02 10:37:36 INFO  AddSeanceTests:61 - Failed to create seance: dto is null
+2020-07-02 10:37:36 INFO  AddSeanceTests:118 - Create seance successfully
+2020-07-02 10:37:36 INFO  AddSeanceTests:155 - Failed to create seance: seance already exists on db
+2020-07-02 10:38:55 INFO  AddSeanceTests:61 - Failed to create seance: dto is null
+2020-07-02 10:38:55 INFO  AddSeanceTests:85 - Failed to create seance: localdate is not correct
+2020-07-02 10:38:55 INFO  AddSeanceTests:118 - Create seance successfully
+2020-07-02 10:38:55 INFO  AddSeanceTests:155 - Failed to create seance: seance already exists on db
+2020-07-02 10:38:55 INFO  AddSeanceTests:179 - Failed to create seance: movie date to is before seance date
+2020-07-02 10:40:10 INFO  AddSeanceTests:61 - Failed to create seance: dto is null
+2020-07-02 10:40:10 INFO  AddSeanceTests:85 - Failed to create seance: localdate is not correct
+2020-07-02 10:40:10 INFO  AddSeanceTests:118 - Create seance successfully
+2020-07-02 10:40:10 INFO  AddSeanceTests:155 - Failed to create seance: seance already exists on db
+2020-07-02 10:40:10 INFO  AddSeanceTests:179 - Failed to create seance: movie date to is before seance date
+2020-07-02 10:40:34 INFO  AddSeanceTests:61 - Failed to create seance: dto is null
+2020-07-02 10:40:34 INFO  AddSeanceTests:85 - Failed to create seance: localdate is not correct
+2020-07-02 10:40:34 INFO  AddSeanceTests:118 - Create seance successfully
+2020-07-02 10:40:34 INFO  AddSeanceTests:155 - Failed to create seance: seance already exists on db
+2020-07-02 10:40:34 INFO  AddSeanceTests:179 - Failed to create seance: movie date to is before seance date
+2020-07-02 11:00:36 INFO  AddSeanceTests:54 - Failed to create seance: dto is null
+2020-07-02 11:00:36 INFO  AddSeanceTests:78 - Failed to create seance: localdate is not correct
+2020-07-02 11:00:36 INFO  AddSeanceTests:111 - Create seance successfully
+2020-07-02 11:00:36 INFO  AddSeanceTests:148 - Failed to create seance: seance already exists on db
+2020-07-02 11:00:36 INFO  AddSeanceTests:172 - Failed to create seance: movie date to is before seance date
+2020-07-02 11:00:48 INFO  AddSeanceTests:54 - Failed to create seance: dto is null
+2020-07-02 11:00:48 INFO  AddSeanceTests:78 - Failed to create seance: localdate is not correct
+2020-07-02 11:00:48 INFO  AddSeanceTests:111 - Create seance successfully
+2020-07-02 11:00:48 INFO  AddSeanceTests:148 - Failed to create seance: seance already exists on db
+2020-07-02 11:00:48 INFO  AddSeanceTests:172 - Failed to create seance: movie date to is before seance date

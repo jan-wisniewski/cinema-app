@@ -34,18 +34,16 @@ public class SeatService {
         return seatRepository.findByRowAndPlaceAtCinemaRoom(rowNumber, placeNumber, cinemaRoomId);
     }
 
-    public Integer deleteRowsAndPlaces(CinemaRoom cinemaRoom) {
-//        for (Seat seat : seats) {
-//            if (seatRepository.isOrderedOrReservedForSeance(seat.getId())) {
-//                System.out.println("to miejsce jest zajete!!!!!");
-//                return 0;
-//            }
-//        }
-        return seatRepository.deleteSeatsByLastRowNumber(cinemaRoom);
+    public List<Seat> findPlacesAboveSeatPlace(CinemaRoom cinemaRoom, Integer seatPlaceNumber) {
+        return seatRepository.findByPlacesAboveSeatPlace(cinemaRoom, seatPlaceNumber);
     }
 
-    public Integer deletePlacesInRow(CinemaRoom cinemaRoom) {
-        return seatRepository.deleteSeatsByNumberInRow(cinemaRoom);
+    public List<Seat> findPlacesAboveRowNumber(CinemaRoom cinemaRoom, Integer rowNumber) {
+        return seatRepository.findByPlacesAboveSeatRow(cinemaRoom, rowNumber);
+    }
+
+    public Integer deleteSeats (List<Seat> seats){
+        return seatRepository.deleteAll(seats);
     }
 
     public Integer addPlacesToExistsRows(CinemaRoom cinemaRoom) {
@@ -54,7 +52,7 @@ public class SeatService {
         int lastPlace = cinemaRoom.getPlaces();
 
         for (int i = 1; i <= cinemaRoom.getRowsNumber(); i++) {
-            for (int j = cinemaRoomFromDb.getPlaces()+1; j <= lastPlace ; j++) {
+            for (int j = cinemaRoomFromDb.getPlaces() + 1; j <= lastPlace; j++) {
                 generatedSeats.add(
                         Seat
                                 .builder()

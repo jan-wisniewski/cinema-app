@@ -3,13 +3,11 @@ package wisniewski.jan.persistence.repository.impl;
 import wisniewski.jan.persistence.connection.DbConnection;
 import wisniewski.jan.persistence.dto.CreateSeanceDto;
 import wisniewski.jan.persistence.model.CinemaRoom;
+import wisniewski.jan.persistence.model.Movie;
 import wisniewski.jan.persistence.model.Seance;
 import wisniewski.jan.persistence.repository.SeanceRepository;
 import wisniewski.jan.persistence.repository.generic.AbstractCrudRepository;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -75,6 +73,23 @@ public class SeanceRepositoryImpl extends AbstractCrudRepository<Seance, Integer
                         .mapToBean(Seance.class)
                         .list()
                 );
+    }
+
+    @Override
+    public Boolean isMovieDisplayed(CreateSeanceDto seanceDto) {
+        var sql = """
+                select * from movies where id = :movie_id
+                """;
+        Optional<Movie> movieOp = dbConnection
+                .getJdbi()
+                .withHandle(handle -> handle
+                        .createQuery(sql)
+                        .bind("movie_id", seanceDto.getMovieId())
+                        .mapToBean(Movie.class)
+                        .findFirst()
+                );
+        Movie movie = movieOp.orElseThrow(() -> new IllegalStateException(""));
+        return seanceDto.getDateTime().isAfter(movie.getDateFrom()) && seanceDto.getDateTime().isBefore(movie.getDateTo());
     }
 
 }

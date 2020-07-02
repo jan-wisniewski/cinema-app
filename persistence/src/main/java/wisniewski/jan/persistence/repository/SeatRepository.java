@@ -12,16 +12,13 @@ public interface SeatRepository extends CrudRepository<Seat, Integer> {
 
     List<Seat> findAllByCinemaId(CinemaRoom cinemaRoom);
 
-    Integer deleteSeatsByLastRowNumber(CinemaRoom cinemaRoom);
-
-    Integer deleteSeatsByNumberInRow(CinemaRoom cinemaRoom);
-
-//    List<Seat> findSeatsByLastRowNumber(Integer cinemaRoomId, Integer lastRow);
-//
-//    Boolean isOrderedOrReservedForSeance (Integer seatId);
-
     Optional<Seat> findByRowAndPlaceAtCinemaRoom(Integer row, Integer place, Integer cinemaRoomId);
 
+    List<Seat> findByPlacesAboveSeatPlace(CinemaRoom cinemaRoom, Integer seatPlaceNumber);
+
+    List<Seat> findByPlacesAboveSeatRow(CinemaRoom cinemaRoom, Integer seatRowNumber);
+
+    Integer deleteAll(List<Seat> seats);
 
 
 }

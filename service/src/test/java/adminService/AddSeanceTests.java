@@ -1,7 +1,6 @@
 package adminService;
 
 import extensions.LoggerExtension;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,7 +15,6 @@ import wisniewski.jan.persistence.dto.CreateSeanceDto;
 import wisniewski.jan.persistence.mappers.Mapper;
 import wisniewski.jan.persistence.model.Seance;
 import wisniewski.jan.persistence.repository.SeanceRepository;
-import wisniewski.jan.persistence.validator.CreateSeanceDtoValidator;
 import wisniewski.jan.service.AdminService;
 
 import java.time.LocalDateTime;
@@ -65,6 +63,11 @@ public class AddSeanceTests {
                 .movieId(3)
                 .dateTime(LocalDateTime.now())
                 .build();
+
+        Mockito
+                .when(seanceRepository.isMovieDisplayed(seance))
+                .thenReturn(true);
+
         exceptionMessage = "";
         try {
             adminService.addSeance(seance);
@@ -97,6 +100,12 @@ public class AddSeanceTests {
         Mockito
                 .when(seanceRepository.add(seanceToAdd))
                 .thenReturn(Optional.of(seanceExpected));
+
+
+        Mockito
+                .when(seanceRepository.isMovieDisplayed(seanceDto))
+                .thenReturn(true);
+
 
         assertEquals(seanceExpected.getId(), adminService.addSeance(seanceDto));
         logger.info("Create seance successfully");
@@ -135,7 +144,146 @@ public class AddSeanceTests {
         } catch (Exception e) {
             exceptionMessage = e.getMessage();
         }
-        assertEquals("seance is not unique. The same movieId, cinemaRoomId i LocalDate", exceptionMessage);
+        assertEquals("Seance is not unique. The same movieId, cinemaRoomId i LocalDate", exceptionMessage);
         logger.info("Failed to create seance: seance already exists on db");
+    }
+
+    @Test
+    @DisplayName("when movie date to is before seance date exception has been thrown")
+    public void test5() {
+        CreateSeanceDto seanceDto = CreateSeanceDto
+                .builder()
+                .dateTime(LocalDateTime.now().plusDays(4))
+                .movieId(1)
+                .cinemaRoomId(1)
+                .build();
+
+        Mockito
+                .when(seanceRepository.isMovieDisplayed(seanceDto))
+                .thenReturn(false);
+
+        exceptionMessage = "";
+        try {
+            adminService.addSeance(seanceDto);
+        } catch (Exception e) {
+            exceptionMessage = e.getMessage();
+        }
+        assertEquals("Screening date is not within the time frame of the movie", exceptionMessage);
+        logger.info("Failed to create seance: movie date to is before seance date");
+    }
+
+    @Test
+    @DisplayName("when movie date to is after seance date adding is successfully")
+    public void test6() {
+        CreateSeanceDto seanceDto = CreateSeanceDto
+                .builder()
+                .dateTime(LocalDateTime.now().plusDays(4))
+                .movieId(1)
+                .cinemaRoomId(1)
+                .build();
+
+        var expectedSeanceFromDb = Seance
+                .builder()
+                .dateTime(seanceDto.getDateTime())
+                .movieId(seanceDto.getMovieId())
+                .cinemaRoomId(seanceDto.getCinemaRoomId())
+                .id(1)
+                .build();
+
+        Mockito
+                .when(seanceRepository.isUniqueSeance(seanceDto))
+                .thenReturn(Optional.empty());
+
+        Mockito
+                .when(seanceRepository.isMovieDisplayed(seanceDto))
+                .thenReturn(true);
+
+        var seanceToAdd = Mapper.fromSeanceDtoToSeance(seanceDto);
+
+        Mockito
+                .when(seanceRepository.add(seanceToAdd))
+                .thenReturn(Optional.of(expectedSeanceFromDb));
+
+        assertEquals(expectedSeanceFromDb.getId(), adminService.addSeance(seanceDto));
+
+    }
+
+    @Test
+    @DisplayName("when movie date from is before seance date adding is successfully")
+    public void test7() {
+        CreateSeanceDto seanceDto = CreateSeanceDto
+                .builder()
+                .dateTime(LocalDateTime.now().plusDays(4))
+                .movieId(1)
+                .cinemaRoomId(1)
+                .build();
+
+        var expectedSeanceFromDb = Seance
+                .builder()
+                .dateTime(seanceDto.getDateTime())
+                .movieId(seanceDto.getMovieId())
+                .cinemaRoomId(seanceDto.getCinemaRoomId())
+                .id(1)
+                .build();
+
+        Mockito
+                .when(seanceRepository.isUniqueSeance(seanceDto))
+                .thenReturn(Optional.empty());
+
+        Mockito
+                .when(seanceRepository.isMovieDisplayed(seanceDto))
+                .thenReturn(true);
+
+        var seanceToAdd = Mapper.fromSeanceDtoToSeance(seanceDto);
+
+        Mockito
+                .when(seanceRepository.add(seanceToAdd))
+                .thenReturn(Optional.of(expectedSeanceFromDb));
+
+        assertEquals(expectedSeanceFromDb.getId(), adminService.addSeance(seanceDto));
+
+    }
+
+    @Test
+    @DisplayName("when movie date from is after seance date exception has been thrown")
+    public void test8() {
+        CreateSeanceDto seanceDto = CreateSeanceDto
+                .builder()
+                .dateTime(LocalDateTime.now().plusDays(4))
+                .movieId(1)
+                .cinemaRoomId(1)
+                .build();
+
+        var expectedSeanceFromDb = Seance
+                .builder()
+                .dateTime(seanceDto.getDateTime())
+                .movieId(seanceDto.getMovieId())
+                .cinemaRoomId(seanceDto.getCinemaRoomId())
+                .id(1)
+                .build();
+
+        Mockito
+                .when(seanceRepository.isUniqueSeance(seanceDto))
+                .thenReturn(Optional.empty());
+
+        Mockito
+                .when(seanceRepository.isMovieDisplayed(seanceDto))
+                .thenReturn(false);
+
+        var seanceToAdd = Mapper.fromSeanceDtoToSeance(seanceDto);
+
+        Mockito
+                .when(seanceRepository.add(seanceToAdd))
+                .thenReturn(Optional.of(expectedSeanceFromDb));
+
+        exceptionMessage = "";
+        try {
+            adminService.addSeance(seanceDto);
+        } catch (Exception e) {
+            exceptionMessage = e.getMessage();
+        }
+
+        assertEquals("Screening date is not within the time frame of the movie", exceptionMessage);
+
     }
 }

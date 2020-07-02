@@ -8,6 +8,7 @@ import wisniewski.jan.persistence.repository.generic.AbstractCrudRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class SeatRepositoryImpl extends AbstractCrudRepository<Seat, Integer> implements SeatRepository {
     private DbConnection dbConnection;
@@ -62,67 +63,19 @@ public class SeatRepositoryImpl extends AbstractCrudRepository<Seat, Integer> im
     }
 
     @Override
-    public Integer deleteSeatsByLastRowNumber(CinemaRoom cinemaRoom) {
+    public Integer deleteAll(List<Seat> seats) {
+        List<Integer> seatsIds = seats.stream().map(Seat::getId).collect(Collectors.toList());
         var sql = """
-                delete from seats where cinema_room_id = :cinema_room_id and rows_number > :last_row;
+                delete from seats where id in (<seatsId>)
                 """;
-
         return dbConnection
                 .getJdbi()
                 .withHandle(handle -> handle
                         .createUpdate(sql)
-                        .bind("cinema_room_id", cinemaRoom.getId())
-                        .bind("last_row", cinemaRoom.getRowsNumber())
+                        .bindList("seatsId", seatsIds)
                         .execute()
                 );
     }
-
-    @Override
-    public Integer deleteSeatsByNumberInRow(CinemaRoom cinemaRoom) {
-        var sql = """
-                delete from seats where place > :new_places_number AND cinema_room_id = :cinema_room_id;
-                """;
-
-        return dbConnection
-                .getJdbi()
-                .withHandle(handle -> handle
-                        .createUpdate(sql)
-                        .bind("new_places_number", cinemaRoom.getPlaces())
-                        .bind("cinema_room_id", cinemaRoom.getId())
-                        .execute()
-                );
-    }
-
-//    @Override
-//    public List<Seat> findSeatsByLastRowNumber(Integer cinemaRoomId, Integer lastRow) {
-//        var sql = """
-//                select * from seats where cinema_room_id = :cinema_room_id and rows_number > :last_row;
-//                """;
-//        return dbConnection
-//                .getJdbi()
-//                .withHandle(handle -> handle
-//                        .createQuery(sql)
-//                        .bind("cinema_room_id", cinemaRoomId)
-//                        .bind("last_row", lastRow)
-//                        .mapToBean(Seat.class)
-//                        .list()
-//                );
-//    }
-//
-//    @Override
-//    public Boolean isOrderedOrReservedForSeance(Integer seatId) {
-//        var sql = """
-//                select ss.id,ss.seat_id,ss.seance_id from seats_seances ss join seances s on ss.seance_id = s.id where state != 'FREE' and date_time > now() and seat_id = :seat_id;
-//                  """;
-//        Object is = dbConnection
-//                .getJdbi()
-//                .withHandle(handle -> handle
-//                        .createQuery(sql)
-//                        .bind("seat_id", seatId)
-//                );
-//        System.out.println(is);
-//        return false;
-//    }
 
     @Override
     public Optional<Seat> findByRowAndPlaceAtCinemaRoom(Integer row, Integer place, Integer cinemaRoomId) {
@@ -136,6 +89,38 @@ public class SeatRepositoryImpl extends AbstractCrudRepository<Seat, Integer> im
                         .bind("cinema_room_id", cinemaRoomId)
                         .mapToBean(Seat.class)
                         .findFirst()
+                );
+    }
+
+    @Override
+    public List<Seat> findByPlacesAboveSeatPlace(CinemaRoom cinemaRoom, Integer seatPlaceNumber) {
+        var sql = """
+                select * from seats where cinema_room_id = :cinemaRoomId and place > :seatPlace
+                """;
+        return dbConnection
+                .getJdbi()
+                .withHandle(handle -> handle
+                        .createQuery(sql)
+                        .bind("cinemaRoomId", cinemaRoom.getId())
+                        .bind("seatPlace", cinemaRoom.getPlaces())
+                        .mapToBean(Seat.class)
+                        .list()
+                );
+    }
+
+    @Override
+    public List<Seat> findByPlacesAboveSeatRow(CinemaRoom cinemaRoom, Integer seatRowNumber) {
+        var sql = """
+                  select * from seats where cinema_room_id = :cinema_room_id and rows_number > :last_row;
+                """;
+        return dbConnection
+                .getJdbi()
+                .withHandle(handle -> handle
+                        .createQuery(sql)
+                        .bind("cinema_room_id", cinemaRoom.getId())
+                        .bind("last_row", seatRowNumber)
+                        .mapToBean(Seat.class)
+                        .list()
                 );
     }
 }

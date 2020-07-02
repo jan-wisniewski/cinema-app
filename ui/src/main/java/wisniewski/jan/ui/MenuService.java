@@ -13,6 +13,7 @@ import wisniewski.jan.ui.user_data.UserDataService;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
@@ -130,12 +131,31 @@ public class MenuService {
 
         editedRows = cinemaRoomService.getRowsNumberByCinemaRoomId(cinemaRoom.getId()) > cinemaRoom.getRowsNumber();
         editedPlaces = cinemaRoomService.getPlacesNumberInRowByCinemaRoomId(cinemaRoom.getId()) > cinemaRoom.getPlaces();
+        List<Seat> seatToRemove;
+        List<SeatsSeanceWithSeanceDate> reservedSeats;
 
         if (editedPlaces) {
-            System.out.println("Deleted places in current rows: " + seatService.deletePlacesInRow(cinemaRoom));
+            seatToRemove = seatService.findPlacesAboveSeatPlace(cinemaRoom, cinemaRoom.getRowsNumber());
+            reservedSeats = seatSeanceService.isOneOfAPlaceReservedForFutureSeance(seatToRemove);
+            if (seatSeanceService.isAvailableToRemoveSeats(seatToRemove)) {
+                System.out.println("Can't remove places. One of them is reserved for future seance!");
+                seatSeanceService.showReservedSeatsForFutureSeance(reservedSeats);
+                return;
+            }
+            else {
+                System.out.println(seatService.deleteSeats(seatToRemove));
+            }
         }
         if (editedRows) {
-            System.out.println("Deleted places in deleted rows: " + seatService.deleteRowsAndPlaces(cinemaRoom));
+            seatToRemove = seatService.findPlacesAboveRowNumber(cinemaRoom, cinemaRoom.getRowsNumber());
+            reservedSeats = seatSeanceService.isOneOfAPlaceReservedForFutureSeance(seatToRemove);
+            if (seatSeanceService.isAvailableToRemoveSeats(seatToRemove)) {
+                System.out.println("Can't remove places. One of them is reserved for future seance!");
+                seatSeanceService.showReservedSeatsForFutureSeance(reservedSeats);
+                return;
+            } else {
+                System.out.println(seatService.deleteSeats(seatToRemove));
+            }
         }
 
                 /*
@@ -157,33 +177,24 @@ public class MenuService {
             System.out.println("Total number of seats after added new places: " + seatService.addPlacesToExistsRows(cinemaRoom));
         }
 
-        if (editedPlaces && editedRows){
+        if (editedPlaces && editedRows) {
             System.out.println("Total number of seats after added new places and news rows: " + seatService.addNewPlacesAndRows(cinemaRoom));
         }
+
+
+        //TODO DODAWANIE MIEJSC DO SEATS_SEANCES
+        //1. Pobierz id wszystkie przyszłe seansy dla tego cinemaRoom
+        List<Integer> futureSeancesAtCinemaRoomIds = seanceService
+                .findSeancesFromDateAtCinemaRoom(cinemaRoom.getId())
+                .stream()
+                .map(Seance::getId)
+                .collect(Collectors.toList());
+
+        //ADED SEATS MA ID = NULL!!!!!!!!!!!!!!!!
+
+        //2. Dodaj dla każdego seansu nowe meijsca do seats_seance
+
         adminService.editCinemaRoom(cinemaRoom);
-
-            /*//TODO DODAWANIE MIEJSC DO SEATS_SEANCES
-            //1. Pobierz id wszystkie przyszłe seansy dla tego cinemaRoom
-            List<Integer> futureSeancesAtCinemaRoomIds = seanceService
-                    .findSeancesFromDateAtCinemaRoom(cinemaRoom.getId())
-                    .stream()
-                    .map(Seance::getId)
-                    .collect(Collectors.toList());
-            System.out.println("-------------");
-            System.out.println(futureSeancesAtCinemaRoomIds);
-
-            //ADED SEATS MA ID = NULL!!!!!!!!!!!!!!!!
-
-            //2. Dodaj dla każdego seansu nowe meijsca do seats_seance
-            System.out.println("-------------");
-            for (int i = 0; i < futureSeancesAtCinemaRoomIds.size(); i++) {
-                System.out.println(seatSeanceService.addAllBySeanceId(
-                        addedSeats, futureSeancesAtCinemaRoomIds.get(i)));
-            }
-
-    */
-
-
     }
 
     private void option10() {
@@ -400,10 +411,29 @@ public class MenuService {
                     .forEach(System.out::println);
             seanceId = UserDataService.getInteger("Type seance id");
         } while (seanceService.getSeanceById(seanceId).isEmpty());
-        chooseCinemaRoomPlace(seanceId);
+
+        long availableSeats = seatSeanceService
+                .getSeatsSeancesListBySeanceId(seanceId)
+                .stream()
+                .filter(seatsSeance -> seatsSeance.getState().equals(SeatState.FREE))
+                .count();
+
+        if (availableSeats < 1) {
+            System.out.println("No seats available for this seance");
+            return;
+        }
+        int userDecision;
+        do {
+            userDecision = UserDataService.getInteger("How many tickets do you want to buy or reserve? (available: " + availableSeats + ")");
+        } while (userDecision > availableSeats || userDecision < 1);
+        if (userDecision == 1) {
+            chooseCinemaRoomPlace(seanceId, userDecision);
+        } else {
+            ///kupowanie grupowe
+        }
     }
 
-    private void chooseCinemaRoomPlace(Integer seanceId) {
+    private void chooseCinemaRoomPlace(Integer seanceId, Integer ticketsNumber) {
         Seance seance = seanceService.getSeanceById(seanceId).orElseThrow(() -> new MenuServiceException("FAILED"));
         int cinemaRoomId = seance.getCinemaRoomId();
         showCinemaRoomPlacesForSeance(seanceId);

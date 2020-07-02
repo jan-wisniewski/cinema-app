@@ -3,10 +3,13 @@ package wisniewski.jan.service;
 import lombok.RequiredArgsConstructor;
 import wisniewski.jan.persistence.model.Seat;
 import wisniewski.jan.persistence.model.SeatsSeance;
+import wisniewski.jan.persistence.model.SeatsSeanceWithSeanceDate;
 import wisniewski.jan.persistence.repository.SeatsSeancesRepository;
 import wisniewski.jan.service.exception.SeatSeanceException;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class SeatSeanceService {
@@ -20,8 +23,23 @@ public class SeatSeanceService {
         return seatsSeancesRepository.findBySeanceId(seanceId);
     }
 
-    public List<SeatsSeance> addAllBySeanceId (List<Seat> seats, Integer seanceId) {
-        return seatsSeancesRepository.addAllBySeanceId(seats,seanceId);
+    public List<SeatsSeance> addAllBySeanceId(List<Seat> seats, Integer seanceId) {
+        return seatsSeancesRepository.addAllBySeanceId(seats, seanceId);
+    }
+
+    public List<SeatsSeanceWithSeanceDate> isOneOfAPlaceReservedForFutureSeance(List<Seat> seats) {
+        return seatsSeancesRepository.isOneOfAPlaceReservedForFutureSeance(seats);
+    }
+
+    public Boolean isAvailableToRemoveSeats(List<Seat> seats) {
+        return !isOneOfAPlaceReservedForFutureSeance(seats).isEmpty();
+    }
+
+    public String showReservedSeatsForFutureSeance(List<SeatsSeanceWithSeanceDate> reservedSeats) {
+        return reservedSeats
+                .stream()
+                .map(s -> "seat id: " + s.getId() + ", seance date: " + s.getDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                .collect(Collectors.joining("\n"));
     }
 
 }

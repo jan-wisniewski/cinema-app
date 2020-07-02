@@ -3,6 +3,7 @@ package wisniewski.jan.persistence.repository;
 import wisniewski.jan.persistence.model.Seance;
 import wisniewski.jan.persistence.model.Seat;
 import wisniewski.jan.persistence.model.SeatsSeance;
+import wisniewski.jan.persistence.model.SeatsSeanceWithSeanceDate;
 import wisniewski.jan.persistence.repository.generic.CrudRepository;
 
 import java.util.List;
@@ -13,4 +14,5 @@ public interface SeatsSeancesRepository extends CrudRepository<SeatsSeance, Inte
     Optional<SeatsSeance> findBySeatId(Integer seatId);
     List<SeatsSeance> findBySeanceId(Integer seanceId);
     List<SeatsSeance> addAllBySeanceId (List<Seat> seats, Integer seanceId);
+    List<SeatsSeanceWithSeanceDate> isOneOfAPlaceReservedForFutureSeance (List<Seat> seats);
 }
