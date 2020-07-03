@@ -2,6 +2,7 @@ package wisniewski.jan.persistence.repository.impl;
 
 import org.jdbi.v3.core.result.ResultIterable;
 import wisniewski.jan.persistence.connection.DbConnection;
+import wisniewski.jan.persistence.model.Cinema;
 import wisniewski.jan.persistence.model.CinemaRoom;
 import wisniewski.jan.persistence.repository.CinemaRoomRepository;
 import wisniewski.jan.persistence.repository.generic.AbstractCrudRepository;
@@ -35,20 +36,17 @@ public class CinemaRoomRepositoryImpl extends AbstractCrudRepository<CinemaRoom,
     @Override
     public List<CinemaRoom> findByCityId(Integer cityId) {
         var sql = """
-               select cinema_rooms.id as id,
-               cinema_rooms.name as name,
-               cinema_rooms.cinema_id as cinema_id,
-               cinema_rooms.rows_nums as rows_number,
-               cinema_rooms.places as places
-               from cinema_rooms JOIN cinemas ON cinema_rooms.cinema_id = cinemas.id where cinemas.city_id = :city_id;
-                """;
+                select cr.id, cr.name, cr.cinema_id, cr.rows_number, cr.places
+                from cinema_rooms cr JOIN cinemas c ON cr.cinema_id = c.id
+                where c.city_id = :city_id;
+                 """;
         return dbConnection
                 .getJdbi()
                 .withHandle(handle -> handle
-                .createQuery(sql)
-                .bind("city_id",cityId)
-                .mapTo(CinemaRoom.class)
-                .list());
+                        .createQuery(sql)
+                        .bind("city_id", cityId)
+                        .mapToBean(CinemaRoom.class)
+                        .list());
     }
 
     @Override
@@ -60,6 +58,37 @@ public class CinemaRoomRepositoryImpl extends AbstractCrudRepository<CinemaRoom,
                         .bind("cinemaId", cinemaId)
                         .mapToBean(CinemaRoom.class)
                         .list()
+                );
+    }
+
+    @Override
+    public List<CinemaRoom> findByMovieId(Integer movieId) {
+        var sql = """
+                select cr.id, name, cinema_id, rows_number, places
+                from seances s join cinema_rooms cr on s.cinema_room_id = cr.id
+                where movie_id = :movieId
+                """;
+        return dbConnection
+                .getJdbi()
+                .withHandle(handle -> handle
+                        .createQuery(sql)
+                        .bind("movieId", movieId)
+                        .mapToBean(CinemaRoom.class)
+                        .list()
+                );
+    }
+
+    @Override
+    public Integer deleteAllByCinemaId(Cinema cinema) {
+        var sql = """
+                delete from cinema_rooms where cinema_id = :cinemaId;
+                """;
+        return dbConnection
+                .getJdbi()
+                .withHandle(handle -> handle
+                        .createUpdate(sql)
+                        .bind("cinemaId", cinema.getId())
+                        .execute()
                 );
     }
 }

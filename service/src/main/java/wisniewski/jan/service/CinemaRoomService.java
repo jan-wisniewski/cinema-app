@@ -43,6 +43,10 @@ public class CinemaRoomService {
         return cinemaRoomRepository.findByCinemaId(cinemaId);
     }
 
+    public List<CinemaRoom> getCinemaRoomListByCityId(Integer cityId) {
+        return cinemaRoomRepository.findByCityId(cityId);
+    }
+
     public String showAllCinemasRooms() {
         return cinemaRoomRepository.findAll()
                 .stream()
@@ -54,4 +58,7 @@ public class CinemaRoomService {
         return cinemaRoomRepository.findAll();
     }
 
+    public List<CinemaRoom> getCinemaRoomListByMovieId(int movieId) {
+        return cinemaRoomRepository.findByMovieId(movieId);
+    }
 }

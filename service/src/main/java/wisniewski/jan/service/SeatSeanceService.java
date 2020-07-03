@@ -23,7 +23,7 @@ public class SeatSeanceService {
         return seatsSeancesRepository.findBySeanceId(seanceId);
     }
 
-    public List<SeatsSeance> addAllBySeanceId(List<Seat> seats, Integer seanceId) {
+    public List<SeatsSeance> addAllBySeanceIds(List<Seat> seats, Integer seanceId) {
         return seatsSeancesRepository.addAllBySeanceId(seats, seanceId);
     }
 

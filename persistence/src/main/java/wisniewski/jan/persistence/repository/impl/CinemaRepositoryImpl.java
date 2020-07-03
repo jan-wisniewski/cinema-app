@@ -28,4 +28,19 @@ public class CinemaRepositoryImpl extends AbstractCrudRepository<Cinema, Integer
                 );
         return foundCinema;
     }
+
+    @Override
+    public Optional<Cinema> findByCityId(Integer cityId) {
+        var sql = """
+                select * from cinemas where city_id = :cityId 
+                 """;
+        return dbConnection
+                .getJdbi()
+                .withHandle(handle -> handle
+                        .createQuery(sql)
+                        .bind("cityId", cityId)
+                        .mapToBean(Cinema.class)
+                        .findFirst()
+                );
+    }
 }

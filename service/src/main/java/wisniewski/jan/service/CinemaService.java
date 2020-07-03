@@ -33,5 +33,8 @@ public class CinemaService {
         return cinemaRepository.findById(cinemaId);
     }
 
+    public Optional<Cinema> findCinemaByCityId (Integer cityId){
+        return cinemaRepository.findByCityId(cityId);
+    }
 
 }

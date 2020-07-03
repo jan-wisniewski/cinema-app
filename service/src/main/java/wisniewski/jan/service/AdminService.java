@@ -23,6 +23,7 @@ public class AdminService {
     private final SeatRepository seatRepository;
     private final SeatsSeancesRepository seatsSeancesRepository;
     private final CityRepository cityRepository;
+    private final TicketRepository ticketRepository;
 
     private final SeatService seatService;
 
@@ -102,7 +103,7 @@ public class AdminService {
                 .add(cinemaRoomToAdd)
                 .orElseThrow(() -> new AdminServiceException("Cannot insert to db"));
 
-        if (seatService.addPlacesToNewRows(addedCinemaRoom, 1, addedCinemaRoom.getRowsNumber()) == 0) {
+        if (seatService.addPlacesToNewRows(addedCinemaRoom, 1, addedCinemaRoom.getRowsNumber()).size() == 0) {
             throw new AdminServiceException("Failed to create seats for cinemaRoom!");
         }
 
@@ -137,7 +138,7 @@ public class AdminService {
                 .add(seance)
                 .orElseThrow(() -> new AdminServiceException("cannot insert to db"));
 
-        System.out.println("Seats added to this seances: "+getSeatsForCinemaRoomAndAddToSeance(addedSeance));
+        System.out.println("Seats added to this seances: " + getSeatsForCinemaRoomAndAddToSeance(addedSeance));
 
         return addedSeance.getId();
     }
@@ -175,6 +176,47 @@ public class AdminService {
                 .add(movieToAdd)
                 .orElseThrow(() -> new AdminServiceException("cannot insert to db"));
         return addedMovie.getId();
+    }
+
+    public Integer deleteCinemaRoom(CinemaRoom cinemaRoom) {
+        if (!seanceRepository.findFutureSeancesAtCinemaRoom(cinemaRoom.getId()).isEmpty()) {
+            System.out.println("Can't delete this cinema room! At this cinema room movie will be displayed");
+            return 0;
+        }
+        return (cinemaRoomRepository.deleteById(cinemaRoom.getId())) ? 1 : 0;
+    }
+
+    public Integer deleteCity(City city) {
+        if (!seanceRepository.findByCity(city).isEmpty()) {
+            System.out.println("Can't delete city! At cinema in this city movie will be displayed");
+            return 0;
+        }
+        return (cityRepository.deleteById(city.getId())) ? 1 : 0;
+    }
+
+    public Integer deleteSeance(Seance seance) {
+        if (!ticketRepository.findBySeance(seance).isEmpty()) {
+            System.out.println("Can't delete seance! Ticket sales have already started");
+            return 0;
+        }
+        return (seanceRepository.deleteById(seance.getId())) ? 1 : 0;
+    }
+
+    public Integer deleteMovie(Movie movie) {
+        if (!seanceRepository.findByMovie(movie).isEmpty()) {
+            System.out.println("Can't delete movie! Movie will be displayed!");
+            return 0;
+        }
+        return (movieRepository.deleteById(movie.getId())) ? 1 : 0;
+    }
+
+    public Integer deleteCinema(Cinema cinema) {
+        if (!seanceRepository.findByCinema(cinema).isEmpty()) {
+            System.out.println("Can't delete cinema! Seances will be displayed there!");
+            return 0;
+        }
+        System.out.println("Deleted cinemas rooms associated with this cinema: " +cinemaRoomRepository.deleteAllByCinemaId(cinema));
+        return (cinemaRepository.deleteById(cinema.getId())) ? 1 : 0;
     }
 
     public Integer addCity(CreateCityDto cityDto) {

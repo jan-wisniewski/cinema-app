@@ -2,12 +2,11 @@ package wisniewski.jan.persistence.repository.impl;
 
 import wisniewski.jan.persistence.connection.DbConnection;
 import wisniewski.jan.persistence.dto.CreateSeanceDto;
-import wisniewski.jan.persistence.model.CinemaRoom;
-import wisniewski.jan.persistence.model.Movie;
-import wisniewski.jan.persistence.model.Seance;
+import wisniewski.jan.persistence.model.*;
 import wisniewski.jan.persistence.repository.SeanceRepository;
 import wisniewski.jan.persistence.repository.generic.AbstractCrudRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -92,4 +91,51 @@ public class SeanceRepositoryImpl extends AbstractCrudRepository<Seance, Integer
         return seanceDto.getDateTime().isAfter(movie.getDateFrom()) && seanceDto.getDateTime().isBefore(movie.getDateTo());
     }
 
+    @Override
+    public List<Seance> findByMovie(Movie movie) {
+        var sql = """
+                select * from seances where movie_id = :movieId and date_time > :date
+                """;
+        return dbConnection
+                .getJdbi()
+                .withHandle(handle -> handle
+                        .createQuery(sql)
+                        .bind("movieId", movie.getId())
+                        .bind("date", LocalDateTime.now())
+                        .mapToBean(Seance.class)
+                        .list()
+                );
+    }
+
+    @Override
+    public List<Seance> findByCity(City city) {
+        var sql = """
+                select s.id, s.movie_id,s.cinema_room_id,s.date_time from seances s join cinema_rooms cr on s.cinema_room_id = cr.id join cinemas c on cr.cinema_id = c.id
+                where date_time > :date and c.city_id = :city_id;
+                   """;
+        return dbConnection
+                .getJdbi()
+                .withHandle(handle -> handle
+                        .createQuery(sql)
+                        .bind("date", LocalDateTime.now())
+                        .bind("city_id", city.getId())
+                        .mapToBean(Seance.class)
+                        .list()
+                );
+    }
+
+    @Override
+    public List<Seance> findByCinema(Cinema cinema) {
+        var sql = """
+                select s.id,s.movie_id,s.cinema_room_id,s.date_time from seances s join cinema_rooms cr on s.cinema_room_id = cr.id where date_time > now() and cr.cinema_id = :cinemaId;
+                """;
+        return dbConnection
+                .getJdbi()
+                .withHandle(handle -> handle
+                        .createQuery(sql)
+                        .bind("cinemaId", cinema.getId())
+                        .mapToBean(Seance.class)
+                        .list()
+                );
+    }
 }

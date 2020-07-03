@@ -1,6 +1,7 @@
 package wisniewski.jan.persistence.repository;
 
 import wisniewski.jan.persistence.dto.CreateCinemaRoomDto;
+import wisniewski.jan.persistence.model.Cinema;
 import wisniewski.jan.persistence.model.CinemaRoom;
 import wisniewski.jan.persistence.repository.generic.CrudRepository;
 
@@ -13,4 +14,8 @@ public interface CinemaRoomRepository extends CrudRepository<CinemaRoom, Integer
     List<CinemaRoom> findByCityId(Integer cityId);
 
     List<CinemaRoom> findByCinemaId(Integer cinemaId);
+
+    Integer deleteAllByCinemaId (Cinema cinema);
+
+    List<CinemaRoom> findByMovieId(Integer movieId);
 }

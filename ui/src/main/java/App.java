@@ -33,13 +33,13 @@ public class App {
         ReservationService reservationService = new ReservationService(reservationRepository);
         SeanceService seanceService = new SeanceService(seanceRepository, movieRepository);
         CinemaService cinemaService = new CinemaService(cinemaRepository);
-        SeatService seatService = new SeatService(seatRepository,cinemaRoomRepository);
+        SeatService seatService = new SeatService(seatRepository, cinemaRoomRepository);
         SeatSeanceService seatSeanceService = new SeatSeanceService(seatsSeancesRepository);
 
         AdminService adminService = new AdminService(cinemaRepository, cinemaRoomRepository,
                 seanceRepository, movieRepository,
                 seatRepository, seatsSeancesRepository,
-                cityRepository, seatService);
+                cityRepository, ticketRepository, seatService);
 
         MenuService menuService = new MenuService(
                 ticketService, movieService,
@@ -48,8 +48,6 @@ public class App {
                 cinemaService, seatService, seatSeanceService
         );
         menuService.mainMenu();
-
-
 
 
     }

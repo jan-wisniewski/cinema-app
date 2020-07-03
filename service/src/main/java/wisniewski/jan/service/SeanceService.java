@@ -2,6 +2,7 @@ package wisniewski.jan.service;
 
 import lombok.RequiredArgsConstructor;
 import wisniewski.jan.persistence.model.CinemaRoom;
+import wisniewski.jan.persistence.model.Movie;
 import wisniewski.jan.persistence.model.Seance;
 import wisniewski.jan.persistence.repository.MovieRepository;
 import wisniewski.jan.persistence.repository.SeanceRepository;
@@ -45,6 +46,10 @@ public class SeanceService {
 
     public List<Seance> findSeancesFromDateAtCinemaRoom(Integer cinemaRoomId) {
         return seanceRepository.findFutureSeancesAtCinemaRoom(cinemaRoomId);
+    }
+
+    public List<Seance> findByMovie (Movie movie){
+        return seanceRepository.findByMovie(movie);
     }
 
 }

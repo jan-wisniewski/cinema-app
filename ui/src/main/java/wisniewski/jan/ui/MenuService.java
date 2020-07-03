@@ -38,11 +38,11 @@ public class MenuService {
         while (true) {
             try {
                 System.out.println("\n___ CINEMA MENU ___");
-                System.out.println("-------[Movie]-------\nADD (100) | EDIT (107)");
-                System.out.println("-------[Cinema]-------\nADD (101) | EDIT (105)");
-                System.out.println("-------[Cinema Room]-------\nADD (102) | EDIT (108)");
-                System.out.println("-------[Seance]-------\nADD (103) | EDIT (109)");
-                System.out.println("-------[City]-------\nADD (104) | EDIT (106)");
+                System.out.println("-------[Movie]-------\nADD (100) | EDIT (107) | DELETE (110)");
+                System.out.println("-------[Cinema]-------\nADD (101) | EDIT (105) | DELETE (111)");
+                System.out.println("-------[Cinema Room]-------\nADD (102) | EDIT (108) | DELETE (114)");
+                System.out.println("-------[Seance]-------\nADD (103) | EDIT (109) | DELETE (113)");
+                System.out.println("-------[City]-------\nADD (104) | EDIT (106) | DELETE (112)");
                 System.out.println("-------[Tickets]-------\nBUY (2) | RESERVATIONS (3)");
                 System.out.println("-------[Others]-------\nEXIT (0) | STATISTICS (1)\n");
                 int decision = UserDataService.getInteger("___ Type option ___");
@@ -64,11 +64,77 @@ public class MenuService {
                     case 107 -> option10();
                     case 108 -> option11();
                     case 109 -> option12();
+                    case 110 -> option14();
+                    case 111 -> option15();
+                    case 112 -> option16();
+                    case 113 -> option17();
+                    case 114 -> option18();
                     default -> System.out.println("No option with this number");
                 }
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
+        }
+    }
+
+    private void option18() {
+        System.out.println("___ Delete cinema room ___");
+        if (cinemaRoomService.getAll().isEmpty()) {
+            System.out.println("No cinemas rooms in database");
+            return;
+        }
+        CinemaRoom cinemaRoom = UserDataService.getCinemaRoom("What cinema room do you want to delete?", cinemaRoomService);
+        if (adminService.deleteCinemaRoom(cinemaRoom) > 0) {
+            System.out.println("Cinema room " + cinemaRoom.getName() + " successfully deleted from db");
+        }
+    }
+
+    private void option17() {
+        System.out.println("___ Delete seance ___");
+        if (seanceService.getAll().isEmpty()) {
+            System.out.println("No seances in database");
+            return;
+        }
+        Seance seance = UserDataService.getSeance("What seance do you want to delete?", seanceService);
+        if (adminService.deleteSeance(seance) > 0) {
+            System.out.println("Seance (id: " + seance.getId() + ") successfully deleted from db");
+        }
+    }
+
+    private void option16() {
+        System.out.println("___ Delete city ___");
+        if (cityService.getAll().isEmpty()) {
+            System.out.println("No cities in database!");
+            return;
+        }
+        City city = UserDataService.getCity("What city do you want to delete?", cityService);
+        if (adminService.deleteCity(city) > 0) {
+            System.out.println("City " + city.getName() + " successfully deleted from db");
+        }
+    }
+
+    private void option15() {
+        System.out.println("___ Delete cinema ___");
+        if (cinemaService.getAll().isEmpty()) {
+            System.out.println("No cinemas in database!");
+            return;
+        }
+        System.out.println("! All cinemas rooms associated with this cinema will also be deleted !");
+        Cinema cinema = UserDataService.getCinema("What cinema do you want to delete?", cinemaService);
+        if (adminService.deleteCinema(cinema) > 0) {
+            System.out.println("Cinema " + cinema.getName() + " successfully deleted from db!");
+        }
+    }
+
+    private void option14() {
+        System.out.println("___ Delete movie ___");
+        if (movieService.getAll().isEmpty()) {
+            System.out.println("No movies in database!");
+            return;
+        }
+        Movie chosenMovie = UserDataService.getMovie("What movie do you want to delete?", movieService);
+        if (adminService.deleteMovie(chosenMovie) > 0) {
+            System.out.println("Movie " + chosenMovie.getTitle() + " successfully deleted from db!");
         }
     }
 
@@ -121,13 +187,7 @@ public class MenuService {
             cinemaRoom.setPlaces(UserDataService.getInteger("Type new places number at row"));
         }
 
-        /*
-        --------------------------------------------------------------------------------------------------------------------
-        --------------------------------------------------------------------------------------------------------------------
-        ---------USUWANIE ROWS LUB PLACES Z CINEMA ROOM-------------------------------------------------------------------
-        --------------------------------------------------------------------------------------------------------------------
-        --------------------------------------------------------------------------------------------------------------------
-         */
+        //---------USUWANIE ROWS LUB PLACES Z CINEMA ROOM-----------
 
         editedRows = cinemaRoomService.getRowsNumberByCinemaRoomId(cinemaRoom.getId()) > cinemaRoom.getRowsNumber();
         editedPlaces = cinemaRoomService.getPlacesNumberInRowByCinemaRoomId(cinemaRoom.getId()) > cinemaRoom.getPlaces();
@@ -141,8 +201,7 @@ public class MenuService {
                 System.out.println("Can't remove places. One of them is reserved for future seance!");
                 seatSeanceService.showReservedSeatsForFutureSeance(reservedSeats);
                 return;
-            }
-            else {
+            } else {
                 System.out.println(seatService.deleteSeats(seatToRemove));
             }
         }
@@ -158,41 +217,41 @@ public class MenuService {
             }
         }
 
-                /*
-        --------------------------------------------------------------------------------------------------------------------
-        --------------------------------------------------------------------------------------------------------------------
-        ---------DODAWANIE ROWS LUB PLACES Z CINEMA ROOM-------------------------------------------------------------------
-        --------------------------------------------------------------------------------------------------------------------
-        --------------------------------------------------------------------------------------------------------------------
-*/
+        //---------DODAWANIE ROWS LUB PLACES Z CINEMA ROOM-----------
+
+        List<Seat> addedSeats = new ArrayList<>();
 
         editedRows = cinemaRoomService.getRowsNumberByCinemaRoomId(cinemaRoom.getId()) < cinemaRoom.getRowsNumber();
         editedPlaces = cinemaRoomService.getPlacesNumberInRowByCinemaRoomId(cinemaRoom.getId()) < cinemaRoom.getPlaces();
 
         if (editedRows && !editedPlaces) {
-            System.out.println("Total number of seats after added new rows: " + seatService.addPlacesToNewRows(cinemaRoom, cinemaRoomService.getRowsNumberByCinemaRoomId(cinemaRoom.getId()) + 1, cinemaRoom.getRowsNumber() - cinemaRoomService.getRowsNumberByCinemaRoomId(cinemaRoom.getId())));
+            System.out.println("Total number of seats after added new rows: "
+                    + addedSeats.addAll(
+                    seatService.addPlacesToNewRows(cinemaRoom, cinemaRoomService.getRowsNumberByCinemaRoomId(cinemaRoom.getId()) + 1, cinemaRoom.getRowsNumber() - cinemaRoomService.getRowsNumberByCinemaRoomId(cinemaRoom.getId()))));
         }
 
         if (editedPlaces && !editedRows) {
-            System.out.println("Total number of seats after added new places: " + seatService.addPlacesToExistsRows(cinemaRoom));
+            System.out.println("Total number of seats after added new places: "
+                    + addedSeats.addAll(
+                    seatService.addPlacesToExistsRows(cinemaRoom)));
         }
 
         if (editedPlaces && editedRows) {
-            System.out.println("Total number of seats after added new places and news rows: " + seatService.addNewPlacesAndRows(cinemaRoom));
+            System.out.println("Total number of seats after added new places and news rows: "
+                    + addedSeats.addAll(
+                    seatService.addNewPlacesAndRows(cinemaRoom)));
         }
 
-
-        //TODO DODAWANIE MIEJSC DO SEATS_SEANCES
-        //1. Pobierz id wszystkie przyszłe seansy dla tego cinemaRoom
         List<Integer> futureSeancesAtCinemaRoomIds = seanceService
                 .findSeancesFromDateAtCinemaRoom(cinemaRoom.getId())
                 .stream()
                 .map(Seance::getId)
                 .collect(Collectors.toList());
+        System.out.println(addedSeats.size());
 
-        //ADED SEATS MA ID = NULL!!!!!!!!!!!!!!!!
-
-        //2. Dodaj dla każdego seansu nowe meijsca do seats_seance
+        futureSeancesAtCinemaRoomIds.forEach(fs -> {
+            seatSeanceService.addAllBySeanceIds(addedSeats, fs);
+        });
 
         adminService.editCinemaRoom(cinemaRoom);
     }
@@ -369,7 +428,7 @@ public class MenuService {
         SearchCriterion searchCriterion = UserDataService.getSearchCriterion("Choose filter");
         int cinemaId;
         int cityId;
-        int seanceId;
+        int movieId;
         List<CinemaRoom> cinemaRooms;
         switch (searchCriterion) {
             case CINEMA -> {
@@ -378,29 +437,41 @@ public class MenuService {
                 }
                 while (cinemaService.findCinemaById(cinemaId).isEmpty());
                 cinemaRooms = cinemaRoomService.getCinemaRoomListByCinemaId(cinemaId);
+                if (cinemaRooms.isEmpty()) {
+                    System.out.println("No seances in this cinema");
+                    break;
+                }
                 showSeances(cinemaRooms);
             }
             case CITY -> {
-/*                do {
-                    cityId = UserDataService.getCity("Type city id", cityRepository).getId();
-                } while (cityRepository.findById(cityId).isEmpty());
-                System.out.println(cityId);
-                cinemaRooms = cinemaRoomRepository.findByCityId(cityId);
-                showSeances(cinemaRooms);*/
-            }
-            case SEANCE -> {
-/*
                 do {
-                    seanceId = UserDataService.getSeance("Type seance id", seanceRepository, movieRepository).getId();
-                } while (seanceRepository.findById(seanceId).isEmpty());
-*/
-
+                    cityId = UserDataService.getCity("Type city id", cityService).getId();
+                }
+                while (cityService.findCityById(cityId).isEmpty());
+                cinemaRooms = cinemaRoomService.getCinemaRoomListByCityId(cityId);
+                if (cinemaRooms.isEmpty()) {
+                    System.out.println("No seances in this city!");
+                    break;
+                }
+                showSeances(cinemaRooms);
+            }
+            case MOVIE -> {
+                do {
+                    movieId = UserDataService.getMovie("Type movie id", movieService).getId();
+                }
+                while (movieService.findById(movieId).isEmpty());
+                cinemaRooms = cinemaRoomService.getCinemaRoomListByMovieId(movieId);
+                if (cinemaRooms.isEmpty()) {
+                    System.out.println("No seances with this movie!");
+                    break;
+                }
+                showSeances(cinemaRooms);
             }
         }
     }
 
     private void showSeances(List<CinemaRoom> cinemaRooms) {
-        System.out.println("Available seances at: " + cinemaService.getNameByCinemaId(cinemaRooms.get(0).getCinemaId()));
+        System.out.println("Available seances:");
         Integer seanceId;
         do {
             seanceService.getSeancesListByCinemaRooms(cinemaRooms)

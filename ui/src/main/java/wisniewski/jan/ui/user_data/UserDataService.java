@@ -111,8 +111,7 @@ public class UserDataService {
 
     public static Movie getMovie(String msg, MovieService movieService) {
         System.out.println(msg);
-        String movies = movieService.showAll();
-        System.out.println(movies);
+        System.out.println(movieService.showAll());
         int decision;
         do {
             decision = getInteger("Choose correct movie number:");

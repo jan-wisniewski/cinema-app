@@ -46,7 +46,7 @@ public class SeatService {
         return seatRepository.deleteAll(seats);
     }
 
-    public Integer addPlacesToExistsRows(CinemaRoom cinemaRoom) {
+    public List<Seat> addPlacesToExistsRows(CinemaRoom cinemaRoom) {
         List<Seat> generatedSeats = new ArrayList<>();
         CinemaRoom cinemaRoomFromDb = cinemaRoomRepository.findById(cinemaRoom.getId()).orElseThrow(() -> new SeatServiceException("Failed"));
         int lastPlace = cinemaRoom.getPlaces();
@@ -63,10 +63,10 @@ public class SeatService {
                 );
             }
         }
-        return seatRepository.addAll(generatedSeats).size();
+        return seatRepository.addAll(generatedSeats);
     }
 
-    public Integer addNewPlacesAndRows(CinemaRoom cinemaRoom) {
+    public List<Seat> addNewPlacesAndRows(CinemaRoom cinemaRoom) {
         CinemaRoom cinemaRoomDb = cinemaRoomRepository.findById(cinemaRoom.getId()).orElseThrow(() -> new SeatServiceException("Failed"));
         int oldRows = cinemaRoomDb.getRowsNumber();
         int oldPlaces = cinemaRoomDb.getPlaces();
@@ -102,10 +102,10 @@ public class SeatService {
                 }
             }
         }
-        return seatRepository.addAll(generatedSeats).size();
+        return seatRepository.addAll(generatedSeats);
     }
 
-    public Integer addPlacesToNewRows(CinemaRoom cinemaRoom, Integer startRow, Integer newRowsToGenerate) {
+    public List<Seat> addPlacesToNewRows(CinemaRoom cinemaRoom, Integer startRow, Integer newRowsToGenerate) {
         List<Seat> generatedSeats = new ArrayList<>();
         int idRowNumber = startRow;
         for (int i = 1; i <= newRowsToGenerate; i++) {
@@ -121,7 +121,7 @@ public class SeatService {
             }
             idRowNumber++;
         }
-        return seatRepository.addAll(generatedSeats).size();
+        return seatRepository.addAll(generatedSeats);
     }
 
     public Seat getSeatById(Integer id) {

@@ -37,13 +37,14 @@ public class SeatRepositoryImpl extends AbstractCrudRepository<Seat, Integer> im
                     return batch.execute();
                 });
         var selectSql = """
-                select * from seats where cinema_room_id = :cinemaRoomId
+                select * from seats where cinema_room_id = :cinemaRoomId order by id desc LIMIT :limit 
                 """;
         return dbConnection
                 .getJdbi()
                 .withHandle(handle -> handle
                         .createQuery(selectSql)
                         .bind("cinemaRoomId", seatList.get(0).getCinemaRoomId())
+                        .bind("limit",seatList.size())
                         .mapToBean(Seat.class)
                         .list()
                 );
