@@ -20,25 +20,6 @@ public class DbConnection {
         return jdbi;
     }
 
-    public void createData() {
-        var insertCity = "insert into cities values (null,'Warszawa')";
-        var insertCinema = "insert into cinemas values (null,'Kinoteka',3)";
-        var insertCinemaRoom = "insert into cinema_rooms values (null,'Sala A',5,5,5)";
-        var insertMovie = "insert into movies values (null, 'Joker','Thriller','2020-06-23 10:00:00','2020-07-31 22:00:00')";
-        var insertSeance = "insert into seances values (null,2,3,'2020-06-23 19:45:00')";
-
-/*        getJdbi()
-                .useTransaction(handle -> {
-                            handle.execute(insertCity);
-                            handle.execute(insertCinema);
-                            handle.execute(insertCinemaRoom);
-                            handle.execute(insertMovie);
-                            handle.execute(insertSeance);
-                        }
-                );*/
-
-    }
-
     public void setUpTables() {
         var MOVIES = """
                 create table if not exists movies (
@@ -85,6 +66,7 @@ public class DbConnection {
                 movie_id integer not null,
                 cinema_room_id integer not null,
                 date_time timestamp,
+                price decimal not null,
                 foreign key (movie_id) references movies (id) on delete cascade on update cascade,
                 foreign key (cinema_room_id) references cinema_rooms (id) on delete cascade on update cascade
                 );

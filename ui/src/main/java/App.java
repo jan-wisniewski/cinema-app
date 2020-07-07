@@ -16,7 +16,6 @@ public class App {
 
         var dbConnection = new DbConnection(USERNAME, PASSWORD, URL);
         dbConnection.setUpTables();
-        dbConnection.createData();
 
         CinemaRepository cinemaRepository = new CinemaRepositoryImpl(dbConnection);
         CinemaRoomRepository cinemaRoomRepository = new CinemaRoomRepositoryImpl(dbConnection);

@@ -6,6 +6,7 @@ import wisniewski.jan.persistence.model.*;
 import wisniewski.jan.service.service.*;
 import wisniewski.jan.ui.exceptions.MenuServiceException;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -159,6 +160,14 @@ public class UserDataService {
         } while (value.toLowerCase().charAt(0) != 'y' && value.toLowerCase().charAt(0) != 'n');
         char decision = value.charAt(0);
         return Character.toLowerCase(decision) == 'y';
+    }
+
+    public static BigDecimal getDecimal(String message) {
+        String value;
+        do {
+            value = getString(message);
+        } while (!value.matches("\\d{1,3}\\.?\\d+"));
+        return new BigDecimal(value);
     }
 
     public void close() {

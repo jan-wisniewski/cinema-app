@@ -13,6 +13,7 @@ import wisniewski.jan.ui.exceptions.MenuServiceException;
 import wisniewski.jan.ui.user_data.UserDataService;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -146,6 +147,8 @@ public class MenuService {
         System.out.println("2. Seances: " + seanceService.getAll().size());
         System.out.println("3. Cinemas: " + cinemaService.getAll().size());
         System.out.println("4. Cinemas Rooms: " + cinemaRoomService.getAll().size());
+        System.out.println("5. Ticket Sold: " + ticketService.findAll().size());
+        System.out.println("6. Active Reservations: " + reservationService.getAll().size());
     }
 
     private void option12() {
@@ -163,6 +166,9 @@ public class MenuService {
         }
         if (UserDataService.getBoolean("Edit date time? (" + seance.getDateTime() + ")")) {
             seance.setDateTime(UserDataService.getLocalDateTime("Type new date time"));
+        }
+        if (UserDataService.getBoolean("Edit seance price? (" + seance.getPrice() + ")")) {
+            seance.setPrice(UserDataService.getDecimal("Type new price for seance"));
         }
         System.out.println(adminService.editSeance(seance));
     }
@@ -354,10 +360,25 @@ public class MenuService {
         do {
             reservation = UserDataService.getInteger("Choose your reservation");
         } while (reservation < 1 || reservation > userReservationList.size());
+        boolean wantToBuy = (UserDataService.getBoolean("Want to buy ticket?"));
         Reservation seanceReservation = reservationService.getReservationByReservationId(userReservationList.get(reservation - 1).getReservationId());
         SeatsSeance seatsSeance = seatSeanceService.getSeatSeancesBySeatId(seanceReservation.getSeatId());
-        buyTickets(seanceReservation.getSeanceId(), seatsSeance);
-        reservationService.deleteReservation(seanceReservation.getId());
+        String message;
+        if (wantToBuy) {
+            buyTickets(seanceReservation.getSeanceId(), seatsSeance);
+            reservationService.deleteReservation(seanceReservation.getId());
+        } else {
+            boolean wantToDelete = (UserDataService.getBoolean("Want to delete reservation?"));
+            if (wantToDelete) {
+                message = (reservationService.deleteReservation(seanceReservation.getId())) ? "Deleted successfully" : "Can't delete reservation";
+                seatsSeance.setState(SeatState.FREE);
+                adminService.editSeatSeance(seatsSeance);
+                System.out.println(message);
+            } else {
+                System.out.println("Returning to main menu");
+            }
+        }
+
     }
 
     private void option5() {
@@ -375,7 +396,9 @@ public class MenuService {
                 .cinemaRoomId(UserDataService.getCinemaRoom("Type cinema room id", cinemaRoomService).getId())
                 .movieId(UserDataService.getMovie("Type movie id", movieService).getId())
                 .dateTime(UserDataService.getLocalDateTime("Type seance date"))
+                .price(UserDataService.getDecimal("Type seance price"))
                 .build();
+
         System.out.println("Seance added with id: " + adminService.addSeance(seance));
     }
 
@@ -516,18 +539,21 @@ public class MenuService {
 
     private void buyTickets(Integer seanceId, SeatsSeance chosenSeatSeance) {
         System.out.println("Buying tickets");
-        BigDecimal ticketPrice = new BigDecimal(new Random().nextInt(100) + 10);
         int ticketDecision;
+        final BigDecimal STUDENT_DISCOUNT = new BigDecimal("0.50");
+        BigDecimal discount = (UserDataService.getBoolean("Are you a student?") ? STUDENT_DISCOUNT : BigDecimal.ZERO);
+        BigDecimal ticketPrice = seanceService.findById(seanceId).orElseThrow(() -> new MenuServiceException("Failed")).getPrice();
+        BigDecimal totalDiscount = (discount.compareTo(BigDecimal.ZERO) > 0 ? ticketPrice.multiply(discount) : BigDecimal.ZERO);
         var ticket = CreateTicketDto
                 .builder()
                 .seanceId(seanceId)
                 .seatId(chosenSeatSeance.getSeatId())
                 .price(ticketPrice)
-                .discount(BigDecimal.ZERO)
+                .discount(totalDiscount)
                 .userId(1)
                 .build();
         do {
-            System.out.println("Buy ticket for: " + ticketPrice + "?");
+            System.out.println("Buy ticket for: " + ticket.getPrice().subtract(ticket.getDiscount()) + "?");
             ticketDecision = UserDataService.getInteger("1 - accept / 2 - denied");
         } while (ticketDecision != 1 && ticketDecision != 2);
         switch (ticketDecision) {
@@ -544,15 +570,6 @@ public class MenuService {
     }
 
     private void showCinemaRoomPlacesForSeance(Integer seanceId) {
-//        int cinemaRoomId = seanceService
-//                .getSeanceById(seanceId)
-//                .orElseThrow(() -> new MenuServiceException("Failed"))
-//                .getCinemaRoomId();
-//
-//        int placesAtCinemaRoom = cinemaRoomService
-//                .getCinemaRoomByCinemaRoomId(cinemaRoomId)
-//                .getPlaces();
-
         List<SeatsSeance> seatsSeances = seatSeanceService
                 .getSeatsSeancesListBySeanceId(seanceId);
 

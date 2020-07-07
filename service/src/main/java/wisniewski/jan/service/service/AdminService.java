@@ -134,6 +134,7 @@ public class AdminService {
         }
 
         var seance = Mapper.fromSeanceDtoToSeance(seanceDto);
+
         var addedSeance = seanceRepository
                 .add(seance)
                 .orElseThrow(() -> new AdminServiceException("cannot insert to db"));

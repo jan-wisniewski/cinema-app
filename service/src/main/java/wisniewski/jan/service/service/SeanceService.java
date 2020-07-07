@@ -46,11 +46,15 @@ public class SeanceService {
         return seanceRepository.findFutureSeancesAtCinemaRoom(cinemaRoomId);
     }
 
-    public List<Seance> findByMovie (Movie movie){
+    public List<Seance> findByMovie(Movie movie) {
         return seanceRepository.findByMovie(movie);
     }
 
     public List<Seance> findByPhrase(String phrase) {
         return seanceRepository.findByPhrase(phrase);
+    }
+
+    public Optional<Seance> findById(Integer seanceId) {
+        return seanceRepository.findById(seanceId);
     }
 }

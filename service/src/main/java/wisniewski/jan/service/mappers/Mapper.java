@@ -58,6 +58,7 @@ public interface Mapper {
                 .dateTime(seanceDto.getDateTime())
                 .movieId(seanceDto.getMovieId())
                 .cinemaRoomId(seanceDto.getCinemaRoomId())
+                .price(seanceDto.getPrice())
                 .build();
     }
 

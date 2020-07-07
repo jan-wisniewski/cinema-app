@@ -11,13 +11,17 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.apache.log4j.Logger;
+import wisniewski.jan.persistence.model.CinemaRoom;
+import wisniewski.jan.persistence.model.Seat;
 import wisniewski.jan.service.dto.CreateSeanceDto;
 import wisniewski.jan.service.mappers.Mapper;
 import wisniewski.jan.persistence.model.Seance;
-import wisniewski.jan.service.repository.SeanceRepository;
+import wisniewski.jan.service.repository.*;
 import wisniewski.jan.service.service.AdminService;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -34,6 +38,15 @@ public class AddSeanceTests {
 
     @Mock
     SeanceRepository seanceRepository;
+
+    @Mock
+    CinemaRoomRepository cinemaRoomRepository;
+
+    @Mock
+    SeatRepository seatRepository;
+
+    @Mock
+    SeatsSeancesRepository seatsSeancesRepository;
 
     private Logger logger;
 
@@ -62,6 +75,7 @@ public class AddSeanceTests {
                 .cinemaRoomId(4)
                 .movieId(3)
                 .dateTime(LocalDateTime.now())
+                .price(BigDecimal.valueOf(10))
                 .build();
 
         Mockito
@@ -86,6 +100,7 @@ public class AddSeanceTests {
                 .cinemaRoomId(4)
                 .movieId(3)
                 .dateTime(LocalDateTime.now().plusDays(2))
+                .price(BigDecimal.valueOf(10))
                 .build();
         var seanceExpected = Seance
                 .builder()
@@ -93,19 +108,49 @@ public class AddSeanceTests {
                 .cinemaRoomId(4)
                 .movieId(3)
                 .dateTime(LocalDateTime.now().plusDays(2))
+                .price(BigDecimal.valueOf(10))
                 .build();
 
         var seanceToAdd = Mapper.fromSeanceDtoToSeance(seanceDto);
+
+        var cinemaRoom = CinemaRoom
+                .builder()
+                .id(4)
+                .cinemaId(1)
+                .places(1)
+                .name("A")
+                .rowsNumber(1)
+                .build();
+
+        var seatsList = List.of(
+                Seat
+                        .builder()
+                        .cinemaRoomId(1)
+                        .place(1)
+                        .rowsNumber(1)
+                        .id(1)
+                        .build()
+        );
 
         Mockito
                 .when(seanceRepository.add(seanceToAdd))
                 .thenReturn(Optional.of(seanceExpected));
 
-
         Mockito
                 .when(seanceRepository.isMovieDisplayed(seanceDto))
                 .thenReturn(true);
 
+        Mockito
+                .when(cinemaRoomRepository.findById(4))
+                .thenReturn(Optional.of(cinemaRoom));
+
+        Mockito
+                .when(seatRepository.findAllByCinemaId(cinemaRoom))
+                .thenReturn(seatsList);
+
+        Mockito
+                .when(seatsSeancesRepository.addAll(seatsList, seanceToAdd))
+                .thenReturn(1);
 
         assertEquals(seanceExpected.getId(), adminService.addSeance(seanceDto));
         logger.info("Create seance successfully");
@@ -118,12 +163,14 @@ public class AddSeanceTests {
                 .builder()
                 .cinemaRoomId(4)
                 .movieId(3)
+                .price(BigDecimal.valueOf(10))
                 .dateTime(LocalDateTime.now().plusDays(2))
                 .build();
         var seanceExpected = Seance
                 .builder()
                 .id(1)
                 .cinemaRoomId(4)
+                .price(BigDecimal.valueOf(10))
                 .movieId(3)
                 .dateTime(LocalDateTime.now().plusDays(2))
                 .build();
@@ -155,6 +202,7 @@ public class AddSeanceTests {
                 .builder()
                 .dateTime(LocalDateTime.now().plusDays(4))
                 .movieId(1)
+                .price(BigDecimal.valueOf(10))
                 .cinemaRoomId(1)
                 .build();
 
@@ -179,6 +227,7 @@ public class AddSeanceTests {
                 .builder()
                 .dateTime(LocalDateTime.now().plusDays(4))
                 .movieId(1)
+                .price(BigDecimal.valueOf(10))
                 .cinemaRoomId(1)
                 .build();
 
@@ -187,8 +236,23 @@ public class AddSeanceTests {
                 .dateTime(seanceDto.getDateTime())
                 .movieId(seanceDto.getMovieId())
                 .cinemaRoomId(seanceDto.getCinemaRoomId())
+                .price(BigDecimal.valueOf(10))
                 .id(1)
                 .build();
+
+        var cinemaRoom = CinemaRoom
+                .builder()
+                .cinemaId(1)
+                .name("A")
+                .places(1)
+                .rowsNumber(1)
+                .id(1)
+                .build();
+
+        Mockito
+                .when(cinemaRoomRepository.findById(1))
+                .thenReturn(Optional.of(cinemaRoom));
+
 
         Mockito
                 .when(seanceRepository.isUniqueSeance(seanceDto))
@@ -214,6 +278,7 @@ public class AddSeanceTests {
         CreateSeanceDto seanceDto = CreateSeanceDto
                 .builder()
                 .dateTime(LocalDateTime.now().plusDays(4))
+                .price(BigDecimal.valueOf(10))
                 .movieId(1)
                 .cinemaRoomId(1)
                 .build();
@@ -223,8 +288,22 @@ public class AddSeanceTests {
                 .dateTime(seanceDto.getDateTime())
                 .movieId(seanceDto.getMovieId())
                 .cinemaRoomId(seanceDto.getCinemaRoomId())
+                .price(BigDecimal.valueOf(10))
                 .id(1)
                 .build();
+
+        var cinemaRoom = CinemaRoom
+                .builder()
+                .id(1)
+                .rowsNumber(1)
+                .name("A")
+                .places(1)
+                .cinemaId(1)
+                .build();
+
+        Mockito
+                .when(cinemaRoomRepository.findById(1))
+                .thenReturn(Optional.of(cinemaRoom));
 
         Mockito
                 .when(seanceRepository.isUniqueSeance(seanceDto))
@@ -251,6 +330,7 @@ public class AddSeanceTests {
                 .builder()
                 .dateTime(LocalDateTime.now().plusDays(4))
                 .movieId(1)
+                .price(BigDecimal.valueOf(10))
                 .cinemaRoomId(1)
                 .build();
 
@@ -284,6 +364,24 @@ public class AddSeanceTests {
         }
 
         assertEquals("Screening date is not within the time frame of the movie", exceptionMessage);
-
     }
+
+    @Test
+    @DisplayName("when price is negative exception has been thrown")
+    public void test9() {
+        var seanceDto = CreateSeanceDto
+                .builder()
+                .cinemaRoomId(1)
+                .dateTime(LocalDateTime.now().plusDays(5))
+                .movieId(1)
+                .price(BigDecimal.valueOf(-10))
+                .build();
+        try {
+            adminService.addSeance(seanceDto);
+        } catch (Exception e) {
+            exceptionMessage = e.getMessage();
+        }
+        assertEquals("Add seance errors: Price : Price should be positive", exceptionMessage);
+    }
+
 }

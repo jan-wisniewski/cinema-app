@@ -6,6 +6,7 @@ import wisniewski.jan.persistence.model.view.ReservationWithUser;
 import wisniewski.jan.service.repository.ReservationRepository;
 import wisniewski.jan.service.exception.ReservationServiceException;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,4 +35,7 @@ public class ReservationService {
         return reservationRepository.deleteById(reservationId);
     }
 
+    public List<Reservation> getAll() {
+        return reservationRepository.findAll();
+    }
 }

@@ -1,6 +1,7 @@
 package wisniewski.jan.service.service;
 
 import lombok.RequiredArgsConstructor;
+import wisniewski.jan.persistence.model.Ticket;
 import wisniewski.jan.service.dto.CreateTicketDto;
 import wisniewski.jan.service.mappers.Mapper;
 import wisniewski.jan.service.repository.TicketRepository;
@@ -8,6 +9,7 @@ import wisniewski.jan.service.validator.CreateTicketDtoValidator;
 import wisniewski.jan.service.exception.TicketServiceException;
 import wisniewski.jan.service.exception.UserServiceException;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -38,6 +40,8 @@ public class TicketService {
         return createdTicket.getId();
     }
 
-
+    public List<Ticket> findAll() {
+        return ticketRepository.findAll();
+    }
 
 }

@@ -149,7 +149,8 @@ public class SeanceRepositoryImpl extends AbstractCrudRepository<Seance, Integer
                 join cinema_rooms cr on s.cinema_room_id = cr.id
                 join cinemas c on cr.cinema_id = c.id
                 join cities ct on c.city_id = ct.id
-                where title = :phrase or c.name = :phrase or ct.name = :phrase and s.date_time > now();
+                where title LIKE '%' || :phrase || '%' or c.name LIKE '%' || :phrase || '%' or ct.name LIKE '%' || :phrase || '%'
+                and s.date_time > now();
                 """;
         return dbConnection
                 .getJdbi()
