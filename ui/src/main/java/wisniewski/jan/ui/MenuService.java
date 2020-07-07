@@ -1,12 +1,14 @@
 package wisniewski.jan.ui;
 
 import lombok.RequiredArgsConstructor;
-import wisniewski.jan.persistence.dto.*;
-import wisniewski.jan.persistence.enums.SearchCriterion;
+import wisniewski.jan.persistence.model.view.ReservationWithUser;
+import wisniewski.jan.persistence.model.view.SeatsSeanceWithSeanceDate;
+import wisniewski.jan.service.dto.*;
+import wisniewski.jan.service.enums.SearchCriterion;
 import wisniewski.jan.persistence.enums.SeatState;
-import wisniewski.jan.persistence.mappers.Mapper;
+import wisniewski.jan.service.mappers.Mapper;
 import wisniewski.jan.persistence.model.*;
-import wisniewski.jan.service.*;
+import wisniewski.jan.service.service.*;
 import wisniewski.jan.ui.exceptions.MenuServiceException;
 import wisniewski.jan.ui.user_data.UserDataService;
 
@@ -425,80 +427,43 @@ public class MenuService {
             System.out.println("There is no seances!");
             return;
         }
-        SearchCriterion searchCriterion = UserDataService.getSearchCriterion("Choose filter");
-        int cinemaId;
-        int cityId;
-        int movieId;
-        List<CinemaRoom> cinemaRooms;
-        switch (searchCriterion) {
-            case CINEMA -> {
-                do {
-                    cinemaId = UserDataService.getCinema("Type cinema id", cinemaService).getId();
-                }
-                while (cinemaService.findCinemaById(cinemaId).isEmpty());
-                cinemaRooms = cinemaRoomService.getCinemaRoomListByCinemaId(cinemaId);
-                if (cinemaRooms.isEmpty()) {
-                    System.out.println("No seances in this cinema");
-                    break;
-                }
-                showSeances(cinemaRooms);
-            }
-            case CITY -> {
-                do {
-                    cityId = UserDataService.getCity("Type city id", cityService).getId();
-                }
-                while (cityService.findCityById(cityId).isEmpty());
-                cinemaRooms = cinemaRoomService.getCinemaRoomListByCityId(cityId);
-                if (cinemaRooms.isEmpty()) {
-                    System.out.println("No seances in this city!");
-                    break;
-                }
-                showSeances(cinemaRooms);
-            }
-            case MOVIE -> {
-                do {
-                    movieId = UserDataService.getMovie("Type movie id", movieService).getId();
-                }
-                while (movieService.findById(movieId).isEmpty());
-                cinemaRooms = cinemaRoomService.getCinemaRoomListByMovieId(movieId);
-                if (cinemaRooms.isEmpty()) {
-                    System.out.println("No seances with this movie!");
-                    break;
-                }
-                showSeances(cinemaRooms);
-            }
+        String phrase = UserDataService.getString("Type cinema, city or movie title");
+        AtomicInteger counter = new AtomicInteger();
+        int decision;
+        List<Seance> seances = seanceService.findByPhrase(phrase);
+        if (seances.isEmpty()) {
+            System.out.println("No cinema, city or movie with this phrase");
+            return;
         }
-    }
 
-    private void showSeances(List<CinemaRoom> cinemaRooms) {
-        System.out.println("Available seances:");
-        Integer seanceId;
         do {
-            seanceService.getSeancesListByCinemaRooms(cinemaRooms)
+            System.out.println("Available seances:");
+            seances
                     .stream()
-                    .filter(seance -> seance.getDateTime().isAfter(LocalDateTime.now()))
-                    .map(seance -> seance.getId() + " : " + movieService.showTitle(seance.getMovieId()) +
-                            " (" + seance.getDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + ") [" + seance.getDateTime().getDayOfWeek() + "] - " + cinemaRoomService.getNameByCinemaRoomId(seance.getCinemaRoomId()))
+                    .map(seance -> counter.incrementAndGet() + ". " + movieService.showTitle(seance.getMovieId()) +
+                            " (" + seance.getDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + ")" +
+                            "[" + seance.getDateTime().getDayOfWeek() + "] - "
+                            + cinemaService.findByCinemaRoomId(seance.getCinemaRoomId()).getName() + ", "
+                            + cityService.findCityById(cinemaService.findByCinemaRoomId(seance.getCinemaRoomId()).getCityId()).getName() + ", "
+                            + cinemaRoomService.getNameByCinemaRoomId(seance.getCinemaRoomId()))
                     .forEach(System.out::println);
-            seanceId = UserDataService.getInteger("Type seance id");
-        } while (seanceService.getSeanceById(seanceId).isEmpty());
-
+            decision = UserDataService.getInteger("Choose seance");
+        } while (decision < 1 || decision > seances.size());
+        Seance seance = seances.get(decision - 1);
         long availableSeats = seatSeanceService
-                .getSeatsSeancesListBySeanceId(seanceId)
+                .getSeatsSeancesListBySeanceId(seance.getId())
                 .stream()
                 .filter(seatsSeance -> seatsSeance.getState().equals(SeatState.FREE))
                 .count();
-
         if (availableSeats < 1) {
             System.out.println("No seats available for this seance");
             return;
         }
-        int userDecision;
         do {
-            userDecision = UserDataService.getInteger("How many tickets do you want to buy or reserve? (available: " + availableSeats + ")");
-        } while (userDecision > availableSeats || userDecision < 1);
-        if (userDecision == 1) {
-            chooseCinemaRoomPlace(seanceId, userDecision);
+            decision = UserDataService.getInteger("How many tickets do you want to buy or reserve? (available: " + availableSeats + ")");
+        } while (decision > availableSeats || decision < 1);
+        if (decision == 1) {
+            chooseCinemaRoomPlace(seance.getId(), decision);
         } else {
             ///kupowanie grupowe
         }

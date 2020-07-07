@@ -11,13 +11,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.apache.log4j.Logger;
-import wisniewski.jan.persistence.dto.CreateCinemaRoomDto;
-import wisniewski.jan.persistence.mappers.Mapper;
+import wisniewski.jan.service.dto.CreateCinemaRoomDto;
+import wisniewski.jan.service.mappers.Mapper;
 import wisniewski.jan.persistence.model.CinemaRoom;
 import wisniewski.jan.persistence.model.Seat;
-import wisniewski.jan.persistence.repository.CinemaRoomRepository;
-import wisniewski.jan.persistence.repository.SeatRepository;
-import wisniewski.jan.service.AdminService;
+import wisniewski.jan.service.repository.CinemaRoomRepository;
+import wisniewski.jan.service.repository.SeatRepository;
+import wisniewski.jan.service.service.AdminService;
 
 import java.util.List;
 import java.util.Optional;
@@ -60,7 +60,7 @@ public class AddCinemaRoomTests {
     @Test
     @DisplayName("when cinema room data is correct adding is successful")
     public void test2() {
-        var cinemaRoomDto = CreateCinemaRoomDto
+        CreateCinemaRoomDto cinemaRoomDto = CreateCinemaRoomDto
                 .builder()
                 .rows(5)
                 .name("Room")

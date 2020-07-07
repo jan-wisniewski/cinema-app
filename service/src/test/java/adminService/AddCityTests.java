@@ -1,7 +1,6 @@
 package adminService;
 
 import extensions.LoggerExtension;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,10 +11,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.apache.log4j.Logger;
-import wisniewski.jan.persistence.dto.CreateCityDto;
 import wisniewski.jan.persistence.model.City;
-import wisniewski.jan.persistence.repository.CityRepository;
-import wisniewski.jan.service.AdminService;
+import wisniewski.jan.service.repository.CityRepository;
+import wisniewski.jan.service.service.AdminService;
+import wisniewski.jan.service.dto.CreateCityDto;
 
 import java.util.Optional;
 

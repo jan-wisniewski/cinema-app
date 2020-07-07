@@ -11,12 +11,12 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-import wisniewski.jan.persistence.dto.CreateMovieDto;
 import wisniewski.jan.persistence.enums.Genre;
-import wisniewski.jan.persistence.mappers.Mapper;
+import wisniewski.jan.service.dto.CreateMovieDto;
+import wisniewski.jan.service.mappers.Mapper;
 import wisniewski.jan.persistence.model.Movie;
-import wisniewski.jan.persistence.repository.MovieRepository;
-import wisniewski.jan.service.AdminService;
+import wisniewski.jan.service.repository.MovieRepository;
+import wisniewski.jan.service.service.AdminService;
 
 import java.time.LocalDateTime;
 import java.util.Optional;

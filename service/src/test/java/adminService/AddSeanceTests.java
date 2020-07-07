@@ -11,11 +11,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.apache.log4j.Logger;
-import wisniewski.jan.persistence.dto.CreateSeanceDto;
-import wisniewski.jan.persistence.mappers.Mapper;
+import wisniewski.jan.service.dto.CreateSeanceDto;
+import wisniewski.jan.service.mappers.Mapper;
 import wisniewski.jan.persistence.model.Seance;
-import wisniewski.jan.persistence.repository.SeanceRepository;
-import wisniewski.jan.service.AdminService;
+import wisniewski.jan.service.repository.SeanceRepository;
+import wisniewski.jan.service.service.AdminService;
 
 import java.time.LocalDateTime;
 import java.util.Optional;

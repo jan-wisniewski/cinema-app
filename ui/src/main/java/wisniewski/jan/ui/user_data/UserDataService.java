@@ -1,10 +1,9 @@
 package wisniewski.jan.ui.user_data;
 
 import wisniewski.jan.persistence.enums.Genre;
-import wisniewski.jan.persistence.enums.SearchCriterion;
+import wisniewski.jan.service.enums.SearchCriterion;
 import wisniewski.jan.persistence.model.*;
-import wisniewski.jan.service.*;
-import wisniewski.jan.service.exception.UserServiceException;
+import wisniewski.jan.service.service.*;
 import wisniewski.jan.ui.exceptions.MenuServiceException;
 
 import java.time.LocalDateTime;
@@ -75,61 +74,82 @@ public class UserDataService {
 
     public static City getCity(String msg, CityService cityService) {
         System.out.println(msg);
-        String cities = cityService.showCities();
-        System.out.println(cities);
+        AtomicInteger counter = new AtomicInteger();
+        String cities = cityService
+                .getAll()
+                .stream()
+                .map(city -> counter.incrementAndGet() + ". " + city.getName())
+                .collect(Collectors.joining("\n"));
         int decision;
         do {
+            System.out.println(cities);
             decision = getInteger("Choose correct city number:");
-        } while (cityService.findCityById(decision).isEmpty());
-        return cityService.findCityById(decision)
-                .orElseThrow(() -> new UserServiceException("Failed"));
+        } while (decision < 1 || decision > cityService.getAll().size());
+        return cityService.getAll().get(decision - 1);
     }
 
     public static Cinema getCinema(String msg, CinemaService cinemaService) {
         System.out.println(msg);
-        String cinemas = cinemaService.showAllCinemas();
-        System.out.println(cinemas);
+        AtomicInteger counter = new AtomicInteger();
+        String cinemas = cinemaService
+                .getAll()
+                .stream()
+                .map(cinema -> counter.incrementAndGet() + ". " + cinema.getName())
+                .collect(Collectors.joining("\n"));
         int decision;
         do {
+            System.out.println(cinemas);
             decision = getInteger("Choose correct cinema number:");
-        } while (cinemaService.findCinemaById(decision).isEmpty());
-        return cinemaService.findCinemaById(decision)
-                .orElseThrow(() -> new UserServiceException("Failed"));
+        } while (decision < 1 || decision > cinemaService.getAll().size());
+        return cinemaService.getAll().get(decision - 1);
     }
 
     public static CinemaRoom getCinemaRoom(String msg, CinemaRoomService cinemaRoomService) {
         System.out.println(msg);
-        String cinemasRooms = cinemaRoomService.showAllCinemasRooms();
-        System.out.println(cinemasRooms);
+        AtomicInteger counter = new AtomicInteger();
+        String cinemasRoom = cinemaRoomService
+                .getAll()
+                .stream()
+                .map(cinemaRoom -> counter.incrementAndGet() + ". " + cinemaRoom.getName())
+                .collect(Collectors.joining("\n"));
         int decision;
         do {
+            System.out.println(cinemasRoom);
             decision = getInteger("Choose correct cinema room number:");
-        } while (cinemaRoomService.findById(decision).isEmpty());
-        return cinemaRoomService.findById(decision)
-                .orElseThrow(() -> new UserServiceException("Failed"));
+        } while (decision < 1 || decision > cinemaRoomService.getAll().size());
+        return cinemaRoomService.getAll().get(decision - 1);
     }
 
     public static Movie getMovie(String msg, MovieService movieService) {
         System.out.println(msg);
-        System.out.println(movieService.showAll());
+        AtomicInteger counter = new AtomicInteger();
+        String movies = movieService
+                .getAll()
+                .stream()
+                .map(movie -> counter.incrementAndGet() + ". " + movie.getTitle())
+                .collect(Collectors.joining("\n"));
         int decision;
         do {
+            System.out.println(movies);
             decision = getInteger("Choose correct movie number:");
-        } while (movieService.findById(decision).isEmpty());
-        return movieService.findById(decision)
-                .orElseThrow(() -> new UserServiceException("Failed"));
+        } while (decision < 1 || decision > movieService.getAll().size());
+        return movieService.getAll().get(decision - 1);
     }
 
     public static Seance getSeance(String msg, SeanceService seanceService) {
         System.out.println(msg);
-        String seances = seanceService.showAll();
-        System.out.println(seances);
+        AtomicInteger counter = new AtomicInteger();
+        String seances = seanceService
+                .getAll()
+                .stream()
+                .map(seance -> counter.incrementAndGet() + ". " + seance.getMovieId())
+                .collect(Collectors.joining("\n"));
         int decision;
         do {
+            System.out.println(seances);
             decision = getInteger("Choose correct seance number:");
-        } while (seanceService.getSeanceById(decision).isEmpty());
-        return seanceService.getSeanceById(decision)
-                .orElseThrow(() -> new UserServiceException("Failed"));
+        } while (decision < 1 || decision > seanceService.getAll().size());
+        return seanceService.getAll().get(decision - 1);
     }
 
     public static boolean getBoolean(String message) {

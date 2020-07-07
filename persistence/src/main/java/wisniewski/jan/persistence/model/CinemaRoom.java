@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class CinemaRoom {
     private Integer id;
     private String name;
-    private Integer cinemaId;
     private Integer rowsNumber;
     private Integer places;
+    private Integer cinemaId;
 }

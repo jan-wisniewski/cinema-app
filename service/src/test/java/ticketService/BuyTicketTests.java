@@ -11,11 +11,11 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-import wisniewski.jan.persistence.dto.CreateTicketDto;
-import wisniewski.jan.persistence.mappers.Mapper;
+import wisniewski.jan.service.dto.CreateTicketDto;
+import wisniewski.jan.service.mappers.Mapper;
 import wisniewski.jan.persistence.model.Ticket;
-import wisniewski.jan.persistence.repository.TicketRepository;
-import wisniewski.jan.service.TicketService;
+import wisniewski.jan.service.repository.TicketRepository;
+import wisniewski.jan.service.service.TicketService;
 import wisniewski.jan.service.exception.TicketServiceException;
 
 import java.math.BigDecimal;

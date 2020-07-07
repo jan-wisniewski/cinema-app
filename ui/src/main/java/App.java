@@ -1,10 +1,12 @@
 import wisniewski.jan.persistence.connection.DbConnection;
-import wisniewski.jan.persistence.repository.*;
-import wisniewski.jan.persistence.repository.impl.*;
-import wisniewski.jan.service.*;
+import wisniewski.jan.service.repository.*;
+import wisniewski.jan.service.repository.impl.*;
+import wisniewski.jan.service.service.*;
 import wisniewski.jan.ui.MenuService;
 
-import java.time.LocalDateTime;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class App {
     public static void main(String[] args) {
@@ -47,8 +49,18 @@ public class App {
                 reservationService, seanceService,
                 cinemaService, seatService, seatSeanceService
         );
+
+        ScheduledExecutorService ses = Executors.newScheduledThreadPool(1);
+        Runnable runnable = () -> {
+            try {
+                System.out.println("Deleted reservations: "+reservationService.clearReservations(30));
+                TimeUnit.SECONDS.sleep(1);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        };
+        var future2 = ses.scheduleWithFixedDelay(runnable, 1, 1, TimeUnit.MINUTES);
+
         menuService.mainMenu();
-
-
     }
 }

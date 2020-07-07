@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+// TODO
+// czy ta tabela jest potrzebna ?
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder

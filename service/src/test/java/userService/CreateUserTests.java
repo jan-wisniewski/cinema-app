@@ -11,11 +11,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.apache.log4j.Logger;
-import wisniewski.jan.persistence.dto.CreateUserDto;
-import wisniewski.jan.persistence.mappers.Mapper;
+import wisniewski.jan.service.dto.CreateUserDto;
+import wisniewski.jan.service.mappers.Mapper;
 import wisniewski.jan.persistence.model.User;
-import wisniewski.jan.persistence.repository.UserRepository;
-import wisniewski.jan.service.UserService;
+import wisniewski.jan.service.repository.UserRepository;
+import wisniewski.jan.service.service.UserService;
 
 import java.util.Optional;
 
