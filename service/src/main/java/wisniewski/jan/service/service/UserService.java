@@ -1,6 +1,7 @@
 package wisniewski.jan.service.service;
 
 import lombok.RequiredArgsConstructor;
+import wisniewski.jan.persistence.model.User;
 import wisniewski.jan.service.dto.CreateUserDto;
 import wisniewski.jan.service.mappers.Mapper;
 import wisniewski.jan.service.repository.UserRepository;
@@ -14,6 +15,10 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserRepository userRepository;
+
+    public User findById (Integer userId){
+        return userRepository.findById(userId).orElseThrow(() -> new UserServiceException("FAILED"));
+    }
 
     public Integer createUser(CreateUserDto userDto) {
         if (Objects.isNull(userDto)){

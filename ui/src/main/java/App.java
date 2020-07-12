@@ -26,6 +26,7 @@ public class App {
         TicketRepository ticketRepository = new TicketRepositoryImpl(dbConnection);
         CityRepository cityRepository = new CityRepositoryImpl(dbConnection);
         ReservationRepository reservationRepository = new ReservationRepositoryImpl(dbConnection);
+        UserRepository userRepository = new UserRepositoryImpl(dbConnection);
 
         TicketService ticketService = new TicketService(ticketRepository);
         MovieService movieService = new MovieService(movieRepository);
@@ -36,6 +37,7 @@ public class App {
         CinemaService cinemaService = new CinemaService(cinemaRepository);
         SeatService seatService = new SeatService(seatRepository, cinemaRoomRepository);
         SeatSeanceService seatSeanceService = new SeatSeanceService(seatsSeancesRepository);
+        UserService userService = new UserService(userRepository);
 
         AdminService adminService = new AdminService(cinemaRepository, cinemaRoomRepository,
                 seanceRepository, movieRepository,
@@ -46,7 +48,7 @@ public class App {
                 ticketService, movieService,
                 adminService, cinemaRoomService, cityService,
                 reservationService, seanceService,
-                cinemaService, seatService, seatSeanceService
+                cinemaService, seatService, seatSeanceService, userService
         );
 
         ScheduledExecutorService ses = Executors.newScheduledThreadPool(1);

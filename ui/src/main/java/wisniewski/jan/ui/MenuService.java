@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import wisniewski.jan.persistence.model.view.ReservationWithUser;
 import wisniewski.jan.persistence.model.view.SeatsSeanceWithSeanceDate;
 import wisniewski.jan.service.dto.*;
+import wisniewski.jan.service.email.EmailService;
 import wisniewski.jan.service.enums.SearchCriterion;
 import wisniewski.jan.persistence.enums.SeatState;
 import wisniewski.jan.service.mappers.Mapper;
@@ -36,6 +37,7 @@ public class MenuService {
     private final CinemaService cinemaService;
     private final SeatService seatService;
     private final SeatSeanceService seatSeanceService;
+    private final UserService userService;
 
     public void mainMenu() {
         while (true) {
@@ -534,6 +536,21 @@ public class MenuService {
                 .build();
         var reservation = Mapper.fromCreateReservationDtoToReservation(reservationDto);
         reservationService.addReservation(reservation);
+        EmailService.sendMail(userService.findById(reservation.getUserId()).getEmail(),
+                "Reserved Ticket!",
+                new StringBuilder()
+                        .append("You have successfully reserved a ticket.\n")
+                        .append("NAME: " +userService.findById(reservation.getUserId()).getName()+"\n")
+                        .append("SURNAME: " +userService.findById(reservation.getUserId()).getSurname()+"\n")
+                        .append("MOVIE: " + movieService.findById(seanceService.getSeanceById(reservation.getSeanceId()).orElseThrow(() -> new MenuServiceException("FAILED")).getMovieId()).orElseThrow(() -> new MenuServiceException("FAILED")).getTitle() + "\n")
+                        .append("DATE: " + seanceService.getSeanceById(reservation.getSeanceId()).orElseThrow(() -> new MenuServiceException("Failed")).getDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd, HH:mm:ss")) + "\n")
+                        .append("CINEMA: " + cinemaService.findByCinemaRoomId(seanceService.getSeanceById(reservation.getSeanceId()).orElseThrow(() -> new MenuServiceException("FAILED")).getCinemaRoomId()).getName() + "\n")
+                        .append("CITY: " + cityService.findCityById(cinemaService.findByCinemaRoomId(seanceService.getSeanceById(reservation.getSeanceId()).orElseThrow(() -> new MenuServiceException("FAILED")).getCinemaRoomId()).getCityId()).getName() + "\n")
+                        .append("CINEMA ROOM: " + cinemaRoomService.findById(seanceService.getSeanceById(reservation.getSeanceId()).orElseThrow(() -> new MenuServiceException("FAILED")).getCinemaRoomId()).orElseThrow(() -> new MenuServiceException("FAILED")).getName()
+                                + "\n")
+                        .append("ROW / PLACE: " +seatService.getSeat(reservation.getSeatId()).getRowsNumber()+" / "+seatService.getSeat(reservation.getSeatId()).getPlace())
+                        .toString()
+        );
         System.out.println("Ticket reserved!");
     }
 
@@ -561,6 +578,21 @@ public class MenuService {
                 ticketService.buyTicket(ticket);
                 chosenSeatSeance.setState(SeatState.ORDERED);
                 adminService.editSeatSeance(chosenSeatSeance);
+                EmailService.sendMail(userService.findById(ticket.getUserId()).getEmail(),
+                        "Bought Ticket!",
+                        new StringBuilder()
+                                .append("You have successfully bought a ticket.\n")
+                                .append("NAME: " +userService.findById(ticket.getUserId()).getName()+"\n")
+                                .append("SURNAME: " +userService.findById(ticket.getUserId()).getSurname()+"\n")
+                                .append("MOVIE: " + movieService.findById(seanceService.getSeanceById(ticket.getSeanceId()).orElseThrow(() -> new MenuServiceException("FAILED")).getMovieId()).orElseThrow(() -> new MenuServiceException("FAILED")).getTitle() + "\n")
+                                .append("DATE: " + seanceService.getSeanceById(ticket.getSeanceId()).orElseThrow(() -> new MenuServiceException("Failed")).getDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd, HH:mm:ss")) + "\n")
+                                .append("CINEMA: " + cinemaService.findByCinemaRoomId(seanceService.getSeanceById(ticket.getSeanceId()).orElseThrow(() -> new MenuServiceException("FAILED")).getCinemaRoomId()).getName() + "\n")
+                                .append("CITY: " + cityService.findCityById(cinemaService.findByCinemaRoomId(seanceService.getSeanceById(ticket.getSeanceId()).orElseThrow(() -> new MenuServiceException("FAILED")).getCinemaRoomId()).getCityId()).getName() + "\n")
+                                .append("CINEMA ROOM: " + cinemaRoomService.findById(seanceService.getSeanceById(ticket.getSeanceId()).orElseThrow(() -> new MenuServiceException("FAILED")).getCinemaRoomId()).orElseThrow(() -> new MenuServiceException("FAILED")).getName()
+                                        + "\n")
+                                .append("ROW / PLACE: " +seatService.getSeat(ticket.getSeatId()).getRowsNumber()+" / "+seatService.getSeat(ticket.getSeatId()).getPlace())
+                                .toString()
+                );
             }
             case 2 -> {
                 return;
