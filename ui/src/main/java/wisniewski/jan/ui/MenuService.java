@@ -7,9 +7,11 @@ import wisniewski.jan.service.dto.*;
 import wisniewski.jan.service.email.EmailService;
 import wisniewski.jan.service.enums.SearchCriterion;
 import wisniewski.jan.persistence.enums.SeatState;
+import wisniewski.jan.service.exception.AuthenticationException;
 import wisniewski.jan.service.mappers.Mapper;
 import wisniewski.jan.persistence.model.*;
 import wisniewski.jan.service.service.*;
+import wisniewski.jan.service.service.proxy.AuthenticationService;
 import wisniewski.jan.ui.exceptions.MenuServiceException;
 import wisniewski.jan.ui.user_data.UserDataService;
 
@@ -38,6 +40,7 @@ public class MenuService {
     private final SeatService seatService;
     private final SeatSeanceService seatSeanceService;
     private final UserService userService;
+    private final AuthenticationService authenticationService;
 
     public void mainMenu() {
         while (true) {
@@ -82,7 +85,28 @@ public class MenuService {
         }
     }
 
+    private void login() {
+        var authenticationDto = AuthenticationDto
+                .builder()
+                .username(UserDataService.getString("Enter username:"))
+                .password(UserDataService.getString("Enter password:"))
+                .build();
+        var username = authenticationService.login(authenticationDto);
+        System.out.println("User " + username + " logged in");
+    }
+
+    private void logout() {
+        var username = authenticationService.logout();
+        System.out.println("User " + username + " logged out");
+    }
+
     private void option18() {
+
+        // jezeli zalezy ci na tym zeby ta opcja byla wykonywana dla admina
+        if (!authenticationService.isAdmin()) {
+            throw new AuthenticationException("Access Denied");
+        }
+
         System.out.println("___ Delete cinema room ___");
         if (cinemaRoomService.getAll().isEmpty()) {
             System.out.println("No cinemas rooms in database");

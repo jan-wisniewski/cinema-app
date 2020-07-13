@@ -12,8 +12,8 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import wisniewski.jan.persistence.model.CinemaRoom;
 import wisniewski.jan.persistence.model.Seat;
-import wisniewski.jan.service.repository.CinemaRoomRepository;
-import wisniewski.jan.service.repository.SeatRepository;
+import wisniewski.jan.persistence.repository.CinemaRoomRepository;
+import wisniewski.jan.persistence.repository.SeatRepository;
 import wisniewski.jan.service.service.AdminService;
 
 import java.util.List;

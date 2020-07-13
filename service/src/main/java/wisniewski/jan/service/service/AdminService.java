@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import wisniewski.jan.service.dto.*;
 import wisniewski.jan.service.mappers.Mapper;
 import wisniewski.jan.persistence.model.*;
-import wisniewski.jan.service.repository.*;
+import wisniewski.jan.persistence.repository.*;
 import wisniewski.jan.service.validator.*;
 import wisniewski.jan.service.exception.AdminServiceException;
 
@@ -125,15 +125,15 @@ public class AdminService {
             throw new AdminServiceException("Add seance errors: " + errorsMessage);
         }
 
-        if (seanceRepository.isUniqueSeance(seanceDto).isPresent()) {
+        var seance = Mapper.fromSeanceDtoToSeance(seanceDto);
+
+        if (seanceRepository.isUniqueSeance(seance).isPresent()) {
             throw new AdminServiceException("Seance is not unique. The same movieId, cinemaRoomId i LocalDate");
         }
 
-        if (!seanceRepository.isMovieDisplayed(seanceDto)) {
+        if (!seanceRepository.isMovieDisplayed(seance)) {
             throw new AdminServiceException("Screening date is not within the time frame of the movie");
         }
-
-        var seance = Mapper.fromSeanceDtoToSeance(seanceDto);
 
         var addedSeance = seanceRepository
                 .add(seance)
@@ -168,11 +168,11 @@ public class AdminService {
             throw new AdminServiceException("Add movie errors: " + errorsMessage);
         }
 
-        if (movieRepository.isUniqueMovie(movieDto).isPresent()) {
+        var movieToAdd = Mapper.fromMovieDtoToMovie(movieDto);
+
+        if (movieRepository.isUniqueMovie(movieToAdd).isPresent()) {
             throw new AdminServiceException("This movie with that dateFrom and dateTo is already on db");
         }
-
-        var movieToAdd = Mapper.fromMovieDtoToMovie(movieDto);
         var addedMovie = movieRepository
                 .add(movieToAdd)
                 .orElseThrow(() -> new AdminServiceException("cannot insert to db"));

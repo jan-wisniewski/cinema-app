@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import wisniewski.jan.persistence.model.CinemaRoom;
 import wisniewski.jan.persistence.model.Movie;
 import wisniewski.jan.persistence.model.Seance;
-import wisniewski.jan.service.repository.MovieRepository;
-import wisniewski.jan.service.repository.SeanceRepository;
+import wisniewski.jan.persistence.repository.MovieRepository;
+import wisniewski.jan.persistence.repository.SeanceRepository;
 import wisniewski.jan.service.exception.UserDataServiceException;
 
 import java.util.List;

@@ -13,10 +13,13 @@ import org.mockito.quality.Strictness;
 import org.apache.log4j.Logger;
 import wisniewski.jan.persistence.model.CinemaRoom;
 import wisniewski.jan.persistence.model.Seat;
+import wisniewski.jan.persistence.repository.CinemaRoomRepository;
+import wisniewski.jan.persistence.repository.SeanceRepository;
+import wisniewski.jan.persistence.repository.SeatRepository;
+import wisniewski.jan.persistence.repository.SeatsSeancesRepository;
 import wisniewski.jan.service.dto.CreateSeanceDto;
 import wisniewski.jan.service.mappers.Mapper;
 import wisniewski.jan.persistence.model.Seance;
-import wisniewski.jan.service.repository.*;
 import wisniewski.jan.service.service.AdminService;
 
 import java.math.BigDecimal;
@@ -70,7 +73,7 @@ public class AddSeanceTests {
     @Test
     @DisplayName("when local date is not correct exception has been thrown")
     public void test2() {
-        var seance = CreateSeanceDto
+        var seanceDto = CreateSeanceDto
                 .builder()
                 .cinemaRoomId(4)
                 .movieId(3)
@@ -78,13 +81,15 @@ public class AddSeanceTests {
                 .price(BigDecimal.valueOf(10))
                 .build();
 
+        var seance = Mapper.fromSeanceDtoToSeance(seanceDto);
+
         Mockito
                 .when(seanceRepository.isMovieDisplayed(seance))
                 .thenReturn(true);
 
         exceptionMessage = "";
         try {
-            adminService.addSeance(seance);
+            adminService.addSeance(seanceDto);
         } catch (Exception e) {
             exceptionMessage = e.getMessage();
         }
@@ -137,7 +142,7 @@ public class AddSeanceTests {
                 .thenReturn(Optional.of(seanceExpected));
 
         Mockito
-                .when(seanceRepository.isMovieDisplayed(seanceDto))
+                .when(seanceRepository.isMovieDisplayed(seanceToAdd))
                 .thenReturn(true);
 
         Mockito
@@ -182,7 +187,7 @@ public class AddSeanceTests {
                 .thenReturn(Optional.of(seanceExpected));
 
         Mockito
-                .when(seanceRepository.isUniqueSeance(seanceDto))
+                .when(seanceRepository.isUniqueSeance(seanceMapped))
                 .thenReturn(Optional.of(seanceExpected));
 
         exceptionMessage = "";
@@ -206,8 +211,10 @@ public class AddSeanceTests {
                 .cinemaRoomId(1)
                 .build();
 
+        var seance = Mapper.fromSeanceDtoToSeance(seanceDto);
+
         Mockito
-                .when(seanceRepository.isMovieDisplayed(seanceDto))
+                .when(seanceRepository.isMovieDisplayed(seance))
                 .thenReturn(false);
 
         exceptionMessage = "";
@@ -249,20 +256,21 @@ public class AddSeanceTests {
                 .id(1)
                 .build();
 
+        var seanceToAdd = Mapper.fromSeanceDtoToSeance(seanceDto);
+
         Mockito
                 .when(cinemaRoomRepository.findById(1))
                 .thenReturn(Optional.of(cinemaRoom));
 
 
         Mockito
-                .when(seanceRepository.isUniqueSeance(seanceDto))
+                .when(seanceRepository.isUniqueSeance(seanceToAdd))
                 .thenReturn(Optional.empty());
 
         Mockito
-                .when(seanceRepository.isMovieDisplayed(seanceDto))
+                .when(seanceRepository.isMovieDisplayed(seanceToAdd))
                 .thenReturn(true);
 
-        var seanceToAdd = Mapper.fromSeanceDtoToSeance(seanceDto);
 
         Mockito
                 .when(seanceRepository.add(seanceToAdd))
@@ -301,19 +309,21 @@ public class AddSeanceTests {
                 .cinemaId(1)
                 .build();
 
+        var seanceToAdd = Mapper.fromSeanceDtoToSeance(seanceDto);
+
         Mockito
                 .when(cinemaRoomRepository.findById(1))
                 .thenReturn(Optional.of(cinemaRoom));
 
         Mockito
-                .when(seanceRepository.isUniqueSeance(seanceDto))
+                .when(seanceRepository.isUniqueSeance(seanceToAdd))
                 .thenReturn(Optional.empty());
 
         Mockito
-                .when(seanceRepository.isMovieDisplayed(seanceDto))
+                .when(seanceRepository.isMovieDisplayed(seanceToAdd))
                 .thenReturn(true);
 
-        var seanceToAdd = Mapper.fromSeanceDtoToSeance(seanceDto);
+
 
         Mockito
                 .when(seanceRepository.add(seanceToAdd))
@@ -342,15 +352,15 @@ public class AddSeanceTests {
                 .id(1)
                 .build();
 
+        var seanceToAdd = Mapper.fromSeanceDtoToSeance(seanceDto);
+
         Mockito
-                .when(seanceRepository.isUniqueSeance(seanceDto))
+                .when(seanceRepository.isUniqueSeance(seanceToAdd))
                 .thenReturn(Optional.empty());
 
         Mockito
-                .when(seanceRepository.isMovieDisplayed(seanceDto))
+                .when(seanceRepository.isMovieDisplayed(seanceToAdd))
                 .thenReturn(false);
-
-        var seanceToAdd = Mapper.fromSeanceDtoToSeance(seanceDto);
 
         Mockito
                 .when(seanceRepository.add(seanceToAdd))

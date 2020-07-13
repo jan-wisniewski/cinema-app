@@ -1,7 +1,8 @@
 import wisniewski.jan.persistence.connection.DbConnection;
-import wisniewski.jan.service.repository.*;
-import wisniewski.jan.service.repository.impl.*;
+import wisniewski.jan.persistence.repository.*;
+import wisniewski.jan.persistence.repository.impl.*;
 import wisniewski.jan.service.service.*;
+import wisniewski.jan.service.service.proxy.AuthenticationService;
 import wisniewski.jan.ui.MenuService;
 
 import java.util.concurrent.Executors;
@@ -37,18 +38,28 @@ public class App {
         CinemaService cinemaService = new CinemaService(cinemaRepository);
         SeatService seatService = new SeatService(seatRepository, cinemaRoomRepository);
         SeatSeanceService seatSeanceService = new SeatSeanceService(seatsSeancesRepository);
-        UserService userService = new UserService(userRepository);
+        var userService = new UserService(userRepository);
 
         AdminService adminService = new AdminService(cinemaRepository, cinemaRoomRepository,
                 seanceRepository, movieRepository,
                 seatRepository, seatsSeancesRepository,
                 cityRepository, ticketRepository, seatService);
 
+        var authenticationService = new AuthenticationService(userRepository);
+
         MenuService menuService = new MenuService(
-                ticketService, movieService,
-                adminService, cinemaRoomService, cityService,
-                reservationService, seanceService,
-                cinemaService, seatService, seatSeanceService, userService
+                ticketService,
+                movieService,
+                adminService,
+                cinemaRoomService,
+                cityService,
+                reservationService,
+                seanceService,
+                cinemaService,
+                seatService,
+                seatSeanceService,
+                userService,
+                authenticationService
         );
 
         ScheduledExecutorService ses = Executors.newScheduledThreadPool(1);

@@ -1,10 +1,10 @@
-package wisniewski.jan.service.repository.impl;
+package wisniewski.jan.persistence.repository.impl;
 
 import wisniewski.jan.persistence.connection.DbConnection;
 import wisniewski.jan.persistence.model.Cinema;
 import wisniewski.jan.persistence.model.CinemaRoom;
-import wisniewski.jan.service.repository.CinemaRoomRepository;
-import wisniewski.jan.service.repository.generic.AbstractCrudRepository;
+import wisniewski.jan.persistence.repository.CinemaRoomRepository;
+import wisniewski.jan.persistence.repository.generic.AbstractCrudRepository;
 
 import java.util.List;
 import java.util.Optional;

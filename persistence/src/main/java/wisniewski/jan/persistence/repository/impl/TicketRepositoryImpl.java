@@ -1,11 +1,11 @@
-package wisniewski.jan.service.repository.impl;
+package wisniewski.jan.persistence.repository.impl;
 
 import wisniewski.jan.persistence.connection.DbConnection;
 import wisniewski.jan.persistence.model.Seance;
 import wisniewski.jan.persistence.model.SeatsSeance;
 import wisniewski.jan.persistence.model.Ticket;
-import wisniewski.jan.service.repository.TicketRepository;
-import wisniewski.jan.service.repository.generic.AbstractCrudRepository;
+import wisniewski.jan.persistence.repository.TicketRepository;
+import wisniewski.jan.persistence.repository.generic.AbstractCrudRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;

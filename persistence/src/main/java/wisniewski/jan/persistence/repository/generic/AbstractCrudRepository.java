@@ -1,4 +1,4 @@
-package wisniewski.jan.service.repository.generic;
+package wisniewski.jan.persistence.repository.generic;
 
 import com.google.common.base.CaseFormat;
 import org.atteo.evo.inflector.English;

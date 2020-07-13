@@ -15,7 +15,7 @@ import wisniewski.jan.persistence.enums.Genre;
 import wisniewski.jan.service.dto.CreateMovieDto;
 import wisniewski.jan.service.mappers.Mapper;
 import wisniewski.jan.persistence.model.Movie;
-import wisniewski.jan.service.repository.MovieRepository;
+import wisniewski.jan.persistence.repository.MovieRepository;
 import wisniewski.jan.service.service.AdminService;
 
 import java.time.LocalDateTime;
@@ -135,7 +135,7 @@ public class AddMovieTests {
         var cinemaToAddAfterValidation = Mapper.fromMovieDtoToMovie(movieDto);
 
         Mockito
-                .when(movieRepository.isUniqueMovie(movieDto))
+                .when(movieRepository.isUniqueMovie(cinemaToAddAfterValidation))
                 .thenReturn(Optional.of(expectedMovieFromDb));
         exceptionMessage = "";
         try {

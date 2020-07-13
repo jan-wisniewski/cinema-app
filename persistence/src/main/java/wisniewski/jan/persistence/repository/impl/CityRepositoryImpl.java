@@ -1,9 +1,9 @@
-package wisniewski.jan.service.repository.impl;
+package wisniewski.jan.persistence.repository.impl;
 
 import wisniewski.jan.persistence.connection.DbConnection;
 import wisniewski.jan.persistence.model.City;
-import wisniewski.jan.service.repository.CityRepository;
-import wisniewski.jan.service.repository.generic.AbstractCrudRepository;
+import wisniewski.jan.persistence.repository.CityRepository;
+import wisniewski.jan.persistence.repository.generic.AbstractCrudRepository;
 
 import java.util.Optional;
 

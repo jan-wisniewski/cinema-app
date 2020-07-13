@@ -1,8 +1,8 @@
-package wisniewski.jan.service.repository;
+package wisniewski.jan.persistence.repository;
 
 import wisniewski.jan.persistence.model.Seance;
 import wisniewski.jan.persistence.model.Ticket;
-import wisniewski.jan.service.repository.generic.CrudRepository;
+import wisniewski.jan.persistence.repository.generic.CrudRepository;
 
 import java.util.List;
 

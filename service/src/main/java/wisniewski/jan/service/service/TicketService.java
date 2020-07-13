@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import wisniewski.jan.persistence.model.Ticket;
 import wisniewski.jan.service.dto.CreateTicketDto;
 import wisniewski.jan.service.mappers.Mapper;
-import wisniewski.jan.service.repository.TicketRepository;
+import wisniewski.jan.persistence.repository.TicketRepository;
 import wisniewski.jan.service.validator.CreateTicketDtoValidator;
 import wisniewski.jan.service.exception.TicketServiceException;
 import wisniewski.jan.service.exception.UserServiceException;

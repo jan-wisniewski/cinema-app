@@ -1,10 +1,10 @@
-package wisniewski.jan.service.repository.impl;
+package wisniewski.jan.persistence.repository.impl;
 
 import wisniewski.jan.persistence.connection.DbConnection;
 import wisniewski.jan.persistence.model.Reservation;
 import wisniewski.jan.persistence.model.view.ReservationWithUser;
-import wisniewski.jan.service.repository.ReservationRepository;
-import wisniewski.jan.service.repository.generic.AbstractCrudRepository;
+import wisniewski.jan.persistence.repository.ReservationRepository;
+import wisniewski.jan.persistence.repository.generic.AbstractCrudRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;

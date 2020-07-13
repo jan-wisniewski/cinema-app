@@ -8,6 +8,7 @@ public interface Mapper {
         return User
                 .builder()
                 .name(userDto.getName())
+                .username(userDto.getUsername())
                 .surname(userDto.getSurname())
                 .email(userDto.getEmail())
                 .password(userDto.getPassword())

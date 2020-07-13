@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import wisniewski.jan.persistence.model.User;
 import wisniewski.jan.service.dto.CreateUserDto;
 import wisniewski.jan.service.mappers.Mapper;
-import wisniewski.jan.service.repository.UserRepository;
+import wisniewski.jan.persistence.repository.UserRepository;
 import wisniewski.jan.service.validator.CreateUserDtoValidator;
 import wisniewski.jan.service.exception.UserServiceException;
 
@@ -18,6 +18,10 @@ public class UserService {
 
     public User findById (Integer userId){
         return userRepository.findById(userId).orElseThrow(() -> new UserServiceException("FAILED"));
+    }
+
+    public User findByUsername (String username){
+        return userRepository.findByUsername(username).orElseThrow(() -> new UserServiceException("FAILED"));
     }
 
     public Integer createUser(CreateUserDto userDto) {

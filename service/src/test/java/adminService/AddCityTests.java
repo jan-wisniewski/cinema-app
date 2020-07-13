@@ -12,7 +12,7 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.apache.log4j.Logger;
 import wisniewski.jan.persistence.model.City;
-import wisniewski.jan.service.repository.CityRepository;
+import wisniewski.jan.persistence.repository.CityRepository;
 import wisniewski.jan.service.service.AdminService;
 import wisniewski.jan.service.dto.CreateCityDto;
 

@@ -1,8 +1,8 @@
-package wisniewski.jan.service.repository;
+package wisniewski.jan.persistence.repository;
 
 import wisniewski.jan.persistence.model.Cinema;
 import wisniewski.jan.persistence.model.CinemaRoom;
-import wisniewski.jan.service.repository.generic.CrudRepository;
+import wisniewski.jan.persistence.repository.generic.CrudRepository;
 
 import java.util.List;
 import java.util.Optional;

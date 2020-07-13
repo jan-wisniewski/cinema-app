@@ -14,7 +14,7 @@ import org.mockito.quality.Strictness;
 import wisniewski.jan.service.dto.CreateTicketDto;
 import wisniewski.jan.service.mappers.Mapper;
 import wisniewski.jan.persistence.model.Ticket;
-import wisniewski.jan.service.repository.TicketRepository;
+import wisniewski.jan.persistence.repository.TicketRepository;
 import wisniewski.jan.service.service.TicketService;
 import wisniewski.jan.service.exception.TicketServiceException;
 

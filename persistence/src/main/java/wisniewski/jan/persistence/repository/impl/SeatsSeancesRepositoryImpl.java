@@ -1,4 +1,4 @@
-package wisniewski.jan.service.repository.impl;
+package wisniewski.jan.persistence.repository.impl;
 
 import wisniewski.jan.persistence.connection.DbConnection;
 import wisniewski.jan.persistence.enums.SeatState;
@@ -6,8 +6,8 @@ import wisniewski.jan.persistence.model.Seance;
 import wisniewski.jan.persistence.model.Seat;
 import wisniewski.jan.persistence.model.SeatsSeance;
 import wisniewski.jan.persistence.model.view.SeatsSeanceWithSeanceDate;
-import wisniewski.jan.service.repository.SeatsSeancesRepository;
-import wisniewski.jan.service.repository.generic.AbstractCrudRepository;
+import wisniewski.jan.persistence.repository.SeatsSeancesRepository;
+import wisniewski.jan.persistence.repository.generic.AbstractCrudRepository;
 
 import java.util.List;
 import java.util.Optional;

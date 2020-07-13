@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import wisniewski.jan.persistence.model.Seat;
 import wisniewski.jan.persistence.model.SeatsSeance;
 import wisniewski.jan.persistence.model.view.SeatsSeanceWithSeanceDate;
-import wisniewski.jan.service.repository.SeatsSeancesRepository;
+import wisniewski.jan.persistence.repository.SeatsSeancesRepository;
 import wisniewski.jan.service.exception.SeatSeanceException;
 
 import java.time.format.DateTimeFormatter;

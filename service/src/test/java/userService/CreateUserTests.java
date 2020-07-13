@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 import wisniewski.jan.service.dto.CreateUserDto;
 import wisniewski.jan.service.mappers.Mapper;
 import wisniewski.jan.persistence.model.User;
-import wisniewski.jan.service.repository.UserRepository;
+import wisniewski.jan.persistence.repository.UserRepository;
 import wisniewski.jan.service.service.UserService;
 
 import java.util.Optional;

@@ -3,10 +3,9 @@ package wisniewski.jan.service.service;
 import lombok.RequiredArgsConstructor;
 import wisniewski.jan.persistence.model.Reservation;
 import wisniewski.jan.persistence.model.view.ReservationWithUser;
-import wisniewski.jan.service.repository.ReservationRepository;
+import wisniewski.jan.persistence.repository.ReservationRepository;
 import wisniewski.jan.service.exception.ReservationServiceException;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 

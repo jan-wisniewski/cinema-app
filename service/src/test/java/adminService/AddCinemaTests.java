@@ -14,7 +14,7 @@ import org.mockito.quality.Strictness;
 import wisniewski.jan.service.dto.CreateCinemaDto;
 import wisniewski.jan.service.mappers.Mapper;
 import wisniewski.jan.persistence.model.Cinema;
-import wisniewski.jan.service.repository.CinemaRepository;
+import wisniewski.jan.persistence.repository.CinemaRepository;
 import wisniewski.jan.service.service.AdminService;
 import wisniewski.jan.service.exception.AdminServiceException;
 

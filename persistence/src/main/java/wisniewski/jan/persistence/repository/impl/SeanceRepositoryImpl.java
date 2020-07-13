@@ -1,13 +1,11 @@
-package wisniewski.jan.service.repository.impl;
+package wisniewski.jan.persistence.repository.impl;
 
 import wisniewski.jan.persistence.connection.DbConnection;
-import wisniewski.jan.service.dto.CreateSeanceDto;
 import wisniewski.jan.persistence.model.*;
-import wisniewski.jan.service.repository.SeanceRepository;
-import wisniewski.jan.service.repository.generic.AbstractCrudRepository;
+import wisniewski.jan.persistence.repository.SeanceRepository;
+import wisniewski.jan.persistence.repository.generic.AbstractCrudRepository;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -27,15 +25,15 @@ public class SeanceRepositoryImpl extends AbstractCrudRepository<Seance, Integer
     }
 
     @Override
-    public Optional<Seance> isUniqueSeance(CreateSeanceDto seanceDto) {
+    public Optional<Seance> isUniqueSeance(Seance seance) {
         var sql = "select * from seances where movie_id = :movie_id AND cinema_room_id = :cinema_room_id AND date_time = :date_time";
         return dbConnection
                 .getJdbi()
                 .withHandle(handle -> handle
                         .createQuery(sql)
-                        .bind("movie_id", seanceDto.getMovieId())
-                        .bind("cinema_room_id", seanceDto.getCinemaRoomId())
-                        .bind("date_time", seanceDto.getDateTime())
+                        .bind("movie_id", seance.getMovieId())
+                        .bind("cinema_room_id", seance.getCinemaRoomId())
+                        .bind("date_time", seance.getDateTime())
                         .mapToBean(Seance.class)
                         .findFirst()
                 );
@@ -76,7 +74,7 @@ public class SeanceRepositoryImpl extends AbstractCrudRepository<Seance, Integer
     }
 
     @Override
-    public Boolean isMovieDisplayed(CreateSeanceDto seanceDto) {
+    public Boolean isMovieDisplayed(Seance seance) {
         var sql = """
                 select * from movies where id = :movie_id
                 """;
@@ -84,12 +82,12 @@ public class SeanceRepositoryImpl extends AbstractCrudRepository<Seance, Integer
                 .getJdbi()
                 .withHandle(handle -> handle
                         .createQuery(sql)
-                        .bind("movie_id", seanceDto.getMovieId())
+                        .bind("movie_id", seance.getMovieId())
                         .mapToBean(Movie.class)
                         .findFirst()
                 );
         Movie movie = movieOp.orElseThrow(() -> new IllegalStateException(""));
-        return seanceDto.getDateTime().isAfter(movie.getDateFrom()) && seanceDto.getDateTime().isBefore(movie.getDateTo());
+        return seance.getDateTime().isAfter(movie.getDateFrom()) && seance.getDateTime().isBefore(movie.getDateTo());
     }
 
     @Override

@@ -1,4 +1,4 @@
-package wisniewski.jan.service.repository.generic;
+package wisniewski.jan.persistence.repository.generic;
 
 import java.util.List;
 import java.util.Optional;

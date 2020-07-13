@@ -2,7 +2,7 @@ package wisniewski.jan.service.service;
 
 import lombok.RequiredArgsConstructor;
 import wisniewski.jan.persistence.model.Movie;
-import wisniewski.jan.service.repository.MovieRepository;
+import wisniewski.jan.persistence.repository.MovieRepository;
 import wisniewski.jan.service.exception.MovieServiceException;
 
 import java.util.List;

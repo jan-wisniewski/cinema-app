@@ -2,11 +2,10 @@ package wisniewski.jan.service.service;
 
 import lombok.RequiredArgsConstructor;
 import wisniewski.jan.persistence.model.City;
-import wisniewski.jan.service.repository.CityRepository;
+import wisniewski.jan.persistence.repository.CityRepository;
 import wisniewski.jan.service.exception.CityServiceException;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
