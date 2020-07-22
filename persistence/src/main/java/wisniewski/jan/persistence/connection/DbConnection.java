@@ -1,7 +1,6 @@
 package wisniewski.jan.persistence.connection;
 
 import org.jdbi.v3.core.Jdbi;
-import org.jdbi.v3.core.statement.PreparedBatch;
 
 public class DbConnection {
     private final String username;
@@ -13,7 +12,7 @@ public class DbConnection {
         this.username = username;
         this.password = password;
         this.url = url;
-        this.jdbi = Jdbi.create(url, password, username);
+        this.jdbi = Jdbi.create(url, username, password);
     }
 
     public Jdbi getJdbi() {
@@ -38,7 +37,7 @@ public class DbConnection {
                 surname varchar(50) not null,
                 username varchar(50) not null,
                 email varchar (50) not null, 
-                password varchar (50) not null,
+                password varchar (200) not null,
                 role varchar (50) not null
                 );
                 """;

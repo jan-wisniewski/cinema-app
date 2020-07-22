@@ -19,7 +19,7 @@ public class AuthenticationService {
                 .findByUsername(authenticationDto.getUsername())
                 .orElseThrow(() -> new AuthenticationException("Cannot find user in db"));
         if (!Objects.equals(user.getPassword(), authenticationDto.getPassword())) {
-            throw new AuthenticationException("Password is  not correct");
+            throw new AuthenticationException("Password is not correct");
         }
 
         this.user = user;
@@ -38,5 +38,16 @@ public class AuthenticationService {
 
     public boolean isAdmin() {
         return this.user != null && this.user.getRole().equals(Role.ADMIN);
+    }
+
+    public boolean isLoggedIn(){
+        return this.user!=null;
+    }
+
+    public User getUser(){
+        if (this.user==null){
+            throw new IllegalStateException("User is null");
+        }
+        return this.user;
     }
 }

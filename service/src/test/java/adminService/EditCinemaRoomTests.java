@@ -4,7 +4,6 @@ import extensions.LoggerExtension;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -14,7 +13,6 @@ import wisniewski.jan.persistence.model.CinemaRoom;
 import wisniewski.jan.persistence.model.Seat;
 import wisniewski.jan.persistence.repository.CinemaRoomRepository;
 import wisniewski.jan.persistence.repository.SeatRepository;
-import wisniewski.jan.service.service.AdminService;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,9 +21,6 @@ import java.util.Optional;
 @ExtendWith(LoggerExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class EditCinemaRoomTests {
-
-    @InjectMocks
-    AdminService adminService;
 
     @Mock
     SeatRepository seatRepository;

@@ -9,11 +9,16 @@ import wisniewski.jan.service.exception.SeatSeanceException;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class SeatSeanceService {
     private final SeatsSeancesRepository seatsSeancesRepository;
+
+    public Optional<SeatsSeance> editSeatSeance(SeatsSeance seatsSeance) {
+        return seatsSeancesRepository.update(seatsSeance);
+    }
 
     public SeatsSeance getSeatSeancesBySeatId(Integer seatId) {
         return seatsSeancesRepository.findBySeatId(seatId).orElseThrow(() -> new SeatSeanceException("Failed2"));

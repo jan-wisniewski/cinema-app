@@ -4,7 +4,6 @@ import extensions.LoggerExtension;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -17,7 +16,8 @@ import wisniewski.jan.persistence.model.CinemaRoom;
 import wisniewski.jan.persistence.model.Seat;
 import wisniewski.jan.persistence.repository.CinemaRoomRepository;
 import wisniewski.jan.persistence.repository.SeatRepository;
-import wisniewski.jan.service.service.AdminService;
+import wisniewski.jan.service.service.CinemaRoomService;
+import wisniewski.jan.service.service.CinemaService;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,14 +31,17 @@ public class AddCinemaRoomTests {
     private Logger logger;
     private String exceptionMessage;
 
-    @InjectMocks
-    AdminService adminService;
-
     @Mock
     CinemaRoomRepository cinemaRoomRepository;
 
     @Mock
     SeatRepository seatRepository;
+
+    @Mock
+    CinemaService cinemaService;
+
+    @Mock
+    CinemaRoomService cinemaRoomService;
 
     public void setLogger(Logger logger) {
         this.logger = logger;
@@ -49,7 +52,7 @@ public class AddCinemaRoomTests {
     public void test1() {
         exceptionMessage = "";
         try {
-            adminService.addCinema(null);
+            cinemaService.addCinema(null);
         } catch (Exception e) {
             exceptionMessage = e.getMessage();
         }
@@ -96,7 +99,7 @@ public class AddCinemaRoomTests {
                 .when(seatRepository.addAll(List.of(seatToAdd)))
                 .thenReturn(List.of(seatToAdd));
 
-        assertEquals(expectedCinema.getId(), adminService.addCinemaRoom(cinemaRoomDto));
+        assertEquals(expectedCinema.getId(), cinemaRoomService.addCinemaRoom(cinemaRoomDto));
         logger.info("Cinema room created successfully");
     }
 
@@ -112,7 +115,7 @@ public class AddCinemaRoomTests {
                 .build();
         exceptionMessage = "";
         try {
-            adminService.addCinemaRoom(cinemaRoomDto);
+            cinemaRoomService.addCinemaRoom(cinemaRoomDto);
         } catch (Exception e) {
             exceptionMessage = e.getMessage();
         }
@@ -132,7 +135,7 @@ public class AddCinemaRoomTests {
                 .build();
         exceptionMessage = "";
         try {
-            adminService.addCinemaRoom(cinemaRoomDto);
+            cinemaRoomService.addCinemaRoom(cinemaRoomDto);
         } catch (Exception e) {
             exceptionMessage = e.getMessage();
         }
@@ -152,7 +155,7 @@ public class AddCinemaRoomTests {
                 .build();
         exceptionMessage = "";
         try {
-            adminService.addCinemaRoom(cinemaRoomDto);
+            cinemaRoomService.addCinemaRoom(cinemaRoomDto);
         } catch (Exception e) {
             exceptionMessage = e.getMessage();
         }
@@ -172,7 +175,7 @@ public class AddCinemaRoomTests {
                 .build();
         exceptionMessage = "";
         try {
-            adminService.addCinemaRoom(cinemaRoomDto);
+            cinemaRoomService.addCinemaRoom(cinemaRoomDto);
         } catch (Exception e) {
             exceptionMessage = e.getMessage();
         }
@@ -203,7 +206,7 @@ public class AddCinemaRoomTests {
 
         exceptionMessage = "";
         try {
-            adminService.addCinemaRoom(cinemaRoomDto);
+            cinemaRoomService.addCinemaRoom(cinemaRoomDto);
         } catch (Exception e) {
             exceptionMessage = e.getMessage();
         }

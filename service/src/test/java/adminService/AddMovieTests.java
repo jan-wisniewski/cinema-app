@@ -5,7 +5,6 @@ import org.apache.log4j.Logger;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -16,7 +15,7 @@ import wisniewski.jan.service.dto.CreateMovieDto;
 import wisniewski.jan.service.mappers.Mapper;
 import wisniewski.jan.persistence.model.Movie;
 import wisniewski.jan.persistence.repository.MovieRepository;
-import wisniewski.jan.service.service.AdminService;
+import wisniewski.jan.service.service.MovieService;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -31,8 +30,8 @@ public class AddMovieTests {
     private Logger logger;
     private String exceptionMessage;
 
-    @InjectMocks
-    AdminService adminService;
+    @Mock
+    MovieService movieService;
 
     @Mock
     MovieRepository movieRepository;
@@ -46,7 +45,7 @@ public class AddMovieTests {
     public void test1() {
         exceptionMessage = "";
         try {
-            adminService.addMovie(null);
+            movieService.addMovie(null);
         } catch (Exception e) {
             exceptionMessage = e.getMessage();
         }
@@ -66,7 +65,7 @@ public class AddMovieTests {
                 .build();
         exceptionMessage = "";
         try {
-            adminService.addMovie(movieDto);
+            movieService.addMovie(movieDto);
         } catch (Exception e) {
             exceptionMessage = e.getMessage();
         }
@@ -86,7 +85,7 @@ public class AddMovieTests {
                 .build();
         exceptionMessage = "";
         try {
-            adminService.addMovie(movieDto);
+            movieService.addMovie(movieDto);
         } catch (Exception e) {
             exceptionMessage = e.getMessage();
         }
@@ -106,7 +105,7 @@ public class AddMovieTests {
                 .build();
         exceptionMessage = "";
         try {
-            adminService.addMovie(movieDto);
+            movieService.addMovie(movieDto);
         } catch (Exception e) {
             exceptionMessage = e.getMessage();
         }
@@ -139,7 +138,7 @@ public class AddMovieTests {
                 .thenReturn(Optional.of(expectedMovieFromDb));
         exceptionMessage = "";
         try {
-            adminService.addMovie(movieDto);
+            movieService.addMovie(movieDto);
         } catch (Exception e) {
             exceptionMessage = e.getMessage();
         }
@@ -170,7 +169,7 @@ public class AddMovieTests {
         Mockito
                 .when(movieRepository.add(cinemaDtoAfterValidation))
                 .thenReturn(Optional.of(expectedMovieFromDb));
-        assertEquals(expectedMovieFromDb.getId(), adminService.addMovie(movieDto));
+        assertEquals(expectedMovieFromDb.getId(), movieService.addMovie(movieDto));
         logger.info("Adding movie successfully");
     }
 }

@@ -4,7 +4,6 @@ import extensions.LoggerExtension;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -13,8 +12,8 @@ import org.mockito.quality.Strictness;
 import org.apache.log4j.Logger;
 import wisniewski.jan.persistence.model.City;
 import wisniewski.jan.persistence.repository.CityRepository;
-import wisniewski.jan.service.service.AdminService;
 import wisniewski.jan.service.dto.CreateCityDto;
+import wisniewski.jan.service.service.CityService;
 
 import java.util.Optional;
 
@@ -31,8 +30,8 @@ public class AddCityTests {
     @Mock
     CityRepository cityRepository;
 
-    @InjectMocks
-    AdminService adminService;
+    @Mock
+    CityService cityService;
 
     public void setLogger(Logger logger) {
         this.logger = logger;
@@ -65,7 +64,7 @@ public class AddCityTests {
                 .when(cityRepository.findLast())
                 .thenReturn(Optional.of(cityAdded));
 
-        assertEquals(adminService.addCity(cityDto), cityAdded.getId());
+        assertEquals(cityService.addCity(cityDto), cityAdded.getId());
     }
 
     @Test
@@ -76,7 +75,7 @@ public class AddCityTests {
                 .name("warszawa")
                 .build();
         try {
-            adminService.addCity(cityDto);
+            cityService.addCity(cityDto);
         } catch (Exception e) {
             exceptionMessage = e.getMessage();
         }
@@ -102,7 +101,7 @@ public class AddCityTests {
                 .thenReturn(Optional.of(cityAdded));
 
         try {
-            adminService.addCity(cityDto);
+            cityService.addCity(cityDto);
         } catch (Exception e) {
             exceptionMessage = e.getMessage();
         }

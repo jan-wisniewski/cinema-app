@@ -1,6 +1,7 @@
 package wisniewski.jan.ui.user_data;
 
 import wisniewski.jan.persistence.enums.Genre;
+import wisniewski.jan.persistence.enums.Role;
 import wisniewski.jan.service.enums.SearchCriterion;
 import wisniewski.jan.persistence.model.*;
 import wisniewski.jan.service.service.*;
@@ -137,6 +138,22 @@ public class UserDataService {
         return movieService.getAll().get(decision - 1);
     }
 
+    public static User getUser(String msg, UserService userService) {
+        System.out.println(msg);
+        AtomicInteger counter = new AtomicInteger();
+        String users = userService
+                .findAll()
+                .stream()
+                .map(user -> counter.incrementAndGet() + ". " + user.getUsername() + " ("+user.getName()+ " "+user.getSurname()+") - "+user.getRole())
+                .collect(Collectors.joining("\n"));
+        int decision;
+        do {
+            System.out.println(users);
+            decision = getInteger("Choose correct user number:");
+        } while (decision < 1 || decision > userService.findAll().size());
+        return userService.findAll().get(decision - 1);
+    }
+
     public static Seance getSeance(String msg, SeanceService seanceService) {
         System.out.println(msg);
         AtomicInteger counter = new AtomicInteger();
@@ -168,6 +185,20 @@ public class UserDataService {
             value = getString(message);
         } while (!value.matches("\\d{1,3}\\.?\\d+"));
         return new BigDecimal(value);
+    }
+
+    public static Role getUserRole(String msg) {
+        System.out.println(msg);
+        AtomicInteger counter = new AtomicInteger();
+        String roles = Arrays.stream(Role.values())
+                .map(role -> counter.incrementAndGet() + ". " + role.name())
+                .collect(Collectors.joining("\n"));
+        int decision;
+        do {
+            System.out.println(roles);
+            decision = getInteger("Choose correct role number:");
+        } while (decision < 1 || decision > Role.values().length);
+        return Role.values()[decision-1];
     }
 
     public void close() {

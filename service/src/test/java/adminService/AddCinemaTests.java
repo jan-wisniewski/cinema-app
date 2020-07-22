@@ -5,7 +5,6 @@ import org.apache.log4j.Logger;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -15,8 +14,8 @@ import wisniewski.jan.service.dto.CreateCinemaDto;
 import wisniewski.jan.service.mappers.Mapper;
 import wisniewski.jan.persistence.model.Cinema;
 import wisniewski.jan.persistence.repository.CinemaRepository;
-import wisniewski.jan.service.service.AdminService;
 import wisniewski.jan.service.exception.AdminServiceException;
+import wisniewski.jan.service.service.CinemaService;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,8 +30,8 @@ public class AddCinemaTests {
     private Logger logger;
     private String exceptionMessage;
 
-    @InjectMocks
-    AdminService adminService;
+    @Mock
+    CinemaService cinemaService;
 
     @Mock
     CinemaRepository cinemaRepository;
@@ -46,7 +45,7 @@ public class AddCinemaTests {
     public void test1() {
         exceptionMessage = "";
         try {
-            adminService.addCinema(null);
+            cinemaService.addCinema(null);
         } catch (Exception e){
             exceptionMessage = e.getMessage();
         }
@@ -78,7 +77,7 @@ public class AddCinemaTests {
                 .when(cinemaRepository.add(cinemaToAdd))
                 .thenReturn(Optional.of(expected));
 
-        assertEquals(expected.getId(), adminService.addCinema(cinemaDto));
+        assertEquals(expected.getId(), cinemaService.addCinema(cinemaDto));
         logger.info("Cinema created successfully");
 
     }
@@ -91,7 +90,7 @@ public class AddCinemaTests {
                 .cityId(2)
                 .name("aaa")
                 .build();
-        assertThrows(AdminServiceException.class, () -> adminService.addCinema(cinema));
+        assertThrows(AdminServiceException.class, () -> cinemaService.addCinema(cinema));
         logger.info("Failed to create cinema: lowercase name ");
     }
 
@@ -116,7 +115,7 @@ public class AddCinemaTests {
                 .thenReturn(Optional.of(cinemas.get(0)));
         exceptionMessage = "";
         try {
-            adminService.addCinema(cinema);
+            cinemaService.addCinema(cinema);
         } catch (Exception e) {
             exceptionMessage = e.getMessage();
         }

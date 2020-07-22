@@ -15,4 +15,5 @@ public class CreateUserDto {
     private String surname;
     private String email;
     private String password;
+    private String repeatedPassword;
 }

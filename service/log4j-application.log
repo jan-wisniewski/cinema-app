@@ -235,3 +235,35 @@
 2020-07-07 16:08:14 INFO  AddSeanceTests:156 - Create seance successfully
 2020-07-07 16:08:14 INFO  AddSeanceTests:195 - Failed to create seance: seance already exists on db
 2020-07-07 16:08:14 INFO  AddSeanceTests:220 - Failed to create seance: movie date to is before seance date
+2020-07-15 13:28:08 INFO  CreateUserTests:145 - Failed to create user: null dto exception
+2020-07-15 13:28:52 INFO  CreateUserTests:60 - Failed to create user: lowercase exception
+2020-07-15 13:28:52 INFO  CreateUserTests:113 - Failed to create user: lowercase exception
+2020-07-15 13:28:52 INFO  CreateUserTests:135 - Failed to create user: email exception
+2020-07-15 13:28:52 INFO  CreateUserTests:149 - Failed to create user: null dto exception
+2020-07-15 13:29:43 INFO  CreateUserTests:60 - Failed to create user: lowercase exception
+2020-07-15 13:29:43 INFO  CreateUserTests:113 - Failed to create user: lowercase exception
+2020-07-15 13:29:43 INFO  CreateUserTests:135 - Failed to create user: email exception
+2020-07-15 13:29:43 INFO  CreateUserTests:149 - Failed to create user: null dto exception
+2020-07-15 13:30:43 INFO  CreateUserTests:60 - Failed to create user: lowercase exception
+2020-07-15 13:30:43 INFO  CreateUserTests:115 - Failed to create user: lowercase exception
+2020-07-15 13:30:43 INFO  CreateUserTests:137 - Failed to create user: email exception
+2020-07-15 13:30:44 INFO  CreateUserTests:151 - Failed to create user: null dto exception
+2020-07-15 13:31:51 INFO  CreateUserTests:60 - Failed to create user: lowercase exception
+2020-07-15 13:31:51 INFO  CreateUserTests:115 - Failed to create user: lowercase exception
+2020-07-15 13:31:51 INFO  CreateUserTests:137 - Failed to create user: email exception
+2020-07-15 13:31:51 INFO  CreateUserTests:151 - Failed to create user: null dto exception
+2020-07-15 13:33:28 INFO  CreateUserTests:60 - Failed to create user: lowercase exception
+2020-07-15 13:33:28 INFO  CreateUserTests:123 - Failed to create user: lowercase exception
+2020-07-15 13:33:28 INFO  CreateUserTests:145 - Failed to create user: email exception
+2020-07-15 13:33:28 INFO  CreateUserTests:159 - Failed to create user: null dto exception
+2020-07-15 13:36:13 INFO  CreateUserTests:105 - USER CREATED SUCCESSFULLY
+2020-07-15 13:36:28 INFO  CreateUserTests:61 - Failed to create user: lowercase exception
+2020-07-15 13:36:28 INFO  CreateUserTests:96 - USER CREATED SUCCESSFULLY
+2020-07-15 13:36:28 INFO  CreateUserTests:118 - Failed to create user: lowercase exception
+2020-07-15 13:36:28 INFO  CreateUserTests:140 - Failed to create user: email exception
+2020-07-15 13:36:28 INFO  CreateUserTests:154 - Failed to create user: null dto exception
+2020-07-15 13:36:40 INFO  CreateUserTests:61 - Failed to create user: lowercase exception
+2020-07-15 13:36:40 INFO  CreateUserTests:96 - USER CREATED SUCCESSFULLY
+2020-07-15 13:36:40 INFO  CreateUserTests:118 - Failed to create user: lowercase exception
+2020-07-15 13:36:40 INFO  CreateUserTests:140 - Failed to create user: email exception
+2020-07-15 13:36:40 INFO  CreateUserTests:154 - Failed to create user: null dto exception

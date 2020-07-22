@@ -18,7 +18,10 @@ public class CreateUserDtoValidator  implements Validator<CreateUserDto> {
             errors.put("Surname", "Should starts with uppercase");
         }
         if (!isEmailValid(item)) {
-            errors.put("Email", "Should starts with uppercase");
+            errors.put("Email", "E-mail is not valid");
+        }
+        if (!isMatchingPassword(item)){
+            errors.put("Password", "Passwords are not the same");
         }
         return errors;
     }
@@ -32,6 +35,10 @@ public class CreateUserDtoValidator  implements Validator<CreateUserDto> {
     }
 
     private boolean isEmailValid(CreateUserDto userDto) {
-        return userDto.getEmail().matches("([A-Za-z]\\.?)+@[A-Za-z]+\\.[a-z]+");
+        return userDto.getEmail().matches("([A-Za-z0-9]\\.?)+@[A-Za-z0-9]+\\.[a-z]+");
+    }
+
+    private boolean isMatchingPassword (CreateUserDto userDto){
+        return userDto.getPassword().equals(userDto.getRepeatedPassword());
     }
 }

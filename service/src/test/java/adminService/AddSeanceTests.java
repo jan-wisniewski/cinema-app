@@ -4,7 +4,6 @@ import extensions.LoggerExtension;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -20,7 +19,7 @@ import wisniewski.jan.persistence.repository.SeatsSeancesRepository;
 import wisniewski.jan.service.dto.CreateSeanceDto;
 import wisniewski.jan.service.mappers.Mapper;
 import wisniewski.jan.persistence.model.Seance;
-import wisniewski.jan.service.service.AdminService;
+import wisniewski.jan.service.service.SeanceService;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -36,9 +35,6 @@ public class AddSeanceTests {
 
     private String exceptionMessage;
 
-    @InjectMocks
-    AdminService adminService;
-
     @Mock
     SeanceRepository seanceRepository;
 
@@ -51,6 +47,9 @@ public class AddSeanceTests {
     @Mock
     SeatsSeancesRepository seatsSeancesRepository;
 
+    @Mock
+    SeanceService seanceService;
+
     private Logger logger;
 
     public void setLogger(Logger logger) {
@@ -62,7 +61,7 @@ public class AddSeanceTests {
     public void test1() {
         exceptionMessage = "";
         try {
-            adminService.addSeance(null);
+            seanceService.addSeance(null);
         } catch (Exception e) {
             exceptionMessage = e.getMessage();
         }
@@ -89,7 +88,7 @@ public class AddSeanceTests {
 
         exceptionMessage = "";
         try {
-            adminService.addSeance(seanceDto);
+            seanceService.addSeance(seanceDto);
         } catch (Exception e) {
             exceptionMessage = e.getMessage();
         }
@@ -157,7 +156,7 @@ public class AddSeanceTests {
                 .when(seatsSeancesRepository.addAll(seatsList, seanceToAdd))
                 .thenReturn(1);
 
-        assertEquals(seanceExpected.getId(), adminService.addSeance(seanceDto));
+        assertEquals(seanceExpected.getId(), seanceService.addSeance(seanceDto));
         logger.info("Create seance successfully");
     }
 
@@ -192,7 +191,7 @@ public class AddSeanceTests {
 
         exceptionMessage = "";
         try {
-            adminService.addSeance(seanceDto);
+            seanceService.addSeance(seanceDto);
         } catch (Exception e) {
             exceptionMessage = e.getMessage();
         }
@@ -219,7 +218,7 @@ public class AddSeanceTests {
 
         exceptionMessage = "";
         try {
-            adminService.addSeance(seanceDto);
+            seanceService.addSeance(seanceDto);
         } catch (Exception e) {
             exceptionMessage = e.getMessage();
         }
@@ -276,7 +275,7 @@ public class AddSeanceTests {
                 .when(seanceRepository.add(seanceToAdd))
                 .thenReturn(Optional.of(expectedSeanceFromDb));
 
-        assertEquals(expectedSeanceFromDb.getId(), adminService.addSeance(seanceDto));
+        assertEquals(expectedSeanceFromDb.getId(), seanceService.addSeance(seanceDto));
 
     }
 
@@ -329,7 +328,7 @@ public class AddSeanceTests {
                 .when(seanceRepository.add(seanceToAdd))
                 .thenReturn(Optional.of(expectedSeanceFromDb));
 
-        assertEquals(expectedSeanceFromDb.getId(), adminService.addSeance(seanceDto));
+        assertEquals(expectedSeanceFromDb.getId(), seanceService.addSeance(seanceDto));
 
     }
 
@@ -368,7 +367,7 @@ public class AddSeanceTests {
 
         exceptionMessage = "";
         try {
-            adminService.addSeance(seanceDto);
+            seanceService.addSeance(seanceDto);
         } catch (Exception e) {
             exceptionMessage = e.getMessage();
         }
@@ -387,7 +386,7 @@ public class AddSeanceTests {
                 .price(BigDecimal.valueOf(-10))
                 .build();
         try {
-            adminService.addSeance(seanceDto);
+            seanceService.addSeance(seanceDto);
         } catch (Exception e) {
             exceptionMessage = e.getMessage();
         }

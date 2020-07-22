@@ -1,12 +1,12 @@
 package wisniewski.jan.ui;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.codec.digest.DigestUtils;
 import wisniewski.jan.persistence.model.view.ReservationWithUser;
 import wisniewski.jan.persistence.model.view.SeatsSeanceWithSeanceDate;
 import wisniewski.jan.service.dto.*;
-import wisniewski.jan.service.email.EmailService;
-import wisniewski.jan.service.enums.SearchCriterion;
 import wisniewski.jan.persistence.enums.SeatState;
+import wisniewski.jan.service.email.EmailServiceKm;
 import wisniewski.jan.service.exception.AuthenticationException;
 import wisniewski.jan.service.mappers.Mapper;
 import wisniewski.jan.persistence.model.*;
@@ -16,13 +16,11 @@ import wisniewski.jan.ui.exceptions.MenuServiceException;
 import wisniewski.jan.ui.user_data.UserDataService;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -31,7 +29,6 @@ public class MenuService {
 
     private final TicketService ticketService;
     private final MovieService movieService;
-    private final AdminService adminService;
     private final CinemaRoomService cinemaRoomService;
     private final CityService cityService;
     private final ReservationService reservationService;
@@ -45,12 +42,20 @@ public class MenuService {
     public void mainMenu() {
         while (true) {
             try {
-                System.out.println("\n___ CINEMA MENU ___");
-                System.out.println("-------[Movie]-------\nADD (100) | EDIT (107) | DELETE (110)");
-                System.out.println("-------[Cinema]-------\nADD (101) | EDIT (105) | DELETE (111)");
-                System.out.println("-------[Cinema Room]-------\nADD (102) | EDIT (108) | DELETE (114)");
-                System.out.println("-------[Seance]-------\nADD (103) | EDIT (109) | DELETE (113)");
-                System.out.println("-------[City]-------\nADD (104) | EDIT (106) | DELETE (112)");
+                System.out.println("___ CINEMA MENU ___");
+                if (authenticationService.isLoggedIn()) {
+                    System.out.println("Hello, " + authenticationService.getUser().getUsername() + "! LOGOUT (116)");
+                } else {
+                    System.out.println("LOGIN (115) | REGISTER (119)");
+                }
+                if (authenticationService.isAdmin()) {
+                    System.out.println("-------[Movie]-------\nADD (100) | EDIT (107) | DELETE (110)");
+                    System.out.println("-------[Cinema]-------\nADD (101) | EDIT (105) | DELETE (111)");
+                    System.out.println("-------[Cinema Room]-------\nADD (102) | EDIT (108) | DELETE (114)");
+                    System.out.println("-------[Seance]-------\nADD (103) | EDIT (109) | DELETE (113)");
+                    System.out.println("-------[City]-------\nADD (104) | EDIT (106) | DELETE (112)");
+                    System.out.println("-------[USERS]-------\nEDIT (117) | DELETE (118)");
+                }
                 System.out.println("-------[Tickets]-------\nBUY (2) | RESERVATIONS (3)");
                 System.out.println("-------[Others]-------\nEXIT (0) | STATISTICS (1)\n");
                 int decision = UserDataService.getInteger("___ Type option ___");
@@ -77,6 +82,11 @@ public class MenuService {
                     case 112 -> option16();
                     case 113 -> option17();
                     case 114 -> option18();
+                    case 115 -> login();
+                    case 116 -> logout();
+                    case 117 -> option19();
+                    case 118 -> option20();
+                    case 119 -> option21();
                     default -> System.out.println("No option with this number");
                 }
             } catch (Exception e) {
@@ -89,7 +99,7 @@ public class MenuService {
         var authenticationDto = AuthenticationDto
                 .builder()
                 .username(UserDataService.getString("Enter username:"))
-                .password(UserDataService.getString("Enter password:"))
+                .password(DigestUtils.sha256Hex(UserDataService.getString("Enter password")))
                 .build();
         var username = authenticationService.login(authenticationDto);
         System.out.println("User " + username + " logged in");
@@ -100,49 +110,106 @@ public class MenuService {
         System.out.println("User " + username + " logged out");
     }
 
-    private void option18() {
+    private void option21() {
+        if (authenticationService.isLoggedIn()) {
+            throw new MenuServiceException("You are logged in. Can't register");
+        }
+        System.out.println("___ Register ___");
+        var userToAdd = CreateUserDto
+                .builder()
+                .name(UserDataService.getString("Type your name"))
+                .surname(UserDataService.getString("Type your surname"))
+                .email(UserDataService.getString("Type your email"))
+                .password(DigestUtils.sha256Hex(UserDataService.getString("Type your password")))
+                .repeatedPassword(DigestUtils.sha256Hex(UserDataService.getString("Repeat your password")))
+                .username(UserDataService.getString("Type your username"))
+                .build();
+        userService.createUser(userToAdd);
+        System.out.println("User " + userToAdd.getUsername() + " register successfully.");
+        EmailServiceKm.send(userToAdd.getEmail(), "Hello!", "<h1>Welcome in our site!</h1>");
+    }
 
+    //TODO DO SPRAWDZENIA - 2 ify
+    private void option20() {
+        if (!authenticationService.isAdmin()) {
+            throw new AuthenticationException("Access Denied");
+        }
+        System.out.println("___ Delete User ___");
+        User chosenUser = UserDataService.getUser("What user do you want to delete?", userService);
+        if (userService.delete(chosenUser.getId())) {
+            System.out.println("User " + chosenUser.getUsername() + " deleted successfully");
+        }
+        if (authenticationService.getUser().getId().equals(chosenUser.getId())) {
+            logout();
+        }
+    }
+
+    private void option19() {
+        if (!authenticationService.isAdmin()) {
+            throw new AuthenticationException("Access Denied");
+        }
+        System.out.println("___ Edit User ___");
+        User chosenUser = UserDataService.getUser("What user do you want to edit?", userService);
+        if (UserDataService.getBoolean("Edit role (" + chosenUser.getRole() + ")")) {
+            chosenUser.setRole(UserDataService.getUserRole("Type new user role"));
+        }
+        if (authenticationService.getUser().getId().equals(chosenUser.getId())) {
+            logout();
+        }
+        System.out.println(userService.edit(chosenUser).getUsername() + " edited successfully");
+    }
+
+
+    private void option18() {
         // jezeli zalezy ci na tym zeby ta opcja byla wykonywana dla admina
         if (!authenticationService.isAdmin()) {
             throw new AuthenticationException("Access Denied");
         }
-
         System.out.println("___ Delete cinema room ___");
         if (cinemaRoomService.getAll().isEmpty()) {
             System.out.println("No cinemas rooms in database");
             return;
         }
         CinemaRoom cinemaRoom = UserDataService.getCinemaRoom("What cinema room do you want to delete?", cinemaRoomService);
-        if (adminService.deleteCinemaRoom(cinemaRoom) > 0) {
+        if (cinemaRoomService.deleteCinemaRoom(cinemaRoom) > 0) {
             System.out.println("Cinema room " + cinemaRoom.getName() + " successfully deleted from db");
         }
     }
 
     private void option17() {
+        if (!authenticationService.isAdmin()) {
+            throw new AuthenticationException("Access Denied");
+        }
         System.out.println("___ Delete seance ___");
         if (seanceService.getAll().isEmpty()) {
             System.out.println("No seances in database");
             return;
         }
         Seance seance = UserDataService.getSeance("What seance do you want to delete?", seanceService);
-        if (adminService.deleteSeance(seance) > 0) {
+        if (seanceService.deleteSeance(seance) > 0) {
             System.out.println("Seance (id: " + seance.getId() + ") successfully deleted from db");
         }
     }
 
     private void option16() {
+        if (!authenticationService.isAdmin()) {
+            throw new AuthenticationException("Access Denied");
+        }
         System.out.println("___ Delete city ___");
         if (cityService.getAll().isEmpty()) {
             System.out.println("No cities in database!");
             return;
         }
         City city = UserDataService.getCity("What city do you want to delete?", cityService);
-        if (adminService.deleteCity(city) > 0) {
+        if (cityService.deleteCity(city) > 0) {
             System.out.println("City " + city.getName() + " successfully deleted from db");
         }
     }
 
     private void option15() {
+        if (!authenticationService.isAdmin()) {
+            throw new AuthenticationException("Access Denied");
+        }
         System.out.println("___ Delete cinema ___");
         if (cinemaService.getAll().isEmpty()) {
             System.out.println("No cinemas in database!");
@@ -150,19 +217,22 @@ public class MenuService {
         }
         System.out.println("! All cinemas rooms associated with this cinema will also be deleted !");
         Cinema cinema = UserDataService.getCinema("What cinema do you want to delete?", cinemaService);
-        if (adminService.deleteCinema(cinema) > 0) {
+        if (cinemaService.deleteCinema(cinema) > 0) {
             System.out.println("Cinema " + cinema.getName() + " successfully deleted from db!");
         }
     }
 
     private void option14() {
+        if (!authenticationService.isAdmin()) {
+            throw new AuthenticationException("Access Denied");
+        }
         System.out.println("___ Delete movie ___");
         if (movieService.getAll().isEmpty()) {
             System.out.println("No movies in database!");
             return;
         }
         Movie chosenMovie = UserDataService.getMovie("What movie do you want to delete?", movieService);
-        if (adminService.deleteMovie(chosenMovie) > 0) {
+        if (movieService.deleteMovie(chosenMovie) > 0) {
             System.out.println("Movie " + chosenMovie.getTitle() + " successfully deleted from db!");
         }
     }
@@ -178,6 +248,9 @@ public class MenuService {
     }
 
     private void option12() {
+        if (!authenticationService.isAdmin()) {
+            throw new AuthenticationException("Access Denied");
+        }
         System.out.println("___ Edit Seance ___");
         if (seanceService.getAll().isEmpty()) {
             System.out.println("No seances in database");
@@ -196,10 +269,13 @@ public class MenuService {
         if (UserDataService.getBoolean("Edit seance price? (" + seance.getPrice() + ")")) {
             seance.setPrice(UserDataService.getDecimal("Type new price for seance"));
         }
-        System.out.println(adminService.editSeance(seance));
+        System.out.println(seanceService.editSeance(seance));
     }
 
     private void option11() {
+        if (!authenticationService.isAdmin()) {
+            throw new AuthenticationException("Access Denied");
+        }
         System.out.println("___ Edit Cinema Room ___");
         if (cinemaRoomService.getAll().isEmpty()) {
             System.out.println("No cinemas rooms in database");
@@ -287,10 +363,13 @@ public class MenuService {
             seatSeanceService.addAllBySeanceIds(addedSeats, fs);
         });
 
-        adminService.editCinemaRoom(cinemaRoom);
+        cinemaRoomService.editCinemaRoom(cinemaRoom);
     }
 
     private void option10() {
+        if (!authenticationService.isAdmin()) {
+            throw new AuthenticationException("Access Denied");
+        }
         System.out.println("___ Edit Movie ___");
         if (movieService.getAll().isEmpty()) {
             System.out.println("No movies on database!");
@@ -309,10 +388,13 @@ public class MenuService {
         if (UserDataService.getBoolean("Edit date to? (" + movie.getDateFrom() + ")")) {
             movie.setDateFrom(UserDataService.getLocalDateTime("Type new date to"));
         }
-        System.out.println(adminService.editMovie(movie));
+        System.out.println(movieService.editMovie(movie));
     }
 
     private void option9() {
+        if (!authenticationService.isAdmin()) {
+            throw new AuthenticationException("Access Denied");
+        }
         System.out.println("___ Edit City ___");
         if (cityService.getAll().isEmpty()) {
             System.out.println("No cities in database");
@@ -322,10 +404,13 @@ public class MenuService {
         if (UserDataService.getBoolean("Edit name? (" + city.getName() + ")")) {
             city.setName(UserDataService.getString("Type new name"));
         }
-        System.out.println(adminService.editCity(city));
+        System.out.println(cityService.editCity(city));
     }
 
     private void option8() {
+        if (!authenticationService.isAdmin()) {
+            throw new AuthenticationException("Access Denied");
+        }
         System.out.println("___ Edit Cinema ___");
         if (cinemaService.getAll().isEmpty()) {
             System.out.println("No cinemas in database");
@@ -338,16 +423,19 @@ public class MenuService {
         if (UserDataService.getBoolean("Edit city? (" + cityService.showNameByCityId(cinema.getCityId()) + ")")) {
             cinema.setCityId(UserDataService.getCity("Type city id", cityService).getId());
         }
-        System.out.println(adminService.editCinema(cinema));
+        System.out.println(cinemaService.editCinema(cinema));
     }
 
     private void option7() {
+        if (!authenticationService.isAdmin()) {
+            throw new AuthenticationException("Access Denied");
+        }
         System.out.println("___ Add City ___");
         var cityToAdd = CreateCityDto
                 .builder()
                 .name(UserDataService.getString("Type city name"))
                 .build();
-        System.out.println(cityToAdd.getName() + " added with id: " + adminService.addCity(cityToAdd));
+        System.out.println(cityToAdd.getName() + " added with id: " + cityService.addCity(cityToAdd));
     }
 
     private void option6() {
@@ -398,7 +486,7 @@ public class MenuService {
             if (wantToDelete) {
                 message = (reservationService.deleteReservation(seanceReservation.getId())) ? "Deleted successfully" : "Can't delete reservation";
                 seatsSeance.setState(SeatState.FREE);
-                adminService.editSeatSeance(seatsSeance);
+                seatSeanceService.editSeatSeance(seatsSeance);
                 System.out.println(message);
             } else {
                 System.out.println("Returning to main menu");
@@ -408,6 +496,9 @@ public class MenuService {
     }
 
     private void option5() {
+        if (!authenticationService.isAdmin()) {
+            throw new AuthenticationException("Access Denied");
+        }
         System.out.println("___ Add Seance ___");
         if (cinemaRoomService.getAll().isEmpty()) {
             System.out.println("No cinema rooms in database. Add a new cinema room before adding a seance");
@@ -425,10 +516,13 @@ public class MenuService {
                 .price(UserDataService.getDecimal("Type seance price"))
                 .build();
 
-        System.out.println("Seance added with id: " + adminService.addSeance(seance));
+        System.out.println("Seance added with id: " + seanceService.addSeance(seance));
     }
 
     private void option4() {
+        if (!authenticationService.isAdmin()) {
+            throw new AuthenticationException("Access Denied");
+        }
         System.out.println("___ Add Cinema Rooms ___");
         if (cinemaService.getAll().isEmpty()) {
             System.out.println("No cinemas in database. Add a cinema before adding cinema room");
@@ -441,10 +535,13 @@ public class MenuService {
                 .places(UserDataService.getInteger("Type cinema room places"))
                 .cinemaId(UserDataService.getCinema("Type cinema id", cinemaService).getId())
                 .build();
-        System.out.println(cinemaRoom.getName() + " added with id: " + adminService.addCinemaRoom(cinemaRoom));
+        System.out.println(cinemaRoom.getName() + " added with id: " + cinemaRoomService.addCinemaRoom(cinemaRoom));
     }
 
     private void option3() {
+        if (!authenticationService.isAdmin()) {
+            throw new AuthenticationException("Access Denied");
+        }
         System.out.println("___ Add Cinema ___");
         if (cityService.getAll().isEmpty()) {
             System.out.println("No cities in database. Add a city before adding a new cinema");
@@ -455,10 +552,13 @@ public class MenuService {
                 .cityId(UserDataService.getCity("Type city id:", cityService).getId())
                 .name(UserDataService.getString("Type cinema name"))
                 .build();
-        System.out.println(cinema.getName() + " added with id: " + adminService.addCinema(cinema));
+        System.out.println(cinema.getName() + " added with id: " + cinemaService.addCinema(cinema));
     }
 
     private void option2() {
+        if (!authenticationService.isAdmin()) {
+            throw new AuthenticationException("Access Denied");
+        }
         System.out.println("___ Add Movie ___");
         var movie = CreateMovieDto
                 .builder()
@@ -467,10 +567,13 @@ public class MenuService {
                 .dateFrom(UserDataService.getLocalDateTime("Date from"))
                 .dateTo(UserDataService.getLocalDateTime("Date to"))
                 .build();
-        System.out.println(movie.getTitle() + " added with id: " + adminService.addMovie(movie));
+        System.out.println(movie.getTitle() + " added with id: " + movieService.addMovie(movie));
     }
 
     private void option1() {
+        if (!authenticationService.isLoggedIn()) {
+            throw new AuthenticationException("Login before!");
+        }
         System.out.println("___ Buy / Reserve Ticket ___");
         if (seanceService.getAll().isEmpty()) {
             System.out.println("There is no seances!");
@@ -547,7 +650,7 @@ public class MenuService {
         } else {
             reserveTicket(seanceId, seatSeance);
         }
-        adminService.editSeatSeance(seatSeance);
+        seatSeanceService.editSeatSeance(seatSeance);
     }
 
     private void reserveTicket(Integer seanceId, SeatsSeance chosenSeatSeance) {
@@ -560,21 +663,21 @@ public class MenuService {
                 .build();
         var reservation = Mapper.fromCreateReservationDtoToReservation(reservationDto);
         reservationService.addReservation(reservation);
-        EmailService.sendMail(userService.findById(reservation.getUserId()).getEmail(),
-                "Reserved Ticket!",
+
+        EmailServiceKm.send(userService.findById(reservation.getUserId()).getEmail(),
+                "Ticket reserved!",
                 new StringBuilder()
                         .append("You have successfully reserved a ticket.\n")
-                        .append("NAME: " +userService.findById(reservation.getUserId()).getName()+"\n")
-                        .append("SURNAME: " +userService.findById(reservation.getUserId()).getSurname()+"\n")
+                        .append("NAME: " + userService.findById(reservation.getUserId()).getName() + "\n")
+                        .append("SURNAME: " + userService.findById(reservation.getUserId()).getSurname() + "\n")
                         .append("MOVIE: " + movieService.findById(seanceService.getSeanceById(reservation.getSeanceId()).orElseThrow(() -> new MenuServiceException("FAILED")).getMovieId()).orElseThrow(() -> new MenuServiceException("FAILED")).getTitle() + "\n")
                         .append("DATE: " + seanceService.getSeanceById(reservation.getSeanceId()).orElseThrow(() -> new MenuServiceException("Failed")).getDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd, HH:mm:ss")) + "\n")
                         .append("CINEMA: " + cinemaService.findByCinemaRoomId(seanceService.getSeanceById(reservation.getSeanceId()).orElseThrow(() -> new MenuServiceException("FAILED")).getCinemaRoomId()).getName() + "\n")
                         .append("CITY: " + cityService.findCityById(cinemaService.findByCinemaRoomId(seanceService.getSeanceById(reservation.getSeanceId()).orElseThrow(() -> new MenuServiceException("FAILED")).getCinemaRoomId()).getCityId()).getName() + "\n")
                         .append("CINEMA ROOM: " + cinemaRoomService.findById(seanceService.getSeanceById(reservation.getSeanceId()).orElseThrow(() -> new MenuServiceException("FAILED")).getCinemaRoomId()).orElseThrow(() -> new MenuServiceException("FAILED")).getName()
                                 + "\n")
-                        .append("ROW / PLACE: " +seatService.getSeat(reservation.getSeatId()).getRowsNumber()+" / "+seatService.getSeat(reservation.getSeatId()).getPlace())
-                        .toString()
-        );
+                        .append("ROW / PLACE: " + seatService.getSeat(reservation.getSeatId()).getRowsNumber() + " / " + seatService.getSeat(reservation.getSeatId()).getPlace())
+                        .toString());
         System.out.println("Ticket reserved!");
     }
 
@@ -591,7 +694,7 @@ public class MenuService {
                 .seatId(chosenSeatSeance.getSeatId())
                 .price(ticketPrice)
                 .discount(totalDiscount)
-                .userId(1)
+                .userId(authenticationService.getUser().getId())
                 .build();
         do {
             System.out.println("Buy ticket for: " + ticket.getPrice().subtract(ticket.getDiscount()) + "?");
@@ -601,22 +704,21 @@ public class MenuService {
             case 1 -> {
                 ticketService.buyTicket(ticket);
                 chosenSeatSeance.setState(SeatState.ORDERED);
-                adminService.editSeatSeance(chosenSeatSeance);
-                EmailService.sendMail(userService.findById(ticket.getUserId()).getEmail(),
-                        "Bought Ticket!",
+                seatSeanceService.editSeatSeance(chosenSeatSeance);
+                EmailServiceKm.send(userService.findById(ticket.getUserId()).getEmail(),
+                        "Ticket Bought!",
                         new StringBuilder()
-                                .append("You have successfully bought a ticket.\n")
-                                .append("NAME: " +userService.findById(ticket.getUserId()).getName()+"\n")
-                                .append("SURNAME: " +userService.findById(ticket.getUserId()).getSurname()+"\n")
+                                .append("<h1>You have successfully bought a ticket.\n")
+                                .append("NAME: " + userService.findById(ticket.getUserId()).getName() + "\n")
+                                .append("SURNAME: " + userService.findById(ticket.getUserId()).getSurname() + "\n")
                                 .append("MOVIE: " + movieService.findById(seanceService.getSeanceById(ticket.getSeanceId()).orElseThrow(() -> new MenuServiceException("FAILED")).getMovieId()).orElseThrow(() -> new MenuServiceException("FAILED")).getTitle() + "\n")
                                 .append("DATE: " + seanceService.getSeanceById(ticket.getSeanceId()).orElseThrow(() -> new MenuServiceException("Failed")).getDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd, HH:mm:ss")) + "\n")
                                 .append("CINEMA: " + cinemaService.findByCinemaRoomId(seanceService.getSeanceById(ticket.getSeanceId()).orElseThrow(() -> new MenuServiceException("FAILED")).getCinemaRoomId()).getName() + "\n")
                                 .append("CITY: " + cityService.findCityById(cinemaService.findByCinemaRoomId(seanceService.getSeanceById(ticket.getSeanceId()).orElseThrow(() -> new MenuServiceException("FAILED")).getCinemaRoomId()).getCityId()).getName() + "\n")
                                 .append("CINEMA ROOM: " + cinemaRoomService.findById(seanceService.getSeanceById(ticket.getSeanceId()).orElseThrow(() -> new MenuServiceException("FAILED")).getCinemaRoomId()).orElseThrow(() -> new MenuServiceException("FAILED")).getName()
                                         + "\n")
-                                .append("ROW / PLACE: " +seatService.getSeat(ticket.getSeatId()).getRowsNumber()+" / "+seatService.getSeat(ticket.getSeatId()).getPlace())
-                                .toString()
-                );
+                                .append("ROW / PLACE: " + seatService.getSeat(ticket.getSeatId()).getRowsNumber() + " / " + seatService.getSeat(ticket.getSeatId()).getPlace()+"</h1>")
+                                .toString());
             }
             case 2 -> {
                 return;

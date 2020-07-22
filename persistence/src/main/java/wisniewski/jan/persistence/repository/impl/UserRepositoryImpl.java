@@ -20,13 +20,28 @@ public class UserRepositoryImpl extends AbstractCrudRepository<User, Integer> im
     @Override
     public Optional<User> findByUsername(String username) {
         var sql = """
-                select * from users where username LIKE '%' || :username || '%'
+                select * from users where username = :username
                 """;
         return dbConnection
                 .getJdbi()
                 .withHandle(handle -> handle
                         .createQuery(sql)
                         .bind("username", username)
+                        .mapToBean(User.class)
+                        .findFirst()
+                );
+    }
+
+    @Override
+    public Optional<User> findByEmail(String email) {
+        var sql = """
+                select * from users where email = :email;
+                """;
+        return dbConnection
+                .getJdbi()
+                .withHandle(handle -> handle
+                        .createQuery(sql)
+                        .bind("email", email)
                         .mapToBean(User.class)
                         .findFirst()
                 );
