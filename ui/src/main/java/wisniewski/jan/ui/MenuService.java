@@ -581,13 +581,12 @@ public class MenuService {
         }
         String phrase = UserDataService.getString("Type cinema, city or movie title");
         AtomicInteger counter = new AtomicInteger();
-        int decision;
+        int numberOfTickets;
         List<Seance> seances = seanceService.findByPhrase(phrase);
         if (seances.isEmpty()) {
             System.out.println("No cinema, city or movie with this phrase");
             return;
         }
-
         do {
             System.out.println("Available seances:");
             seances
@@ -599,9 +598,9 @@ public class MenuService {
                             + cityService.findCityById(cinemaService.findByCinemaRoomId(seance.getCinemaRoomId()).getCityId()).getName() + ", "
                             + cinemaRoomService.getNameByCinemaRoomId(seance.getCinemaRoomId()))
                     .forEach(System.out::println);
-            decision = UserDataService.getInteger("Choose seance");
-        } while (decision < 1 || decision > seances.size());
-        Seance seance = seances.get(decision - 1);
+            numberOfTickets = UserDataService.getInteger("Choose seance");
+        } while (numberOfTickets < 1 || numberOfTickets > seances.size());
+        Seance seance = seances.get(numberOfTickets - 1);
         long availableSeats = seatSeanceService
                 .getSeatsSeancesListBySeanceId(seance.getId())
                 .stream()
@@ -612,45 +611,55 @@ public class MenuService {
             return;
         }
         do {
-            decision = UserDataService.getInteger("How many tickets do you want to buy or reserve? (available: " + availableSeats + ")");
-        } while (decision > availableSeats || decision < 1);
-        if (decision == 1) {
-            chooseCinemaRoomPlace(seance.getId(), decision);
-        } else {
-            ///kupowanie grupowe
-        }
+            numberOfTickets = UserDataService.getInteger("How many tickets do you want to buy or reserve? (available: " + availableSeats + ")");
+        } while (numberOfTickets < 1 || numberOfTickets > availableSeats);
+         chooseCinemaRoomPlace(seance.getId(), numberOfTickets);
     }
 
     private void chooseCinemaRoomPlace(Integer seanceId, Integer ticketsNumber) {
         Seance seance = seanceService.getSeanceById(seanceId).orElseThrow(() -> new MenuServiceException("FAILED"));
+        List<SeatsSeance> seats = new ArrayList<>();
         int cinemaRoomId = seance.getCinemaRoomId();
-        showCinemaRoomPlacesForSeance(seanceId);
         int rowNumber;
         int placeNumber;
-        do {
-            rowNumber = UserDataService.getInteger("Type row number");
-            placeNumber = UserDataService.getInteger("Type place number at " + rowNumber + " row");
+        SeatsSeance seatSeance;
+        int chosenSeatId;
+        for (int i = 0; i < ticketsNumber; i++) {
+            showCinemaRoomPlacesForSeance(seanceId);
+            System.out.println("TICKET: " + (i + 1) + "/" + ticketsNumber);
+            do {
+                rowNumber = UserDataService.getInteger("Type row number");
+                placeNumber = UserDataService.getInteger("Type place number at " + rowNumber + " row");
+            }
+            while (seatService.findByRowAndPlaceAtCinemaRoom(rowNumber, placeNumber, cinemaRoomId).isEmpty());
+            System.out.println("PLACE: " + rowNumber + "/" + placeNumber);
+            chosenSeatId = seatService.getSeatId(rowNumber, placeNumber, cinemaRoomId);
+            seatSeance = seatSeanceService.getSeatSeancesBySeatId(chosenSeatId);
+            if (!seatSeance.getState().equals(SeatState.FREE)) {
+                System.out.println("This place is not free. Can't buy or reserve ticket!");
+                i = i-1;
+                continue;
+            }
+            seatSeance.setState(SeatState.RESERVED);
+            seatSeanceService.editSeatSeance(seatSeance);
+            seats.add(seatSeance);
         }
-        while (seatService.findByRowAndPlaceAtCinemaRoom(rowNumber, placeNumber, cinemaRoomId).isEmpty());
-        System.out.println("PLACE: " + rowNumber + "/" + placeNumber);
-        int chosenSeatId = seatService.getSeatId(rowNumber, placeNumber, cinemaRoomId);
-
-        SeatsSeance seatSeance = seatSeanceService.getSeatSeancesBySeatId(chosenSeatId);
-
-        if (!seatSeance.getState().equals(SeatState.FREE)) {
-            System.out.println("This place is not free. Can't buy or reserve ticket!");
-            return;
-        }
-        int decision;
-        do {
-            decision = UserDataService.getInteger("1 - buy / 2 - reserve");
-        } while (decision != 1 && decision != 2);
-        if (decision == 1) {
-            buyTickets(seanceId, seatSeance);
-        } else {
-            reserveTicket(seanceId, seatSeance);
-        }
-        seatSeanceService.editSeatSeance(seatSeance);
+        AtomicInteger decision = new AtomicInteger();
+        AtomicInteger counter = new AtomicInteger();
+        seats
+                .forEach(
+                        seat -> {
+                            System.out.println("Action for seat: "+counter.incrementAndGet()+"/"+seats.size());
+                            do {
+                                decision.set(UserDataService.getInteger("1 - buy / 2 - reserve"));
+                            } while (decision.get() != 1 && decision.get() != 2);
+                            if (decision.get() == 1) {
+                                buyTickets(seanceId, seat);
+                            } else {
+                                reserveTicket(seanceId, seat);
+                            }
+                        }
+                );
     }
 
     private void reserveTicket(Integer seanceId, SeatsSeance chosenSeatSeance) {
@@ -659,11 +668,12 @@ public class MenuService {
                 .builder()
                 .seanceId(seanceId)
                 .seatId(chosenSeatSeance.getSeatId())
-                .userId(1)
+                .userId(authenticationService.getUser().getId())
                 .build();
         var reservation = Mapper.fromCreateReservationDtoToReservation(reservationDto);
         reservationService.addReservation(reservation);
-
+        System.out.println("Ticket reserved!");
+        seatSeanceService.editSeatSeance(chosenSeatSeance);
         EmailServiceKm.send(userService.findById(reservation.getUserId()).getEmail(),
                 "Ticket reserved!",
                 new StringBuilder()
@@ -678,7 +688,6 @@ public class MenuService {
                                 + "\n")
                         .append("ROW / PLACE: " + seatService.getSeat(reservation.getSeatId()).getRowsNumber() + " / " + seatService.getSeat(reservation.getSeatId()).getPlace())
                         .toString());
-        System.out.println("Ticket reserved!");
     }
 
     private void buyTickets(Integer seanceId, SeatsSeance chosenSeatSeance) {
@@ -717,10 +726,12 @@ public class MenuService {
                                 .append("CITY: " + cityService.findCityById(cinemaService.findByCinemaRoomId(seanceService.getSeanceById(ticket.getSeanceId()).orElseThrow(() -> new MenuServiceException("FAILED")).getCinemaRoomId()).getCityId()).getName() + "\n")
                                 .append("CINEMA ROOM: " + cinemaRoomService.findById(seanceService.getSeanceById(ticket.getSeanceId()).orElseThrow(() -> new MenuServiceException("FAILED")).getCinemaRoomId()).orElseThrow(() -> new MenuServiceException("FAILED")).getName()
                                         + "\n")
-                                .append("ROW / PLACE: " + seatService.getSeat(ticket.getSeatId()).getRowsNumber() + " / " + seatService.getSeat(ticket.getSeatId()).getPlace()+"</h1>")
+                                .append("ROW / PLACE: " + seatService.getSeat(ticket.getSeatId()).getRowsNumber() + " / " + seatService.getSeat(ticket.getSeatId()).getPlace() + "</h1>")
                                 .toString());
             }
             case 2 -> {
+                chosenSeatSeance.setState(SeatState.FREE);
+                seatSeanceService.editSeatSeance(chosenSeatSeance);
                 return;
             }
             default -> System.out.println("Wrong option");
