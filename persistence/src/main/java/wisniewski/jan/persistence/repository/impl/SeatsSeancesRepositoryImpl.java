@@ -5,10 +5,12 @@ import wisniewski.jan.persistence.enums.SeatState;
 import wisniewski.jan.persistence.model.Seance;
 import wisniewski.jan.persistence.model.Seat;
 import wisniewski.jan.persistence.model.SeatsSeance;
+import wisniewski.jan.persistence.model.view.ReservationWithNoUser;
 import wisniewski.jan.persistence.model.view.SeatsSeanceWithSeanceDate;
 import wisniewski.jan.persistence.repository.SeatsSeancesRepository;
 import wisniewski.jan.persistence.repository.generic.AbstractCrudRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -128,5 +130,47 @@ public class SeatsSeancesRepositoryImpl extends AbstractCrudRepository<SeatsSean
                         .filter(s -> !s.getSeatState().equals(SeatState.FREE))
                         .collect(Collectors.toList())
                 );
+    }
+
+    @Override
+    public Integer clearSeatSeances() {
+        List<ReservationWithNoUser> seatsSeancesIdToClear;
+        var SQL = """
+                select ss.id as seatSeanceId,ss.state,r.user_id
+                from seats_seances ss
+                left join reservations r on ss.seat_id = r.seat_id and ss.seance_id and r.seat_id
+                where state = 'RESERVED' and r.user_id is null;
+                """;
+
+        seatsSeancesIdToClear = dbConnection
+                .getJdbi()
+                .withHandle(handle -> handle.createQuery(SQL)
+                        .mapToBean(ReservationWithNoUser.class)
+                        .list()
+                );
+
+        if (seatsSeancesIdToClear.isEmpty()){
+            return 0;
+        }
+
+        List<Integer> ids = seatsSeancesIdToClear
+                .stream()
+                .map(ReservationWithNoUser::getSeatSeanceId)
+                .collect(Collectors.toList());
+
+        var SQL_UPDATE = """
+                update seats_seances set state ='FREE' where id in (<ids>)
+                """;
+
+        dbConnection
+                .getJdbi()
+                .useHandle(handle -> handle
+                        .createUpdate(SQL_UPDATE)
+                        .bindList("ids", ids)
+                        .execute()
+                );
+
+        return seatsSeancesIdToClear.size();
+
     }
 }

@@ -47,4 +47,7 @@ public class SeatSeanceService {
                 .collect(Collectors.joining("\n"));
     }
 
+    public Integer clearReservedSeats() {
+        return seatsSeancesRepository.clearSeatSeances();
+    }
 }

@@ -65,13 +65,22 @@ public class App {
         ScheduledExecutorService ses = Executors.newScheduledThreadPool(1);
         Runnable runnable = () -> {
             try {
-                // System.out.println("Deleted reservations: "+reservationService.clearReservations(30));
+                System.out.println("Deleted reservations: "+reservationService.clearReservations(30));
                 TimeUnit.SECONDS.sleep(1);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         };
-        var future2 = ses.scheduleWithFixedDelay(runnable, 1, 1, TimeUnit.MINUTES);
+        Runnable runnable2 = () -> {
+            try {
+                System.out.println("Cleared seats seance with state reserved without reservation data: " +seatSeanceService.clearReservedSeats());
+                TimeUnit.MINUTES.sleep(2);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        };
+        var future = ses.scheduleWithFixedDelay(runnable, 10, 10, TimeUnit.SECONDS);
+        var future2 = ses.scheduleWithFixedDelay(runnable2, 10, 10, TimeUnit.SECONDS);
 
         menuService.mainMenu();
 
