@@ -6,7 +6,7 @@ import wisniewski.jan.persistence.model.view.ReservationWithUser;
 import wisniewski.jan.persistence.model.view.SeatsSeanceWithSeanceDate;
 import wisniewski.jan.service.dto.*;
 import wisniewski.jan.persistence.enums.SeatState;
-import wisniewski.jan.service.email.EmailServiceKm;
+import wisniewski.jan.service.email.EmailService;
 import wisniewski.jan.service.exception.AuthenticationException;
 import wisniewski.jan.service.mappers.Mapper;
 import wisniewski.jan.persistence.model.*;
@@ -126,7 +126,7 @@ public class MenuService {
                 .build();
         userService.createUser(userToAdd);
         System.out.println("User " + userToAdd.getUsername() + " register successfully.");
-        EmailServiceKm.send(userToAdd.getEmail(), "Hello!", "<h1>Welcome in our site!</h1>");
+        EmailService.send(userToAdd.getEmail(), "Hello!", "<h1>Welcome in our site!</h1>");
     }
 
     //TODO DO SPRAWDZENIA - 2 ify
@@ -674,7 +674,7 @@ public class MenuService {
         reservationService.addReservation(reservation);
         System.out.println("Ticket reserved!");
         seatSeanceService.editSeatSeance(chosenSeatSeance);
-        EmailServiceKm.send(userService.findById(reservation.getUserId()).getEmail(),
+        EmailService.send(userService.findById(reservation.getUserId()).getEmail(),
                 "Ticket reserved!",
                 new StringBuilder()
                         .append("You have successfully reserved a ticket.\n")
@@ -714,7 +714,7 @@ public class MenuService {
                 ticketService.buyTicket(ticket);
                 chosenSeatSeance.setState(SeatState.ORDERED);
                 seatSeanceService.editSeatSeance(chosenSeatSeance);
-                EmailServiceKm.send(userService.findById(ticket.getUserId()).getEmail(),
+                EmailService.send(userService.findById(ticket.getUserId()).getEmail(),
                         "Ticket Bought!",
                         new StringBuilder()
                                 .append("<h1>You have successfully bought a ticket.\n")

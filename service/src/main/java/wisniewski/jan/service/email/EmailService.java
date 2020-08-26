@@ -5,9 +5,9 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
-public final class EmailServiceKm {
+public final class EmailService {
     private static final String EMAIL_ADDRESS = "mailtestowykmprograms@gmail.com";
-    private static final String EMAIL_PASSWORD = "190593Mail!";
+    private static final String EMAIL_PASSWORD = "";
 
     // https://j2html.com/
     public static void send(String to, String title, String html) {
