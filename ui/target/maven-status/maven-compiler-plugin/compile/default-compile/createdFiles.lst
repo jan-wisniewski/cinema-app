@@ -1,0 +1,4 @@
+wisniewski\jan\ui\App.class
+wisniewski\jan\ui\user_data\UserDataService.class
+wisniewski\jan\ui\MenuService.class
+wisniewski\jan\ui\exceptions\MenuServiceException.class

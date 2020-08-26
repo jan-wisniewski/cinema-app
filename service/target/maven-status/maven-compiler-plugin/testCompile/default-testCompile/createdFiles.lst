@@ -1,0 +1,9 @@
+extensions\LoggerExtension.class
+userService\CreateUserTests.class
+adminService\AddCinemaTests.class
+adminService\EditCinemaRoomTests.class
+ticketService\BuyTicketTests.class
+adminService\AddCinemaRoomTests.class
+adminService\AddSeanceTests.class
+adminService\AddCityTests.class
+adminService\AddMovieTests.class

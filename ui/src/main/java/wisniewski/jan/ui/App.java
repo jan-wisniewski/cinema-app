@@ -15,12 +15,6 @@ public class App {
         final String USERNAME = "root";
         final String PASSWORD = "root";
 
-
-/*        final String URL = "jdbc:mysql://db4free.net:3306/cinema_app_db?createDatabaseIfNotExist=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Europe/Warsaw";
-        final String USERNAME = "pw_student";
-        final String PASSWORD = "yLr2IT4g3H";*/
-
-
         var dbConnection = new DbConnection(USERNAME, PASSWORD, URL);
         dbConnection.setUpTables();
 
@@ -79,8 +73,8 @@ public class App {
                 e.printStackTrace();
             }
         };
-        var future = ses.scheduleWithFixedDelay(runnable, 10, 10, TimeUnit.SECONDS);
-        var future2 = ses.scheduleWithFixedDelay(runnable2, 10, 10, TimeUnit.SECONDS);
+//        var future = ses.scheduleWithFixedDelay(runnable, 10, 10, TimeUnit.SECONDS);
+//        var future2 = ses.scheduleWithFixedDelay(runnable2, 10, 10, TimeUnit.SECONDS);
 
         menuService.mainMenu();
 
