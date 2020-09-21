@@ -2,7 +2,6 @@ wisniewski\jan\service\dto\CreateSeanceDto.class
 wisniewski\jan\service\dto\CreateSeatSeanceDto$CreateSeatSeanceDtoBuilder.class
 wisniewski\jan\service\service\CinemaRoomService.class
 wisniewski\jan\service\dto\CreateCinemaRoomDto$CreateCinemaRoomDtoBuilder.class
-wisniewski\jan\service\email\EmailServiceKm$1.class
 wisniewski\jan\service\dto\CreateUserDto.class
 wisniewski\jan\service\exception\SeatSeanceException.class
 wisniewski\jan\service\exception\SeanceServiceException.class
@@ -23,6 +22,7 @@ wisniewski\jan\service\dto\CreateCinemaDto.class
 wisniewski\jan\service\exception\ReservationServiceException.class
 wisniewski\jan\service\dto\AuthenticationDto$AuthenticationDtoBuilder.class
 wisniewski\jan\service\mappers\Mapper.class
+wisniewski\jan\service\email\EmailService.class
 wisniewski\jan\service\exception\SeatServiceException.class
 wisniewski\jan\service\enums\SearchCriterion.class
 wisniewski\jan\service\service\SeatSeanceService.class
@@ -35,7 +35,7 @@ wisniewski\jan\service\validator\CreateCinemaRoomDtoValidator.class
 wisniewski\jan\service\service\SeatService.class
 wisniewski\jan\service\service\UserService.class
 wisniewski\jan\service\dto\CreateReservationDto.class
-wisniewski\jan\service\email\EmailServiceKm.class
+wisniewski\jan\service\email\EmailService$1.class
 wisniewski\jan\service\validator\CreateCinemaDtoValidator.class
 wisniewski\jan\service\validator\CreateMovieDtoValidator.class
 wisniewski\jan\service\dto\CreateReservationDto$CreateReservationDtoBuilder.class

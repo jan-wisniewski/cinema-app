@@ -23,10 +23,6 @@ public class UserService {
         return userRepository.findById(userId).orElseThrow(() -> new UserServiceException("FAILED"));
     }
 
-    public User findByUsername (String username){
-        return userRepository.findByUsername(username).orElseThrow(() -> new UserServiceException("FAILED"));
-    }
-
     public List<User> findAll(){
         return userRepository.findAll();
     }

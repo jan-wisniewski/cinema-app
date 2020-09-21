@@ -1,6 +1,5 @@
 C:\Users\janek\IdeaProjects\KMPrograms\cinema-tickets\service\src\main\java\wisniewski\jan\service\exception\SeatSeanceException.java
 C:\Users\janek\IdeaProjects\KMPrograms\cinema-tickets\service\src\main\java\wisniewski\jan\service\exception\SeatServiceException.java
-C:\Users\janek\IdeaProjects\KMPrograms\cinema-tickets\service\src\main\java\wisniewski\jan\service\email\EmailServiceKm.java
 C:\Users\janek\IdeaProjects\KMPrograms\cinema-tickets\service\src\main\java\wisniewski\jan\service\exception\AuthenticationException.java
 C:\Users\janek\IdeaProjects\KMPrograms\cinema-tickets\service\src\main\java\wisniewski\jan\service\dto\CreateCityDto.java
 C:\Users\janek\IdeaProjects\KMPrograms\cinema-tickets\service\src\main\java\wisniewski\jan\service\service\proxy\AuthenticationService.java
@@ -17,6 +16,7 @@ C:\Users\janek\IdeaProjects\KMPrograms\cinema-tickets\service\src\main\java\wisn
 C:\Users\janek\IdeaProjects\KMPrograms\cinema-tickets\service\src\main\java\wisniewski\jan\service\dto\CreateTicketDto.java
 C:\Users\janek\IdeaProjects\KMPrograms\cinema-tickets\service\src\main\java\wisniewski\jan\service\service\SeatService.java
 C:\Users\janek\IdeaProjects\KMPrograms\cinema-tickets\service\src\main\java\wisniewski\jan\service\dto\CreateCinemaDto.java
+C:\Users\janek\IdeaProjects\KMPrograms\cinema-tickets\service\src\main\java\wisniewski\jan\service\email\EmailService.java
 C:\Users\janek\IdeaProjects\KMPrograms\cinema-tickets\service\src\main\java\wisniewski\jan\service\exception\UserDataServiceException.java
 C:\Users\janek\IdeaProjects\KMPrograms\cinema-tickets\service\src\main\java\wisniewski\jan\service\validator\CreateCityDtoValidator.java
 C:\Users\janek\IdeaProjects\KMPrograms\cinema-tickets\service\src\main\java\wisniewski\jan\service\validator\validator\Validator.java
